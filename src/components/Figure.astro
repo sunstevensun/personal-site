@@ -1,0 +1,26 @@
+---
+// Wraps an interactive figure in a captioned frame.
+//
+// `fallback` is the path to a static PNG/SVG export of the same chart.
+// Export one for every figure: the Substack edition goes out as email,
+// and email cannot run React. The fallback is what those readers see,
+// with a link back here for the live version.
+const { label = 'FIG', caption, fallback } = Astro.props;
+---
+
+<figure class="figure">
+  <div class="figure__frame">
+    <slot />
+  </div>
+  <figcaption class="figure__caption">
+    <span class="figure__label">{label}</span>
+    <span>
+      {caption}
+      {fallback && (
+        <>
+          {' '}<a href={fallback}>Static version</a>.
+        </>
+      )}
+    </span>
+  </figcaption>
+</figure>

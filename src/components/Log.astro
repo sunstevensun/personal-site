@@ -1,0 +1,42 @@
+---
+// The log renders essays as registry-style rows: a monospaced date
+// column, the title, and a one-line gloss. Entries carrying a live
+// figure are marked, since that is the part the email edition drops.
+const { entries } = Astro.props;
+
+const sorted = [...entries].sort(
+  (a, b) => new Date(b.date) - new Date(a.date)
+);
+
+const fmt = (d) =>
+  new Date(d).toLocaleDateString('en-US', {
+    month: 'short',
+    day: '2-digit',
+    timeZone: 'UTC',
+  });
+
+const yearOf = (d) => new Date(d).getUTCFullYear();
+
+let lastYear = null;
+---
+
+<div class="log">
+  {sorted.map((entry) => {
+    const year = yearOf(entry.date);
+    const showYear = year !== lastYear;
+    lastYear = year;
+    return (
+      <>
+        {showYear && <p class="log__year">{year}</p>}
+        <a class="entry" href={entry.url}>
+          <span class="entry__date">{fmt(entry.date)}</span>
+          <span class="entry__body">
+            <span class="entry__title">{entry.title}</span>
+            {entry.figure && <span class="entry__fig">FIG</span>}
+            <span class="entry__gloss">{entry.gloss}</span>
+          </span>
+        </a>
+      </>
+    );
+  })}
+</div>

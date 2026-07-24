@@ -1,0 +1,43 @@
+---
+import Base from '../layouts/Base.astro';
+
+// Gated on purpose: a public PDF gets scraped and indexed permanently.
+// This keeps a human in the loop without needing a form backend.
+const subject = encodeURIComponent('Resume request');
+const body = encodeURIComponent(
+  "Hi — I'd like a copy of your resume.\n\nWho I am:\nWhat it's for:\n"
+);
+---
+
+<Base
+  title="Resume — Your Name"
+  description="Resume available on request."
+>
+  <div class="prose">
+    <p class="standfirst">
+      A short version of my background is on the <a href="/about">about page</a>.
+      For the full resume, send me a note.
+    </p>
+
+    <div class="request">
+      <p style="margin-top:0">
+        I send the PDF to anyone with a reason to want it — I just don't leave it
+        somewhere it can be scraped. One line about who you are is plenty.
+      </p>
+      <a class="request__button" href={`mailto:you@yourname.com?subject=${subject}&body=${body}`}>
+        Request the resume
+      </a>
+    </div>
+
+    <h2>The short version</h2>
+    <ul>
+      <li><strong>Current</strong> — Investor at Anomaly. Seed and Series A biotech.</li>
+      <li><strong>Current</strong> — GTM at Krea. Events & Partnerships.</li>
+      <li><strong>Education</strong> — Economics, UPenn.</li>
+    </ul>
+
+    <p>
+      More detail on <a href="https://www.linkedin.com/in/yourhandle">LinkedIn</a>.
+    </p>
+  </div>
+</Base>

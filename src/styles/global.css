@@ -1,0 +1,309 @@
+/* ---------------------------------------------------------------
+   Tokens
+   Palette is cool paper + ink, with one restrained accent drawn
+   from the blue of a stamped lab form. No second accent on purpose.
+   --------------------------------------------------------------- */
+:root {
+  --paper: #fbfbf9;
+  --ink: #16181c;
+  --muted: #6e7278;
+  --rule: #e4e4df;
+  --accent: #1c4e7a;
+
+  --serif: "Source Serif 4", "Source Serif Pro", Georgia, serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --measure: 34rem;   /* prose column */
+  --page: 46rem;      /* page column, wider to allow figure bleed */
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  font-variant-numeric: oldstyle-num;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  max-width: var(--page);
+  margin: 0 auto;
+  padding: 3.5rem 1.5rem 6rem;
+}
+
+/* ---- Masthead ------------------------------------------------- */
+
+.masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1.5rem;
+  margin-bottom: 4rem;
+}
+
+.masthead__name {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.masthead__name a { color: inherit; text-decoration: none; }
+
+.masthead__nav {
+  display: flex;
+  gap: 1.25rem;
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: lowercase;
+}
+
+.masthead__nav a {
+  color: var(--muted);
+  text-decoration: none;
+  padding-bottom: 2px;
+  border-bottom: 1px solid transparent;
+}
+
+.masthead__nav a:hover,
+.masthead__nav a[aria-current="page"] {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+
+/* ---- Standfirst ----------------------------------------------- */
+
+.standfirst {
+  max-width: var(--measure);
+  margin: 0 0 3.5rem;
+  font-size: 1.1875rem;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+/* ---- The log --------------------------------------------------
+   The signature element. Entries are set like registry rows:
+   a fixed monospaced date column, then the title, then a one-line
+   gloss. The FIG marker flags entries that carry a live figure,
+   which is the one thing the email version cannot reproduce.
+   --------------------------------------------------------------- */
+
+.log { border-top: 1px solid var(--rule); }
+
+.log__year {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  padding: 1.75rem 0 0.5rem;
+}
+
+.entry {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: 0 1.5rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--rule);
+  text-decoration: none;
+  color: inherit;
+}
+
+.entry:hover .entry__title { color: var(--accent); }
+
+.entry__date {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+  padding-top: 0.32rem;
+  white-space: nowrap;
+}
+
+.entry__body { min-width: 0; }
+
+.entry__title {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.entry__gloss {
+  display: block;
+  color: var(--muted);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  margin-top: 0.15rem;
+  text-wrap: pretty;
+}
+
+.entry__fig {
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  padding: 0.05rem 0.3rem;
+  margin-left: 0.5rem;
+  vertical-align: 0.15em;
+  white-space: nowrap;
+}
+
+/* ---- Prose ----------------------------------------------------- */
+
+.prose { max-width: var(--measure); }
+.prose p { text-wrap: pretty; }
+.prose a { color: var(--ink); text-decoration-color: var(--accent); text-underline-offset: 2px; }
+.prose a:hover { color: var(--accent); }
+.prose h2 {
+  font-size: 1.125rem;
+  margin: 2.75rem 0 0.75rem;
+  letter-spacing: -0.01em;
+}
+.prose blockquote {
+  margin: 1.75rem 0;
+  padding-left: 1.25rem;
+  border-left: 2px solid var(--rule);
+  color: var(--muted);
+}
+.prose code {
+  font-family: var(--mono);
+  font-size: 0.875em;
+  background: #f1f1ed;
+  padding: 0.1em 0.3em;
+  border-radius: 2px;
+}
+
+/* ---- Essay header ---------------------------------------------- */
+
+.essay__meta {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+}
+
+.essay__title {
+  font-size: 1.875rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 0 0 2.5rem;
+  max-width: var(--measure);
+  text-wrap: balance;
+}
+
+/* ---- Figures ---------------------------------------------------
+   Figures break out past the prose measure to the full page width.
+   --------------------------------------------------------------- */
+
+.figure {
+  margin: 2.75rem 0;
+  width: 100%;
+  max-width: var(--page);
+}
+
+.figure__frame {
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  background: #fff;
+  padding: 1.25rem;
+}
+
+.figure__caption {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem;
+  margin-top: 0.65rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.figure__label {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  padding-top: 0.1rem;
+  white-space: nowrap;
+}
+
+/* ---- Resume request -------------------------------------------- */
+
+.request {
+  max-width: var(--measure);
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  background: #fff;
+}
+
+.request__button {
+  display: inline-block;
+  margin-top: 1rem;
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  color: var(--paper);
+  background: var(--accent);
+  padding: 0.6rem 1.1rem;
+  border-radius: 3px;
+  text-decoration: none;
+}
+
+.request__button:hover { background: var(--ink); }
+
+/* ---- Colophon --------------------------------------------------- */
+
+.colophon {
+  margin-top: 5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.colophon a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--rule); }
+.colophon a:hover { color: var(--ink); border-bottom-color: var(--accent); }
+
+/* ---- Quality floor ---------------------------------------------- */
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@media (max-width: 34rem) {
+  .page { padding-top: 2.5rem; }
+  .entry { grid-template-columns: 1fr; gap: 0.2rem; }
+  .entry__date { padding-top: 0; }
+  .masthead__nav { margin-left: 0; width: 100%; }
+  .essay__title { font-size: 1.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

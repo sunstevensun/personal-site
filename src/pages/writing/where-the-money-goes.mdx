@@ -1,0 +1,37 @@
+---
+layout: ../../layouts/Essay.astro
+title: Where the money actually goes in a clinical trial
+date: 2026-07-15
+gloss: Phase III is not expensive because the science is hard. It is expensive because enrolling patients is slow.
+figure: true
+---
+
+import Figure from '../../components/Figure.astro';
+import PhaseEconomics from '../../components/PhaseEconomics.jsx';
+
+The standard number for developing a drug is somewhere north of a billion
+dollars, and the standard explanation is that discovery is hard. That
+explanation survives mostly because the people repeating it have never sat in
+a site activation meeting.
+
+<Figure
+  label="FIG 1"
+  caption="Cost and duration by phase. Bar width is time, height is spend, so area approximates total cost. Hover or tap a phase."
+  fallback="/figures/phase-economics.png"
+>
+  <PhaseEconomics client:visible />
+</Figure>
+
+Look at where the area sits. Phase III dominates, and almost none of that
+money is scientific. It goes to sites, monitors, coordinators, and the long
+tail of finding people who meet the inclusion criteria and are willing to be
+randomized.
+
+## The enrollment constraint
+
+A trial that needs eight hundred patients across ninety sites is not gated by
+biology. It is gated by how many of those sites can activate, and how quickly
+each one can find eligible patients in its own catchment.
+
+This is the part of the argument where China becomes unavoidable — but that is
+the next essay.

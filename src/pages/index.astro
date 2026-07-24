@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+import Log from '../components/Log.astro';
+
+const modules = import.meta.glob('./writing/*.mdx', { eager: true });
+const entries = Object.values(modules).map((m) => ({ ...m.frontmatter, url: m.url }));
+---
+
+<Base title="Steven Sun">
+  <p class="standfirst">
+    I invest in early-stage biotech at Anomaly and help with GTM at Krea. 
+
+    I am interested in health, longevity, and aesthetics and their intersections.
+    I am curious about the processes involved in these pursuits.
+    I write about patterns I see in those processes; I often see them through the lens of culture.
+
+
+  </p>
+
+  <Log entries={entries} />
+</Base>

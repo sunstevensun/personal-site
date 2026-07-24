@@ -1,0 +1,17 @@
+---
+import Base from '../../layouts/Base.astro';
+import Log from '../../components/Log.astro';
+
+const modules = import.meta.glob('./*.mdx', { eager: true });
+const entries = Object.values(modules).map((m) => ({ ...m.frontmatter, url: m.url }));
+---
+
+<Base title="Writing — Your Name">
+  <p class="standfirst">
+    Essays are published here first and go out by email a day later. Pieces
+    marked <span class="entry__fig">FIG</span> carry a live figure that the
+    email edition cannot render.
+  </p>
+
+  <Log entries={entries} />
+</Base>

@@ -1,0 +1,57 @@
+---
+import '../styles/global.css';
+
+const { title, description = 'Writing on biotech, drug development, and China.' } = Astro.props;
+const path = Astro.url.pathname;
+const nav = [
+  { href: '/about', label: 'about' },
+  { href: '/writing', label: 'writing' },
+  { href: '/resume', label: 'resume' },
+];
+const isCurrent = (href) => path === href || path.startsWith(href + '/');
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="canonical" href={new URL(path, Astro.site)} />
+    <link rel="alternate" type="application/rss+xml" title="Essays" href="/rss.xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap"
+    />
+  </head>
+  <body>
+    <div class="page">
+      <header class="masthead">
+        <p class="masthead__name"><a href="/">Steven Sun</a></p>
+        <nav class="masthead__nav">
+          {nav.map((item) => (
+            <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+              {item.label}
+            </a>
+          ))}
+        </nav>
+      </header>
+
+      <main>
+        <slot />
+      </main>
+
+      <footer class="colophon">
+        <a href="https://www.linkedin.com/in/stevensunsun/">LinkedIn</a>
+        <a href="https://sunstevensun.substack.com">Substack</a>
+        <a href="mailto:sssstevensun@gmail.com">Email</a>
+        <a href="/rss.xml">RSS</a>
+      </footer>
+    </div>
+  </body>
+</html>
