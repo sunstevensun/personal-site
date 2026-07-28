@@ -25,6 +25,7 @@ html { -webkit-text-size-adjust: 100%; }
 
 body {
   margin: 0;
+  overflow-x: hidden;
   background: var(--paper);
   color: var(--ink);
   font-family: var(--serif);
@@ -164,6 +165,35 @@ body {
 /* ---- Prose ----------------------------------------------------- */
 
 .prose { max-width: var(--measure); }
+
+/* Full-width breakout for wide interactive figures that can't live inside
+   the prose measure. Centers in the viewport regardless of the prose column. */
+.breakout {
+  width: min(1240px, calc(100vw - 3rem));
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 2.75rem 0;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.breakout__cap {
+  max-width: var(--measure);
+  margin: 0.65rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.breakout__cap .label {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  margin-right: 0.5rem;
+}
 .prose p { text-wrap: pretty; }
 .prose a { color: var(--ink); text-decoration-color: var(--accent); text-underline-offset: 2px; }
 .prose a:hover { color: var(--accent); }
