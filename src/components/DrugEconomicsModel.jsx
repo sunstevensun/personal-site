@@ -80,14 +80,11 @@ const TAS = {
   },
 };
 
-const YEARS = {
-  2020: { climate: 0.8, tag: "Capital everywhere" },
-  2021: { climate: 0.95, tag: "Peak — roughly $70B into the sector" },
-  2022: { climate: 0.45, tag: "Rates up, window shut" },
-  2023: { climate: 0.3, tag: "Funding winter" },
-  2024: { climate: 0.45, tag: "Selective thaw" },
-  2025: { climate: 0.62, tag: "Recovery, barbell-shaped" },
-  2026: { climate: 0.78, tag: "IPO window open" },
+const START_YEAR = 2026;
+const MARKET = {
+  good: { climate: 0.85, label: "Good", tag: "IPO window open, generalists back, rounds close" },
+  normal: { climate: 0.6, label: "Normal", tag: "Long-run average — specialists, selective" },
+  bad: { climate: 0.3, label: "Bad", tag: "Funding winter, capital scarce, down rounds" },
 };
 
 const FAIL_MODES = {
@@ -209,14 +206,22 @@ function runCohort(params, rep = 0) {
 
       if (["p1", "p2", "p3"].includes(key)) {
         const mult = { p1: 0.95, p2: 1.0, p3: 1.02 }[key];
-        let pr = clamp((0.62 + 0.36 * climate) * mult, 0.05, 0.985);
-        if (t * 12 > benchTotal * 0.55) pr *= 0.85;
-        // A faster, cheaper program needs a smaller round and less runway, so it
-        // closes more readily. `need` is this phase's time-and-cost relative to
-        // benchmark (1.0 = benchmark, lower = compressed), and it scales down the
-        // chance the raise falls through. At benchmark this is exactly neutral.
-        const need = 0.5 * (moRoute[key] / T.mo[key] + costRoute[key] / T.cost[key]);
-        pr = 1 - (1 - pr) * clamp(0.15 + 0.85 * need, 0.35, 1.25);
+        let pr;
+        if (params.finMode === "sourced") {
+          // Data-anchored: a flat per-round raise-success curve calibrated to the
+          // observed biotech follow-on rate (~50% gross) and the 2022–23 SVB
+          // "Series A cliff" (356 Series A -> 102 Series B), stripped of the modelled
+          // drag penalty and round-size sensitivity. ~4% fail in a good market,
+          // ~23% in a bad one.
+          pr = clamp(0.683 + 0.292 * climate, 0.05, 0.99);
+        } else {
+          pr = clamp((0.62 + 0.36 * climate) * mult, 0.05, 0.985);
+          if (t * 12 > benchTotal * 0.55) pr *= 0.85;
+          // A faster, cheaper program needs a smaller round and less runway, so it
+          // closes more readily. `need` is time-and-cost vs benchmark; neutral at 1.0.
+          const need = 0.5 * (moRoute[key] / T.mo[key] + costRoute[key] / T.cost[key]);
+          pr = 1 - (1 - pr) * clamp(0.15 + 0.85 * need, 0.35, 1.25);
+        }
         if (d[b] > pr) {
           alive = false; outcome = "dead"; failStage = key; failMode = "finance";
           legs.push({ stage: key, t0: t, t1: t + 0.35, spend: 0, blocked: true });
@@ -578,20 +583,21 @@ const PRESETS = [
 /* ============================================================ */
 export default function App() {
   const [ta, setTa] = useState("all");
-  const [year, setYear] = useState(2026);
+  const [market, setMarket] = useState("normal");
   const [unit, setUnit] = useState("companies");
   const [A, setA] = useState({ ...BLANK });
   const [B, setB] = useState({ ...BLANK, genetics: true });
   const [seed, setSeed] = useState(20260722);
+  const [finMode, setFinMode] = useState("modelled");
   const [clock, setClock] = useState(0);
   const [hasRun, setHasRun] = useState(false);
   const raf = useRef(null), t0 = useRef(0), restart = useRef(null);
 
-  const climate = YEARS[year].climate;
-  const rA = useMemo(() => simulate({ ta, climate, seed, ...A }),
-    [ta, climate, seed, A.gen, A.sites, A.enrol, A.submit, A.china, A.aiPh1, A.genetics]);
-  const rB = useMemo(() => simulate({ ta, climate, seed, ...B }),
-    [ta, climate, seed, B.gen, B.sites, B.enrol, B.submit, B.china, B.aiPh1, B.genetics]);
+  const climate = MARKET[market].climate;
+  const rA = useMemo(() => simulate({ ta, climate, seed, finMode, ...A }),
+    [ta, climate, seed, finMode, A.gen, A.sites, A.enrol, A.submit, A.china, A.aiPh1, A.genetics]);
+  const rB = useMemo(() => simulate({ ta, climate, seed, finMode, ...B }),
+    [ta, climate, seed, finMode, B.gen, B.sites, B.enrol, B.submit, B.china, B.aiPh1, B.genetics]);
 
   const maxRun = Math.max(rA.maxT, rB.maxT);
   const capScale = Math.max(rA.totalCapital, rB.totalCapital, 1);
@@ -618,7 +624,7 @@ export default function App() {
     restart.current = setTimeout(() => start(), 260);
     return () => clearTimeout(restart.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ta, year, seed, unit, A.gen, A.sites, A.enrol, A.submit, A.china, A.aiPh1, A.genetics,
+  }, [ta, market, seed, unit, finMode, A.gen, A.sites, A.enrol, A.submit, A.china, A.aiPh1, A.genetics,
     B.gen, B.sites, B.enrol, B.submit, B.china, B.aiPh1, B.genetics]);
 
   const cap = unit === "capital";
@@ -642,6 +648,28 @@ export default function App() {
     });
     return out;
   }, [ta, climate]);
+
+  /* Sensitivity: each lever flipped on alone, from an all-off baseline, at the
+     current area / market / gate. Cost per approved drug comes from the cohort
+     simulation; PTS (technical likelihood of approval) is the product of the
+     scientific pass rates, which financing never touches. */
+  const sensitivity = useMemo(() => {
+    const baseSim = simulate({ ta, climate, seed, finMode, ...BLANK });
+    const ptsOf = (extra) => STAGES.reduce((a, s) => a * effective({ ta, climate, ...BLANK, ...extra }).p[s.key], 1);
+    const basePTS = ptsOf({});
+    const rows = SWITCHES.map((sw) => {
+      const sim = simulate({ ta, climate, seed, finMode, ...BLANK, [sw.key]: true });
+      const cost = baseSim.costPerApproval ? (sim.costPerApproval - baseSim.costPerApproval) / baseSim.costPerApproval * 100 : 0;
+      const pts = basePTS ? (ptsOf({ [sw.key]: true }) - basePTS) / basePTS * 100 : 0;
+      return { key: sw.key, label: sw.label, grade: sw.grade, cat: sw.cat, cost, pts };
+    }).sort((a, b) => Math.abs(b.cost) - Math.abs(a.cost));
+    return {
+      rows,
+      maxCost: Math.max(...rows.map((r) => Math.abs(r.cost)), 1),
+      maxPts: Math.max(...rows.map((r) => Math.abs(r.pts)), 1),
+      baseCPA: baseSim.costPerApproval, basePTS,
+    };
+  }, [ta, climate, seed, finMode]);
 
   const makeFlow = (res) => {
     const t = hasRun ? clock : 0;
@@ -854,8 +882,9 @@ export default function App() {
                 <span style={{ color: A_ACC, fontWeight: 700 }}>{(pA * 100).toFixed(0)}%</span> died of financing
                 instead of science in Scenario A{" "}
                 (<span style={{ color: B_ACC, fontWeight: 700 }}>{(pB * 100).toFixed(0)}%</span> in B), at the{" "}
-                {year} climate. That share falls toward 20% in a 2021-style boom and climbs past 60% in the
-                2023 winter — in a bad market, a viable drug's biggest enemy is the market.
+                {MARKET[market].label.toLowerCase()} market. That share falls toward 20% in a good
+                market and climbs past 60% in a bad one — when capital is scarce, a viable drug's
+                biggest enemy is the market, not the biology.
               </div>
             );
           })()}
@@ -943,22 +972,22 @@ export default function App() {
             </span>
             <span className="mono" style={{ fontSize: 12, color: MUTED }}>
               {hasRun && clock >= maxRun
-                ? <span><span style={{ color: ALIVE, fontWeight: 600 }}>COMPLETE</span>{` · ${year}–${year + Math.round(maxRun)}`}</span>
-                : `${year + Math.floor(Math.max(clock, 0))} · YEAR ${hasRun ? Math.max(clock, 0).toFixed(1) : "0.0"} / ${maxRun.toFixed(1)}`}
-              {` · ${TAS[ta].name} · ${year}`}
+                ? <span><span style={{ color: ALIVE, fontWeight: 600 }}>COMPLETE</span>{` · ${maxRun.toFixed(1)} YRS`}</span>
+                : `YEAR ${hasRun ? Math.max(clock, 0).toFixed(1) : "0.0"} / ${maxRun.toFixed(1)}`}
+              {` · ${TAS[ta].name} · ${MARKET[market].label.toLowerCase()} market`}
             </span>
           </div>
 
           <Sankey title="Scenario A" sourceLabel={cap ? "deployed so far" : "entered the pipe"} accent={A_ACC}
             val={fA.val} inS={fA.inS} cash={fA.cash} sci={fA.sci} approved={fA.app}
             end={eA} vs={eB} cashWinners={cap ? 0 : fA.cashWinners} arrivals={aA} pick={cap ? ((p) => p.c) : ((p) => p.n)}
-            moRoute={rA.eff.moRoute} maxT={rA.maxT} clock={hasRun ? clock : 0} startYear={year}
+            moRoute={rA.eff.moRoute} maxT={rA.maxT} clock={hasRun ? clock : 0} startYear={START_YEAR}
             scaleMax={cap ? capScale : N} fmt={fmt} showAxis />
           <div style={{ height: 10, borderTop: `1px dashed ${RULE}`, marginTop: 6 }} />
           <Sankey title="Scenario B" sourceLabel={cap ? "deployed so far" : "entered the pipe"} accent={B_ACC}
             val={fB.val} inS={fB.inS} cash={fB.cash} sci={fB.sci} approved={fB.app}
             end={eB} vs={eA} cashWinners={cap ? 0 : fB.cashWinners} arrivals={aB} pick={cap ? ((p) => p.c) : ((p) => p.n)}
-            moRoute={rB.eff.moRoute} maxT={rB.maxT} clock={hasRun ? clock : 0} startYear={year}
+            moRoute={rB.eff.moRoute} maxT={rB.maxT} clock={hasRun ? clock : 0} startYear={START_YEAR}
             scaleMax={cap ? capScale : N} fmt={fmt} showAxis />
 
           <p style={{ fontSize: 11.5, color: MUTED, margin: "10px 0 0", lineHeight: 1.55, maxWidth: 960 }}>
@@ -987,12 +1016,29 @@ export default function App() {
               ))}
             </div>
 
-            <div className="eyebrow" style={{ marginBottom: 7 }}>Financing climate</div>
-            <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 14 }}>
-              {Object.keys(YEARS).map((y) => (
-                <Btn key={y} active={year === +y} tone={CAPITAL} onClick={() => setYear(+y)}>{y}</Btn>
+            <div className="eyebrow" style={{ marginBottom: 7 }}>Financing market</div>
+            <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 5 }}>
+              {Object.keys(MARKET).map((k) => (
+                <Btn key={k} active={market === k} tone={CAPITAL} onClick={() => setMarket(k)}>
+                  {MARKET[k].label.toUpperCase()}
+                </Btn>
               ))}
             </div>
+            <p style={{ fontSize: 10, color: MUTED, lineHeight: 1.5, margin: "0 0 12px" }}>
+              {MARKET[market].tag}. Sets the odds of closing each round — and so the size of the black
+              lane and how many viable drugs die of money rather than science.
+            </p>
+
+            <div className="eyebrow" style={{ marginBottom: 7 }}>Financing gate</div>
+            <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 5 }}>
+              <Btn active={finMode === "modelled"} tone={CAPITAL} onClick={() => setFinMode("modelled")}>MODELLED</Btn>
+              <Btn active={finMode === "sourced"} tone={CAPITAL} onClick={() => setFinMode("sourced")}>DATA-ANCHORED</Btn>
+            </div>
+            <p style={{ fontSize: 10, color: MUTED, lineHeight: 1.5, margin: "0 0 12px" }}>
+              {finMode === "modelled"
+                ? "The full gate: a market-driven raise curve, a penalty on programmes that drag, and easier raises for programmes that have compressed their time and cost."
+                : "Just the raise curve, anchored to the observed ~50% biotech follow-on rate and the 2022–23 SVB Series-A cliff (356 Series A → 102 Series B). Drops the two modelled add-ons — so faster programmes no longer raise more easily, because the data doesn't show that."}
+            </p>
 
             <div className="eyebrow" style={{ marginBottom: 7 }}>Comparisons worth running</div>
             <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
@@ -1005,6 +1051,73 @@ export default function App() {
 
           {bank(A, setA, A_ACC, "A")}
           {bank(B, setB, B_ACC, "B")}
+        </div>
+
+        <div className="panel" style={{ marginTop: 16 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline",
+            gap: 12, flexWrap: "wrap", marginBottom: 4 }}>
+            <span className="eyebrow">Sensitivity — each lever on its own</span>
+            <span className="mono" style={{ fontSize: 10, color: MUTED }}>
+              {TAS[ta].name} · {MARKET[market].label.toLowerCase()} market · from an all-off baseline
+            </span>
+          </div>
+          <p style={{ fontSize: 11, color: MUTED, margin: "0 0 14px", lineHeight: 1.5, maxWidth: 900 }}>
+            Each switch flipped on by itself, measured two ways: its effect on <strong style={{ color: INK }}>cost
+            per approved drug</strong> and on <strong style={{ color: INK }}>PTS</strong> — the probability of
+            technical success, i.e. the odds a programme clears every scientific gate. The split is the whole
+            point: time-and-money levers move cost and leave PTS untouched, while odds levers move both.
+          </p>
+
+          <div style={{ display: "grid", gridTemplateColumns: "minmax(150px,1.3fr) 1fr 1fr", gap: "2px 16px",
+            alignItems: "center" }}>
+            <div />
+            <div className="mono" style={{ fontSize: 9.5, color: MUTED, letterSpacing: "0.1em", textAlign: "right" }}>
+              COST / APPROVED DRUG
+            </div>
+            <div className="mono" style={{ fontSize: 9.5, color: MUTED, letterSpacing: "0.1em", textAlign: "right" }}>
+              PTS (LIKELIHOOD OF APPROVAL)
+            </div>
+            {sensitivity.rows.map((r) => {
+              const cCol = CAT[r.cat].c;
+              const cw = Math.abs(r.cost) / sensitivity.maxCost * 100;
+              const pw = Math.abs(r.pts) / sensitivity.maxPts * 100;
+              return (
+                <React.Fragment key={r.key}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, paddingRight: 4 }}>
+                    <span style={{ width: 8, height: 8, background: cCol, flexShrink: 0 }} />
+                    <span style={{ fontSize: 11, color: INK, lineHeight: 1.25 }}>{r.label}</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 8 }}>
+                    <span style={{ flex: 1, height: 15, background: "#E4E4DF", display: "flex",
+                      justifyContent: "flex-end", overflow: "hidden" }}>
+                      <span style={{ width: `${cw}%`, background: cCol, display: "block" }} />
+                    </span>
+                    <span className="mono" style={{ fontSize: 11, fontWeight: 600, width: 42,
+                      textAlign: "right", color: r.cost < -0.5 ? cCol : MUTED }}>
+                      {r.cost > 0 ? "+" : ""}{r.cost.toFixed(0)}%
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 8 }}>
+                    <span style={{ flex: 1, height: 15, background: "#E4E4DF", display: "flex",
+                      justifyContent: "flex-end", overflow: "hidden" }}>
+                      <span style={{ width: `${pw}%`, background: r.pts > 0.5 ? CAT.odds.c : "transparent", display: "block" }} />
+                    </span>
+                    <span className="mono" style={{ fontSize: 11, fontWeight: 600, width: 42,
+                      textAlign: "right", color: r.pts > 0.5 ? CAT.odds.c : MUTED }}>
+                      {r.pts > 0.5 ? `+${r.pts.toFixed(0)}%` : "—"}
+                    </span>
+                  </div>
+                </React.Fragment>
+              );
+            })}
+          </div>
+          <p style={{ fontSize: 10.5, color: MUTED, margin: "12px 0 0", lineHeight: 1.5, maxWidth: 900 }}>
+            Baseline at these settings: <span className="mono" style={{ color: INK }}>{money(sensitivity.baseCPA)}</span> per
+            approved drug, <span className="mono" style={{ color: INK }}>{(sensitivity.basePTS * 100).toFixed(1)}%</span> PTS.
+            Bars are scaled within each column. The ordering by cost impact holds across markets, but the
+            magnitudes move — odds levers pull further ahead of time levers as the market worsens, because a
+            higher PTS also rescues more drugs from dying of cash.
+          </p>
         </div>
 
         <div className="two">
@@ -1093,10 +1206,11 @@ export default function App() {
               <p style={{ margin: "0 0 9px" }}>
                 <strong style={{ color: INK }}>The financing gate, with its actual numbers.</strong>{" "}
                 A round is required to begin Phase I, II and III. The chance it closes is{" "}
-                <span className="mono">0.62 + 0.36 × climate</span>, where climate runs from 0.30 in
-                the 2023 winter to 0.95 at the 2021 peak — so a raise succeeds about 73% of the time
-                in a frozen market and about 96% at the top, per attempt, compounded across three
-                gates. Phase III is scaled slightly harder than Phase I (×1.02 vs ×0.95) because a
+                <span className="mono">0.62 + 0.36 × climate</span>, where the market sets climate to
+                0.30 (bad), 0.60 (normal) or 0.85 (good) — so a raise succeeds about 73% of the time
+                in a bad market and about 93% in a good one, per attempt, compounded across three
+                gates. The three settings bracket the observed range, from the 2022–23 winter to a
+                2021-style peak. Phase III is scaled slightly harder than Phase I (×1.02 vs ×0.95) because a
                 pivotal round is the largest. Two adjustments then apply: a program already past 55%
                 of its benchmark clock loses a further 15% (×0.85), reflecting investor fatigue with
                 a program that is dragging; and a program that has compressed its time and cost needs
@@ -1105,8 +1219,20 @@ export default function App() {
                 against benchmark, so exactly neutral at benchmark and easier below it). These
                 coefficients are calibrated to land the pooled likelihood of approval and the share
                 dying of financing in a plausible range — they are not drawn from a specific dataset,
-                and this gate is the weakest structural assumption in the model. Real numbers here
-                would be the single most valuable improvement.
+                and this gate is the weakest structural assumption in the model.
+              </p>
+              <p style={{ margin: "0 0 9px" }}>
+                <strong style={{ color: INK }}>Modelled vs data-anchored.</strong> The financing-gate
+                switch replaces all of that with a curve tied to real numbers. Biotech follow-on runs
+                about 50% per round in normal markets; in the 2022–23 winter SVB counted 356 Series A
+                biotechs producing only 102 Series B (~29%), and EY put 55% of emerging biotechs at
+                under two years of cash. The data-anchored curve is calibrated to that spread (~4%
+                fail-to-raise in a good market, ~23% in a bad one) and drops the drag and round-size
+                add-ons. Honest limits: observed graduation conflates money with science and M&amp;A,
+                so the viable-but-unfunded share can't be isolated cleanly; funding rounds don't map
+                one-to-one onto clinical phases; the winter figure is one lender's book. The two modes
+                land close, which is some reassurance — but data-anchored removes the "faster
+                programmes raise more easily" effect, because that isn't visible in the data.
               </p>
               <p style={{ margin: 0 }}>
                 <strong style={{ color: INK }}>The rest.</strong> Costs are out-of-pocket and include
