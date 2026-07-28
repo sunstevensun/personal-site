@@ -3,6 +3,11 @@
    Palette is cool paper + ink, with one restrained accent drawn
    from the blue of a stamped lab form. No second accent on purpose.
    --------------------------------------------------------------- */
+/* ---------------------------------------------------------------
+   Tokens
+   Palette is cool paper + ink, with one restrained accent drawn
+   from the blue of a stamped lab form. No second accent on purpose.
+   --------------------------------------------------------------- */
 :root {
   --paper: #fbfbf9;
   --ink: #16181c;
@@ -172,11 +177,19 @@ body {
   width: min(1240px, calc(100vw - 3rem));
   position: relative;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%);          /* centers on the text column */
   margin: 2.75rem 0;
   border: 1px solid var(--rule);
   border-radius: 3px;
   overflow: hidden;
+}
+
+/* On wide screens the text column is narrower than the page and left-aligned,
+   so its center sits left of the viewport center. Nudge the wide panel back to
+   true viewport-center. 4.5rem = page/2 (23rem) − page padding (1.5rem) −
+   measure/2 (17rem); it tracks those three tokens if you ever change them. */
+@media (min-width: 46rem) {
+  .breakout { transform: translateX(calc(-50% + 4.5rem)); }
 }
 
 .breakout__cap {
