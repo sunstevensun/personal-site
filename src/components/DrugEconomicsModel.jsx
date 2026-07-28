@@ -185,7 +185,7 @@ function runCohort(params, rep = 0) {
 
   const companies = [];
   const ledger = {};
-  let approvals = 0, totalCapital = 0;
+  let approvals = 0, totalCapital = 0, lostWinners = 0;
   const benchTotal = STAGES.reduce((a, s) => a + T.mo[s.key], 0);
 
   for (let i = 0; i < N; i++) {
@@ -193,6 +193,14 @@ function runCohort(params, rep = 0) {
     let t = 0, spend = 0, alive = true;
     let outcome = null, failStage = null, failMode = null;
     const legs = [];
+
+    // Counterfactual: would this molecule have cleared every scientific gate if
+    // money were never the constraint? Its science is fixed by its own draws, so
+    // a company that dies of financing may still have been holding a real drug.
+    let sciWinner = true;
+    for (let si = 0; si < STAGES.length; si++) {
+      if (d[si * DPS + 3] > p[STAGES[si].key]) { sciWinner = false; break; }
+    }
 
     for (let si = 0; si < STAGES.length; si++) {
       const key = STAGES[si].key;
@@ -203,6 +211,12 @@ function runCohort(params, rep = 0) {
         const mult = { p1: 0.95, p2: 1.0, p3: 1.02 }[key];
         let pr = clamp((0.62 + 0.36 * climate) * mult, 0.05, 0.985);
         if (t * 12 > benchTotal * 0.55) pr *= 0.85;
+        // A faster, cheaper program needs a smaller round and less runway, so it
+        // closes more readily. `need` is this phase's time-and-cost relative to
+        // benchmark (1.0 = benchmark, lower = compressed), and it scales down the
+        // chance the raise falls through. At benchmark this is exactly neutral.
+        const need = 0.5 * (moRoute[key] / T.mo[key] + costRoute[key] / T.cost[key]);
+        pr = 1 - (1 - pr) * clamp(0.15 + 0.85 * need, 0.35, 1.25);
         if (d[b] > pr) {
           alive = false; outcome = "dead"; failStage = key; failMode = "finance";
           legs.push({ stage: key, t0: t, t1: t + 0.35, spend: 0, blocked: true });
@@ -229,29 +243,32 @@ function runCohort(params, rep = 0) {
     if (alive) { outcome = "approved"; approvals += 1; }
     else { const k = `${failStage}|${failMode}`; ledger[k] = (ledger[k] || 0) + 1; }
 
+    const lost = outcome === "dead" && failMode === "finance" && sciWinner;
+    if (lost) lostWinners += 1;
+
     totalCapital += spend;
     let acc = 0;
     const cum = legs.map((l) => { acc += l.spend; return acc; });
-    companies.push({ i, outcome, failStage, failMode, endT: t, spend, legs, cum });
+    companies.push({ i, outcome, failStage, failMode, endT: t, spend, legs, cum, lost });
   }
 
-  return { companies, ledger, approvals, totalCapital,
+  return { companies, ledger, approvals, totalCapital, lostWinners,
     maxT: Math.max(...companies.map((c) => c.endT)), eff: { p, moRoute, costRoute } };
 }
 
 const REPS = 60;
 function simulate(params) {
   const first = runCohort(params, 0);
-  let cap = first.totalCapital, ap = first.approvals;
+  let cap = first.totalCapital, ap = first.approvals, lw = first.lostWinners;
   const per = [first.approvals ? first.totalCapital / first.approvals : null];
   for (let r = 1; r < REPS; r++) {
     const c = runCohort(params, r);
-    cap += c.totalCapital; ap += c.approvals;
+    cap += c.totalCapital; ap += c.approvals; lw += c.lostWinners;
     per.push(c.approvals ? c.totalCapital / c.approvals : null);
   }
   const valid = per.filter((v) => v != null).sort((a, b) => a - b);
   const q = (f) => valid.length ? valid[Math.min(valid.length - 1, Math.floor(valid.length * f))] : null;
-  return { ...first, poolApprovals: ap / REPS, poolCapital: cap / REPS,
+  return { ...first, poolApprovals: ap / REPS, poolCapital: cap / REPS, poolLostWinners: lw / REPS,
     costPerApproval: ap ? cap / ap : null, p10: q(0.1), p90: q(0.9) };
 }
 
@@ -264,7 +281,7 @@ function simulate(params) {
    ============================================================ */
 const SW = 1260, FX0 = 128, HEAD = 88, HF = 196, GAPTOL = 46, LABW = 226, LGAP = 6;
 
-function Sankey({ title, sourceLabel, val, inS, cash, sci, approved, end, vs,
+function Sankey({ title, sourceLabel, val, inS, cash, sci, approved, end, vs, cashWinners,
   arrivals, pick, moRoute, maxT, clock, scaleMax, fmt, showAxis, accent, startYear }) {
   const sc = (v) => (scaleMax > 0 ? (v / scaleMax) * HF : 0);
 
@@ -413,7 +430,11 @@ function Sankey({ title, sourceLabel, val, inS, cash, sci, approved, end, vs,
             )}
             <rect x={LABX - 12} y={L.labelY - 9} width="6" height="12" fill={L.c} />
             <text x={LABX} y={L.labelY} fontSize="11.5" fill={INK}
-              fontFamily="var(--sans)" fontWeight="600">{L.label}</text>
+              fontFamily="var(--sans)" fontWeight="600">{L.label}
+              {k === "cash" && cashWinners > 0.5 && (
+                <tspan fill={ALIVE} fontFamily="var(--mono)" fontSize="9.5" fontWeight="600">
+                  {"  "}{Math.round(cashWinners)} would've made it</tspan>
+              )}</text>
             <text x={LABX} y={L.labelY + 14} fontSize="11" fill={MUTED}
               fontFamily="var(--mono)">{fmt(now)}<tspan fill={RULE}> / {fmt(L.v)}</tspan>
               {vs && (() => {
@@ -555,7 +576,7 @@ const PRESETS = [
 ];
 
 /* ============================================================ */
-export default function DrugEconomicsModel() {
+export default function App() {
   const [ta, setTa] = useState("all");
   const [year, setYear] = useState(2026);
   const [unit, setUnit] = useState("companies");
@@ -626,7 +647,7 @@ export default function DrugEconomicsModel() {
     const t = hasRun ? clock : 0;
     const val = {}, inS = {}, cash = {}, sci = {};
     STAGES.forEach((s) => { val[s.key] = 0; inS[s.key] = 0; cash[s.key] = 0; sci[s.key] = 0; });
-    let app = 0, totC = 0;
+    let app = 0, totC = 0, cashWinners = 0;
     res.companies.forEach((c) => {
       let sp = 0;
       for (const l of c.legs) {
@@ -640,11 +661,11 @@ export default function DrugEconomicsModel() {
       if (here) inS[here.stage] += w;
       if (t >= c.endT) {
         if (c.outcome === "approved") app += w;
-        else if (c.failMode === "finance") cash[c.failStage] += w;
+        else if (c.failMode === "finance") { cash[c.failStage] += w; if (c.lost) cashWinners += 1; }
         else sci[c.failStage] += w;
       }
     });
-    return { val, inS, cash, sci, app, totC };
+    return { val, inS, cash, sci, app, totC, cashWinners };
   };
 
   const makeEnd = (res) => {
@@ -719,6 +740,9 @@ export default function DrugEconomicsModel() {
     { k: "Cost per approved drug", a: rA.costPerApproval, b: rB.costPerApproval, f: money, better: "low" },
     { k: "Approvals per cohort", a: rA.poolApprovals, b: rB.poolApprovals, f: (v) => v.toFixed(1), better: "high" },
     { k: "Capital consumed", a: rA.poolCapital, b: rB.poolCapital, f: money, better: "low" },
+    { k: "Viable drugs lost to cash", a: rA.poolLostWinners, b: rB.poolLostWinners,
+      f: (v) => v.toFixed(1), better: "low",
+      hint: "would have been approved with money" },
     { k: "Pipeline length", a: yrsOf(rA), b: yrsOf(rB), f: (v) => `${v.toFixed(1)} yrs`, better: "low" },
   ];
 
@@ -751,7 +775,7 @@ export default function DrugEconomicsModel() {
   );
 
   return (
-    <div style={{ background: GROUND, color: INK, padding: "20px 16px 32px", fontFamily: "var(--sans)" }}>
+    <div style={{ background: GROUND, color: INK, minHeight: "100vh", padding: "26px 20px 60px", fontFamily: "var(--sans)" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
         :root{--sans:'Space Grotesk',ui-sans-serif,'Helvetica Neue',Arial,sans-serif;
@@ -808,7 +832,8 @@ export default function DrugEconomicsModel() {
                 const pct = r.a ? (d / r.a) * 100 : 0;
                 return (
                   <tr key={r.k}>
-                    <td style={{ fontWeight: 600 }}>{r.k}</td>
+                    <td style={{ fontWeight: 600 }}>{r.k}
+                      {r.hint && <div style={{ fontSize: 9.5, fontWeight: 400, color: MUTED }}>{r.hint}</div>}</td>
                     <td className="num">{r.a == null ? "—" : r.f(r.a)}</td>
                     <td className="num">{r.b == null ? "—" : r.f(r.b)}</td>
                     <td className="num" style={{ color: Math.abs(pct) < 1 ? MUTED : good ? ALIVE : LOST, fontWeight: 600 }}>
@@ -819,6 +844,21 @@ export default function DrugEconomicsModel() {
               })}
             </tbody>
           </table>
+          {(() => {
+            const vA = rA.poolApprovals + rA.poolLostWinners, vB = rB.poolApprovals + rB.poolLostWinners;
+            const pA = vA ? rA.poolLostWinners / vA : 0, pB = vB ? rB.poolLostWinners / vB : 0;
+            return (
+              <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${RULE}`,
+                fontSize: 12, lineHeight: 1.55, color: "#2A2F30" }}>
+                Put another way: of every drug that <em>would</em> have been approved with money behind it,{" "}
+                <span style={{ color: A_ACC, fontWeight: 700 }}>{(pA * 100).toFixed(0)}%</span> died of financing
+                instead of science in Scenario A{" "}
+                (<span style={{ color: B_ACC, fontWeight: 700 }}>{(pB * 100).toFixed(0)}%</span> in B), at the{" "}
+                {year} climate. That share falls toward 20% in a 2021-style boom and climbs past 60% in the
+                2023 winter — in a bad market, a viable drug's biggest enemy is the market.
+              </div>
+            );
+          })()}
         </div>
 
         <div className="panel" style={{ marginBottom: 16 }}>
@@ -911,13 +951,13 @@ export default function DrugEconomicsModel() {
 
           <Sankey title="Scenario A" sourceLabel={cap ? "deployed so far" : "entered the pipe"} accent={A_ACC}
             val={fA.val} inS={fA.inS} cash={fA.cash} sci={fA.sci} approved={fA.app}
-            end={eA} vs={eB} arrivals={aA} pick={cap ? ((p) => p.c) : ((p) => p.n)}
+            end={eA} vs={eB} cashWinners={cap ? 0 : fA.cashWinners} arrivals={aA} pick={cap ? ((p) => p.c) : ((p) => p.n)}
             moRoute={rA.eff.moRoute} maxT={rA.maxT} clock={hasRun ? clock : 0} startYear={year}
             scaleMax={cap ? capScale : N} fmt={fmt} showAxis />
           <div style={{ height: 10, borderTop: `1px dashed ${RULE}`, marginTop: 6 }} />
           <Sankey title="Scenario B" sourceLabel={cap ? "deployed so far" : "entered the pipe"} accent={B_ACC}
             val={fB.val} inS={fB.inS} cash={fB.cash} sci={fB.sci} approved={fB.app}
-            end={eB} vs={eA} arrivals={aB} pick={cap ? ((p) => p.c) : ((p) => p.n)}
+            end={eB} vs={eA} cashWinners={cap ? 0 : fB.cashWinners} arrivals={aB} pick={cap ? ((p) => p.c) : ((p) => p.n)}
             moRoute={rB.eff.moRoute} maxT={rB.maxT} clock={hasRun ? clock : 0} startYear={year}
             scaleMax={cap ? capScale : N} fmt={fmt} showAxis />
 
@@ -1038,18 +1078,47 @@ export default function DrugEconomicsModel() {
             </div>
             <div className="eyebrow" style={{ margin: "16px 0 8px" }}>Stated assumptions</div>
             <div style={{ fontSize: 11, lineHeight: 1.55, color: "#2A2F30" }}>
-              One asset per company. A financing round is required to start Phase I, II and III, and
-              programmes running well over the benchmark clock take a penalty on the raise — that gate
-              is modelled, not measured, and it is the weakest structural assumption here. Costs are
-              out-of-pocket and include company overhead and the capital burned by companies that died
-              of financing rather than science. The China route charges no extra time or money for a
-              bridging trial, only the reduced odds at review, so it reads more favourably here than
-              the sintilimab precedent suggests. The four time switches use vendor-reported reductions
-              and stack multiplicatively; nothing audits them. Failure-mode splits come from older,
-              coarse literature. The calendar years on the axes start from the financing climate you
-              selected, but that climate is then held fixed for the whole run — a cohort starting in
-              2021 does not actually live through 2022's crash here. Modelling that properly means
-              treating the start year as a vintage rather than a setting.
+              <p style={{ margin: "0 0 9px" }}>
+                <strong style={{ color: INK }}>One asset per company.</strong> The unit here is a
+                company whose fate is one molecule's fate — it lives or dies with its lead program.
+                That is deliberately not the whole industry: in the US, platform companies outnumber
+                single-asset ones by roughly three to one among venture-backed biotechs, because
+                larger funds prefer bets where one failure doesn't end the company. But single-asset
+                and single-lead-asset companies remain common, especially at the clinical-stage IPOs
+                that dominate the funnel — and even nominal platforms are often, in practice, valued
+                and funded on one lead program. The single-asset frame is chosen because a molecule's
+                journey maps cleanly onto a company's; it overstates binary company death relative to
+                a diversified platform, which reallocates rather than dies when a program fails.
+              </p>
+              <p style={{ margin: "0 0 9px" }}>
+                <strong style={{ color: INK }}>The financing gate, with its actual numbers.</strong>{" "}
+                A round is required to begin Phase I, II and III. The chance it closes is{" "}
+                <span className="mono">0.62 + 0.36 × climate</span>, where climate runs from 0.30 in
+                the 2023 winter to 0.95 at the 2021 peak — so a raise succeeds about 73% of the time
+                in a frozen market and about 96% at the top, per attempt, compounded across three
+                gates. Phase III is scaled slightly harder than Phase I (×1.02 vs ×0.95) because a
+                pivotal round is the largest. Two adjustments then apply: a program already past 55%
+                of its benchmark clock loses a further 15% (×0.85), reflecting investor fatigue with
+                a program that is dragging; and a program that has compressed its time and cost needs
+                a smaller, shorter round, which scales its chance of <em>failing</em> to raise by{" "}
+                <span className="mono">0.15 + 0.85 × need</span> (need = this round's time-and-cost
+                against benchmark, so exactly neutral at benchmark and easier below it). These
+                coefficients are calibrated to land the pooled likelihood of approval and the share
+                dying of financing in a plausible range — they are not drawn from a specific dataset,
+                and this gate is the weakest structural assumption in the model. Real numbers here
+                would be the single most valuable improvement.
+              </p>
+              <p style={{ margin: 0 }}>
+                <strong style={{ color: INK }}>The rest.</strong> Costs are out-of-pocket and include
+                company overhead and the capital burned by companies that died of financing rather
+                than science. The China route charges no extra time or money for a US bridging study,
+                only the Phase I speed and cost gains, so it reads a little favourably. The time
+                switches use vendor-reported reductions and stack multiplicatively; nothing audits
+                them. Failure-mode splits come from older, coarse literature. The calendar years start
+                from the financing climate you pick, but that climate is then held fixed for the whole
+                run — a 2021 cohort does not live through 2022's crash here, which would mean treating
+                the start year as a vintage rather than a setting.
+              </p>
             </div>
           </div>
         </div>

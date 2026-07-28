@@ -2,52 +2,35 @@
 layout: ../../layouts/Essay.astro
 title: Where the money actually goes in a clinical trial
 date: 2026-07-15
-gloss: A new drug is said to cost about two billion dollars. Follow a hundred companies through the pipeline and you can see why — and it isn't the science that's expensive, it's the failure.
+gloss: Phase III is not expensive because the science is hard. It is expensive because enrolling patients is slow.
 figure: true
 ---
 
-import clinical-pipeline-compare from '../../components/clinical-pipeline-compare.jsx';
+import Figure from '../../components/Figure.astro';
 
-The number everyone quotes is around two billion dollars per approved drug, and
-the usual gloss is that discovery is hard. Discovery is hard, but that isn't
-where the two billion comes from. It comes from everything that fails on the way
-to the one thing that doesn't.
+The standard number for developing a drug is somewhere north of a billion
+dollars, and the standard explanation is that discovery is hard. That
+explanation survives mostly because the people repeating it have never sat in
+a site activation meeting.
 
-The model below makes that concrete. It follows a cohort of 100 single-asset
-biotech companies from pre-clinical work through FDA review, drawn as two Sankey
-diagrams on a calendar timeline. Most of them fail, and it tracks exactly where
-and when: some run out of money, most fail the science, and only a handful reach
-approval. Press **Run both** and watch the cohort resolve.
+<Figure
+  label="FIG 1"
+  caption="Cost and duration by phase. Bar width is time, height is spend, so area approximates total cost. Hover or tap a phase."
+  fallback="/figures/phase-economics.png"
+>
+  <PhaseEconomics client:visible />
+</Figure>
 
-<div class="breakout">
-  <DrugEconomicsModel client:visible />
-</div>
+Look at where the area sits. Phase III dominates, and almost none of that
+money is scientific. It goes to sites, monitors, coordinators, and the long
+tail of finding people who meet the inclusion criteria and are willing to be
+randomized.
 
-## Failures are cheap early and ruinous late
+## The enrollment constraint
 
-The reason a surviving drug costs what it does is visible the moment you switch
-the model from measuring **companies** to measuring **capital**. Killing a
-program in pre-clinical costs almost nothing. Killing one in Phase III, after
-years of trials and hundreds of patients, is where the money actually goes — and
-that cost of failure, spread across the whole cohort, is what the survivor has to
-carry. The written-off bar reddens toward the right precisely because the losses
-that land late are the expensive ones.
+A trial that needs eight hundred patients across ninety sites is not gated by
+biology. It is gated by how many of those sites can activate, and how quickly
+each one can find eligible patients in its own catchment.
 
-## Testing what actually changes the math
-
-The model is also a tool for asking how AI and other changes might move those
-numbers. You can run two scenarios side by side against the identical cohort —
-same companies, same luck — and toggle interventions grouped into two kinds:
-those that **save time and money** (generative chemistry, AI-run trial
-operations, running Phase I in China) and those that **improve the actual odds
-of success** (in-silico toxicity prediction, genetically supported target
-selection). Because both scenarios share their random draws, any difference
-between them is caused by the switches rather than by chance.
-
-The recurring lesson is that levers which merely go faster help far less than
-levers that change whether a drug works, because cost-per-approval is driven by
-the probability of success. The single best-evidenced intervention in the model
-— choosing targets with human genetic support — outperforms every speed-and-cost
-improvement combined. Every number is sourced from published benchmarks
-(Citeline/BIO, Tufts CSDD, DiMasi, Nelson/Minikel), with the assumptions and
-their weaknesses stated openly at the bottom of the model.
+This is the part of the argument where China becomes unavoidable — but that is
+the next essay.
