@@ -100,16 +100,18 @@ h3{font-family:var(--disp);font-weight:400;font-size:25px;margin:9px 0 6px;
 .stack{position:absolute;left:0;right:0;top:0;
   transition:transform .34s cubic-bezier(.22,.9,.28,1),opacity .3s}
 .stack.behind{pointer-events:none}
-.stack.behind .face{background:var(--s1)}
+.stack.behind .face{background:#0E0F12;border-color:rgba(255,255,255,.10);
+  box-shadow:0 -8px 20px rgba(0,0,0,.8)}
 .swipe{position:relative;background:none;border:0;padding:0;border-radius:14px;
   touch-action:pan-y;will-change:transform;cursor:pointer}
 .flipper{position:relative;width:100%;transform-style:preserve-3d;
   transition:transform .5s cubic-bezier(.22,.9,.28,1)}
 .flipper.flip{transform:rotateY(180deg)}
 .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  border-radius:14px;border:1px solid var(--line);padding:18px;
-  background:linear-gradient(168deg,var(--s2),var(--s1) 62%);
-  display:flex;flex-direction:column;overflow:hidden}
+  border-radius:16px;border:1px solid rgba(255,255,255,.16);padding:18px;
+  background:linear-gradient(168deg,#1E2129,#141619 62%);
+  display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:0 -12px 30px rgba(0,0,0,.85), 0 2px 0 rgba(255,255,255,.04) inset}
 .face.front{position:relative}
 .face.back{transform:rotateY(180deg);padding:15px 15px 11px}
 .face.back .scrollr{flex:1;overflow-y:auto;overscroll-behavior:contain;margin:0 -4px;padding:0 4px}
@@ -119,8 +121,9 @@ h3{font-family:var(--disp);font-weight:400;font-size:25px;margin:9px 0 6px;
   text-transform:uppercase;color:var(--steel)}
 .who{font-size:12px;color:var(--ash)}
 .spacer{flex:1}
-.hintrow{display:flex;justify-content:space-between;align-items:center;
+.hintrow{display:flex;justify-content:space-between;align-items:center;gap:8px;
   font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;color:var(--ash)}
+.hintrow .flipcue{opacity:.65}
 .flipcue{font-family:var(--mono);font-size:7.5px;letter-spacing:.15em;text-transform:uppercase;
   color:var(--ash)}
 
@@ -622,8 +625,9 @@ textarea.deets-in{min-height:88px}
 .rtline .k4{flex:1;font-size:11px;color:var(--ash);line-height:1.5}
 
 /* ── answer cards ── */
-.face.ask{background:linear-gradient(168deg,#2A1512,#160C0A 62%);border-color:var(--rust-lo)}
-.stack.behind .face.ask{background:#1A0E0C}
+.face.ask{background:linear-gradient(168deg,#2E1714,#170D0B 62%);
+  border-color:rgba(240,97,79,.34)}
+.stack.behind .face.ask{background:#170D0B;border-color:rgba(240,97,79,.22)}
 .duepill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:8px;
   letter-spacing:.14em;text-transform:uppercase;color:var(--rust);
   border:1px solid var(--rust-lo);background:var(--rust-dim);border-radius:20px;padding:4px 9px}
@@ -648,6 +652,42 @@ textarea.deets-in{min-height:88px}
   padding:8px 11px;border-radius:7px;border:1px solid var(--line);color:var(--silver);flex:none}
 .lapse .wl2.on{background:var(--silver);border-color:var(--silver);color:#0A0B0D;font-weight:700}
 .lapse .wl2.full{opacity:.4}
+
+/* ── gate + orientation ── */
+.gate2{position:fixed;inset:0;z-index:200;background:#000;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:32px 24px calc(32px + var(--safe));text-align:center}
+.gate2 .mk{font-family:var(--disp);font-size:34px;color:var(--silver);letter-spacing:-.01em}
+.gate2 .mk span{color:var(--jade)}
+.gate2 .sub3{font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--ash);margin-top:12px}
+.gate2 input{width:100%;max-width:290px;margin-top:34px;background:var(--s1);
+  border:1px solid var(--line);border-radius:10px;padding:15px;color:var(--silver);
+  font-family:var(--mono);font-size:16px;text-align:center;letter-spacing:.08em;
+  text-transform:lowercase;-webkit-appearance:none}
+.gate2 input::placeholder{color:var(--ash);letter-spacing:.16em;font-size:11px;text-transform:uppercase}
+.gate2 input.wrong{border-color:var(--rust);animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.gate2 button{width:100%;max-width:290px;margin-top:10px;padding:14px;border-radius:10px;
+  background:var(--silver);color:#0A0B0D;font-family:var(--body);font-weight:500;font-size:14px}
+.gate2 .hint2{font-family:var(--mono);font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ash);margin-top:24px;line-height:1.9}
+
+.orient{padding:34px 22px calc(30px + var(--safe));min-height:100%;display:flex;flex-direction:column}
+.orient h1{font-size:29px;margin-bottom:6px}
+.ostep{display:flex;gap:13px;padding:13px 0;border-bottom:1px solid var(--line2)}
+.ostep .no2{font-family:var(--mono);font-size:9px;color:var(--ash);width:15px;flex:none;padding-top:2px}
+.ostep .bd2{flex:1}
+.ostep .bd2 b{display:block;font-weight:500;font-size:13px}
+.ostep .bd2 small{display:block;font-size:11px;color:var(--ash);line-height:1.55;margin-top:4px}
+.otip{border:1px solid var(--line);border-radius:10px;padding:13px;margin-top:18px;
+  font-size:11.5px;line-height:1.6;color:var(--steel)}
+.otip b{color:var(--silver);font-weight:500}
+
+.peek{padding:15px 18px 0}
+.peek .pw2{font-family:var(--mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--ash)}
+.peek .pt{font-family:var(--disp);font-size:19px;color:var(--steel);letter-spacing:-.012em;
+  margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -957,7 +997,7 @@ function disclosure(){return `<div class="disc">
 </div>`}
 
 /* ═══════════ GUEST ═══════════ */
-const CARD_H=488, PEEK=54;
+const CARD_H=488, PEEK=62;
 
 function p1Control(o, fn, policy, full){
   if(!policy || policy==='none') return '';
@@ -986,27 +1026,34 @@ function vToday(){
   const cards=buildDeck();
   const lapsed=INV.filter(i=>i.lapsed);
 
+  /* the deadline list only appears once there's nothing left to answer */
   if(!cards.length) return `
-    <div class="eyebrow">Thursday 31 July</div>
-    <h1>Nothing left to settle.</h1>
-    <div class="card" style="margin-top:16px"><div class="note" style="margin:0">
-      You answered ${deckDone.length} today.</div></div>
+    <div class="eyebrow">Nothing left today</div>
+    <h1 style="margin-bottom:14px">${deckDone.length?`You answered ${deckDone.length}.`:'All clear.'}</h1>
+    ${deckDone.map(d=>`<div class="lapse">
+      <div class="bd"><div class="t" style="color:var(--silver)">${d.t}</div>
+        <div class="m">${d.a==='go'?'CONFIRMED':'CANCELLED · HOST NOTIFIED'}</div></div>
+      <span class="pill ${d.a==='go'?'go':'no'}">${d.a==='go'?'Going':'Out'}</span></div>`).join('')}
     ${lapsedList(lapsed)}
-    <button class="btn g sm" style="margin-top:14px" onclick="resetDeck();render()">Reset demo deck</button>`;
+    <button class="btn g sm" style="margin-top:16px" onclick="resetDeck();INV.forEach(i=>{if(i.due)i.st=null});render()">Reset demo</button>`;
 
   const n=Math.min(cards.length,3);
-  const owedCount=cards.filter(c=>c.kind==='ask').length;
+  const owed=cards.filter(c=>c.kind==='ask').length;
 
   const stack=cards.slice(0,n).map((c,d)=>{
-    const y=(n-1-d)*PEEK, sc=1-d*.035, top=d===0, ask=c.kind==='ask';
+    const y=(n-1-d)*PEEK, sc=1-d*.03, top=d===0, ask=c.kind==='ask';
     const full=(c.going.length + Object.values(c.p1||{}).reduce((a,b)=>a+b,0)) >= (c.cap||99);
     return `<div class="stack ${top?'':'behind'}" style="
-        transform:translateY(${y}px) scale(${sc}); opacity:${top?1:.62}; z-index:${10-d}">
+        transform:translateY(${y}px) scale(${sc}); opacity:${top?1:.9}; z-index:${10-d}">
       <div class="swipe" ${top?'id="card"':''} style="height:${CARD_H}px">
         ${top?`<div class="stamp ${ask?'yes2':'go'}" id="sgo">${ask?'YES':'GOING'}</div>
                <div class="stamp ${ask?'no2':'no'}" id="sno">${ask?'NO':'OUT'}</div>`:''}
         <div class="flipper" ${top?'id="flip"':''} style="height:${CARD_H}px">
-          <div class="face front ${ask?'ask':''}">
+          <div class="face front ${ask?'ask':''}" ${top?'':'style="padding:0"'}>
+            ${!top?`<div class="peek">
+              <div class="pw2">${c.when}</div>
+              <div class="pt">${c.t}</div>
+            </div>`:`
             <div class="whenrow">
               <span class="when">${c.when}</span>
               ${ask?`<span class="duepill"><i></i>Answer due</span>`
@@ -1014,23 +1061,23 @@ function vToday(){
             </div>
             <h3>${c.t}</h3>
             <div class="who">${c.who}${c.where?' · '+c.where:''}</div>
-            ${top&&c.details?`<div class="deets">${c.details}</div>`:''}
+            ${c.details?`<div class="deets">${c.details}</div>`:''}`}
             ${top?`
               <div class="spacer"></div>
               ${miniList(c.going,c.p1,c.live?c.t:null,c.dropped)}
               ${ask?waitedLine(c):p1Control(c,'bumpDeck',c.plus,full)}
               ${!ask&&c.live?liveBar(c):''}
-              <div class="hintrow" style="margin-top:11px">
+              <div class="hintrow" style="margin-top:12px">
                 <span style="color:var(--rust)">← ${ask?"Can't come":"Can't make it"}</span>
-                <span style="color:var(--jade)">${ask?"I'll be there":"Still going"} →</span></div>
-              <div class="flipcue" style="margin-top:9px">Tap for everyone</div>`:''}
+                <span class="flipcue">Tap</span>
+                <span style="color:var(--jade)">${ask?"I'll be there":"Still going"} →</span></div>`:''}
           </div>
           ${top?`<div class="face back ${ask?'ask':''}">
             <div class="eyebrow" style="margin-bottom:2px">${c.t}</div>
             <div class="scrollr">
               ${c.details?`<div class="deets full" style="margin:8px 0 4px">${c.details}</div>`:''}
               ${attendeeList(c.going,c.p1,c.live?c.t:null,c.dropped)}</div>
-            <div class="flipcue" style="margin-top:9px">Tap to flip back</div>
+            <div class="flipcue" style="margin-top:9px;text-align:center">Tap to flip back</div>
           </div>`:''}
         </div>
       </div>
@@ -1038,16 +1085,8 @@ function vToday(){
   }).join('');
 
   return `
-  <div class="eyebrow">Thursday 31 July</div>
-  <h1>${owedCount?`${owedCount} to answer first.`:'Still on for these?'}</h1>
-  <div class="note" style="margin:6px 0 0">${owedCount
-    ? `Deadlines tonight and tomorrow. Tonight's events are behind these.`
-    : `Right if you're going, left if you can't. Tap the card to see who else is.`}</div>
-  <div class="deck" style="height:${CARD_H+(n-1)*PEEK}px">${stack}</div>
-  <div style="display:flex;gap:8px;margin-top:14px">
-    <button class="btn g sm" onclick="answer('no')">${cards[0].kind==='ask'?"Can't come":"Can't make it"}</button>
-    <button class="btn sm" onclick="answer('go')">${cards[0].kind==='ask'?"I'll be there":"Still going"}</button></div>
-  ${lapsedList(lapsed)}`;
+  ${owed?`<div class="eyebrow" style="margin-bottom:10px">${owed} to answer first</div>`:''}
+  <div class="deck" style="height:${CARD_H+(n-1)*PEEK}px;margin-top:${owed?0:4}px">${stack}</div>`;
 }
 
 /* how long they've been sitting on it — the point is that delay is visible */
@@ -1301,7 +1340,7 @@ function vCheckin(){
   <div class="note" style="margin:6px 0 0">Ask ${
     (deck.find(d=>d.t===ciEvent)||{who:'the host'}).who.split(' ')[0]} for the words on their screen.</div>
   <div class="cirow">
-    <input class="entry" placeholder="two words" value="${ciVal}"
+    <input class="entry" placeholder="passphrase" value="${ciVal}"
       oninput="ciVal=this.value" onkeydown="if(event.key==='Enter')tryCi()">
     <button class="go2" onclick="tryCi()">Enter</button>
   </div>
@@ -2015,6 +2054,67 @@ function vClaim(){
   </div>`;
 }
 
+/* ═══════════ GATE ═══════════
+   Not security — anyone can read the source. It stops the casual forward,
+   which is the actual risk with a link about scoring people by name. */
+const PASSPHRASE='welcome homie';
+const norm=x=>(x||'').toLowerCase().replace(/[^a-z]/g,'');
+
+/* key is derived from the phrase, so changing it invalidates every old unlock */
+const GATE_KEY='rstr:'+norm(PASSPHRASE).length+':'+
+  norm(PASSPHRASE).split('').reduce((a,c)=>((a*31+c.charCodeAt(0))>>>0),7).toString(36);
+let unlocked=false, oriented=false, gateWrong=false;
+try{ unlocked = sessionStorage.getItem(GATE_KEY)==='1' }catch(e){}
+
+function tryGate(){
+  const el2=document.getElementById('pw');
+  if(norm(el2&&el2.value)===norm(PASSPHRASE)){
+    unlocked=true; gateWrong=false;
+    try{ sessionStorage.setItem(GATE_KEY,'1') }catch(e){}
+  } else { gateWrong=true }
+  render();
+}
+
+function vGate(){
+  return `<div class="gate2">
+    <div class="mk">Roster<span>.</span></div>
+    <div class="sub3">Private demo</div>
+    <input id="pw" class="${gateWrong?'wrong':''}" placeholder="passphrase"
+      autocapitalize="off" autocorrect="off" spellcheck="false"
+      onkeydown="if(event.key==='Enter')tryGate()">
+    <button onclick="tryGate()">Enter</button>
+    <div class="hint2">${gateWrong?'Not it. Try again.':'Ask whoever sent you this.'}</div>
+  </div>`;
+}
+
+function vOrient(){
+  return `<div class="orient">
+    <div class="eyebrow">A demo, not the real thing</div>
+    <h1>Have a look around.</h1>
+    <div class="note" style="margin:8px 0 18px;font-size:12.5px">Nothing here saves, nothing is
+      shared between phones, and everyone in it is invented. The numbers are real arithmetic on
+      made-up people.</div>
+
+    <div class="ostep"><div class="no2">1</div><div class="bd2"><b>Start as a host</b>
+      <small>Top bar, tap Host. Open Supper Club and look at the projected turnout — that's the
+      number the whole thing exists to produce.</small></div></div>
+    <div class="ostep"><div class="no2">2</div><div class="bd2"><b>Make an event</b>
+      <small>The + button. Watch the projection move as you add people.</small></div></div>
+    <div class="ostep"><div class="no2">3</div><div class="bd2"><b>Run the door</b>
+      <small>Settle the last party first, then Door appears. Two words, changes every few
+      seconds.</small></div></div>
+    <div class="ostep"><div class="no2">4</div><div class="bd2"><b>Then be a guest</b>
+      <small>Tap Guest. Swipe the cards. Tap one to see who else is going.</small></div></div>
+
+    <div class="otip"><b>The Week 1 / 5 / 9 buttons</b> move you through the rollout. In week one
+      nobody sees any scores at all, including themselves. They appear in week five, and become
+      visible to everyone in week nine.</div>
+
+    <div style="flex:1;min-height:20px"></div>
+    <button class="btn" onclick="oriented=true;render()">Start</button>
+  </div>`;
+}
+
 /* ═══════════ SHELL ═══════════ */
 const GUEST_TABS=[['today','Today'],['fortnight','Fortnight'],['checkin','Check in'],['me','You']];
 let meTab='record';
@@ -2028,6 +2128,17 @@ const CTX={today:'Thu 31 July',fortnight:'Your calendar',checkin:'At the door',m
 
 function render(){
   const scr=document.getElementById('screen'), nav=document.getElementById('nav');
+  const mnt=document.getElementById('mount');
+
+  if(!unlocked){ mnt.innerHTML=vGate(); return }
+  if(mnt.innerHTML.indexOf('gate2')>=0) mnt.innerHTML='';
+
+  if(!oriented){
+    scr.innerHTML=vOrient(); scr.style.padding='0'; nav.innerHTML='';
+    document.getElementById('ctx').textContent='Welcome';
+    document.getElementById('demo').innerHTML='';
+    return;
+  }
   if(!seen){
     scr.innerHTML=disclosure(); nav.innerHTML=''; scr.style.padding='0';
     document.getElementById('ctx').textContent='Signup'; demoBar(); return;
@@ -2039,7 +2150,7 @@ function render(){
     document.getElementById('ctx').textContent=CTX[tab];
     demoBar(); return;
   }
-  scr.style.padding='';
+  scr.style.padding = tab==='today' ? '10px 16px calc(22px + var(--safe))' : '';
   const host = actor==='host';
   const tabs = host?hostTabs():GUEST_TABS;
 
