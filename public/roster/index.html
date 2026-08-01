@@ -1,0 +1,2118 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Roster</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=Azeret+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#08090B;
+  --s1:#121317; --s2:#1A1C21; --s3:#23262C; --s4:#2E323A;
+  --line:rgba(255,255,255,.085); --line2:rgba(255,255,255,.045);
+  --silver:#DFE2E8; --steel:#949AA5; --ash:#5C626D;
+  --jade:#5CD49B; --jade-lo:#12301F; --jade-dim:rgba(92,212,155,.10);
+  --rust:#F0614F; --rust-lo:#3A1611; --rust-dim:rgba(240,97,79,.10);
+  --disp:'DM Serif Display',Georgia,serif;
+  --body:'DM Sans',system-ui,sans-serif;
+  --mono:'Azeret Mono',ui-monospace,monospace;
+  --safe: env(safe-area-inset-bottom, 0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{background:#000;color:var(--silver);font-family:var(--body);
+  display:flex;justify-content:center;overscroll-behavior:none}
+button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer;padding:0}
+:focus-visible{outline:1px solid var(--jade);outline-offset:2px;border-radius:5px}
+
+#app{width:100%;max-width:420px;background:var(--bg);display:flex;flex-direction:column;
+  height:100dvh;position:relative;overflow:hidden}
+
+/* demo bar — not product */
+#demo{background:#000;border-bottom:1px solid var(--line);padding:7px 10px;
+  display:flex;gap:6px;align-items:center;flex:none}
+#demo .lbl{font-family:var(--mono);font-size:7.5px;letter-spacing:.16em;color:#3E434C;
+  text-transform:uppercase;margin-right:2px}
+#demo button{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
+  padding:5px 8px;border-radius:4px;border:1px solid #1E2127;color:#666C77}
+#demo button.on{background:#1E2127;color:var(--silver)}
+#demo .sp{flex:1}
+
+.top{padding:15px 18px 12px;border-bottom:1px solid var(--line2);flex:none;
+  display:flex;align-items:baseline;justify-content:space-between}
+.mark{font-family:var(--disp);font-size:19px;letter-spacing:-.005em;color:var(--silver)}
+.mark span{color:var(--jade)}
+.top .ctx{font-family:var(--mono);font-size:8px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--ash)}
+
+.screen{flex:1;overflow-y:auto;overscroll-behavior:contain;
+  padding:18px 16px calc(22px + var(--safe));-webkit-overflow-scrolling:touch}
+
+.nav{flex:none;background:rgba(8,9,11,.97);backdrop-filter:blur(14px);
+  border-top:1px solid var(--line);display:grid;padding-bottom:var(--safe)}
+.nav button{padding:11px 0 13px;font-family:var(--mono);font-size:8px;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--ash);
+  border-top:1px solid transparent;transition:color .18s}
+.nav button.on{color:var(--silver);border-top-color:var(--silver)}
+.nav button.lk{opacity:.3}
+
+/* type */
+.eyebrow{font-family:var(--mono);font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ash);margin:0 0 10px}
+h1{font-family:var(--disp);font-weight:400;font-size:27px;margin:0 0 5px;
+  letter-spacing:-.012em;line-height:1.16;color:var(--silver)}
+h2{font-family:var(--disp);font-weight:400;font-size:17px;margin:0 0 8px;letter-spacing:-.008em}
+h3{font-family:var(--disp);font-weight:400;font-size:25px;margin:9px 0 6px;
+  letter-spacing:-.012em;line-height:1.14}
+.num{font-family:var(--mono);font-weight:700;font-variant-numeric:tabular-nums}
+.note{font-size:11px;color:var(--ash);line-height:1.62;margin-top:11px}
+.note b{color:var(--steel);font-weight:500}
+
+.card{background:var(--s1);border:1px solid var(--line);border-radius:12px;padding:15px;margin-bottom:11px}
+.card.q{background:none;border-color:var(--line2)}
+
+.btn{display:block;width:100%;padding:13px;border-radius:9px;background:var(--silver);
+  color:#0A0B0D;font-family:var(--body);font-weight:500;font-size:14px;letter-spacing:.01em}
+.btn.g{background:none;border:1px solid var(--line);color:var(--silver)}
+.btn.sm{padding:11px;font-size:12.5px}
+.btn+.btn{margin-top:8px}
+
+.av{border-radius:9px;display:grid;place-items:center;flex:none;
+  font-family:var(--mono);font-weight:700;color:#0A0B0D;width:32px;height:32px;font-size:10px}
+
+/* history strip */
+.strip{display:flex;align-items:flex-end;gap:2px;height:19px}
+.strip i{width:3.5px;border-radius:.5px;display:block;flex:none;height:100%}
+.strip i.K{background:var(--jade)}
+.strip i.F{background:var(--rust)}
+.strip i.L{background:var(--rust);opacity:.5}
+.strip i.C{background:var(--jade);opacity:.38}
+.strip i.N{background:var(--steel);opacity:.55}
+.strip i.G{background:none;border:1px dashed var(--ash);border-radius:0}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.legend span{font-family:var(--mono);font-size:7.5px;color:var(--ash);
+  display:flex;align-items:center;gap:5px;letter-spacing:.08em;text-transform:uppercase}
+.legend b{width:5px;height:11px;border-radius:.5px;display:block}
+
+/* ── deck ── */
+.deck{position:relative;margin-top:12px;perspective:1500px}
+.stack{position:absolute;left:0;right:0;top:0;
+  transition:transform .34s cubic-bezier(.22,.9,.28,1),opacity .3s}
+.stack.behind{pointer-events:none}
+.stack.behind .face{background:var(--s1)}
+.swipe{position:relative;background:none;border:0;padding:0;border-radius:14px;
+  touch-action:pan-y;will-change:transform;cursor:pointer}
+.flipper{position:relative;width:100%;transform-style:preserve-3d;
+  transition:transform .5s cubic-bezier(.22,.9,.28,1)}
+.flipper.flip{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:14px;border:1px solid var(--line);padding:18px;
+  background:linear-gradient(168deg,var(--s2),var(--s1) 62%);
+  display:flex;flex-direction:column;overflow:hidden}
+.face.front{position:relative}
+.face.back{transform:rotateY(180deg);padding:15px 15px 11px}
+.face.back .scrollr{flex:1;overflow-y:auto;overscroll-behavior:contain;margin:0 -4px;padding:0 4px}
+.face.back .scrollr::-webkit-scrollbar{width:0}
+.whenrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.when{font-family:var(--mono);font-size:9.5px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--steel)}
+.who{font-size:12px;color:var(--ash)}
+.spacer{flex:1}
+.hintrow{display:flex;justify-content:space-between;align-items:center;
+  font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;color:var(--ash)}
+.flipcue{font-family:var(--mono);font-size:7.5px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--ash)}
+
+.stamp{position:absolute;top:20px;font-family:var(--disp);font-size:20px;
+  padding:5px 13px;border-radius:6px;opacity:0;pointer-events:none;z-index:5;letter-spacing:-.01em}
+.stamp.go{right:18px;border:1px solid var(--jade);color:var(--jade);transform:rotate(8deg)}
+.stamp.no{left:18px;border:1px solid var(--rust);color:var(--rust);transform:rotate(-8deg)}
+
+/* live pill — sits with the time */
+.livepill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:8px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--jade);
+  border:1px solid var(--jade-lo);background:var(--jade-dim);border-radius:20px;padding:4px 9px}
+.livepill i{width:5px;height:5px;border-radius:50%;background:var(--jade);display:block;
+  animation:pulse 1.9s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.25}}
+.cibar{display:flex;align-items:center;gap:9px;margin-top:11px;padding:10px 12px;
+  border-radius:10px;border:1px solid var(--jade-lo);background:var(--jade-dim)}
+.cibar .tx{flex:1;font-size:12px;color:var(--silver)}
+.cibar .tx small{display:block;font-family:var(--mono);font-size:7.5px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ash);margin-top:3px}
+.cibar button{font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;
+  padding:8px 13px;border-radius:7px;background:var(--jade);color:#08130D;font-weight:700;flex:none}
+.cibar .tick2{width:21px;height:21px;border-radius:50%;background:var(--jade);color:#08130D;
+  display:grid;place-items:center;font-size:11px;font-weight:700;flex:none}
+
+/* attendee rows */
+.rank{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line2)}
+.rank .ix{font-family:var(--mono);font-size:8.5px;color:var(--ash);width:13px;flex:none}
+.rank .nm{flex:1;min-width:0;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rank .sc{font-family:var(--mono);font-weight:700;font-size:12.5px;flex:none;
+  font-variant-numeric:tabular-nums}
+.hi{color:var(--jade)} .mid{color:var(--silver)} .lo{color:var(--rust)} .na{color:var(--ash)}
+.there{font-family:var(--mono);font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--jade);border:1px solid var(--jade-lo);background:var(--jade-dim);
+  border-radius:20px;padding:3px 8px;flex:none}
+.p1{font-family:var(--mono);font-size:7.5px;letter-spacing:.1em;color:var(--steel);
+  border:1px solid var(--line);border-radius:20px;padding:2px 6px;flex:none}
+.seclab{font-family:var(--mono);font-size:8px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ash);margin:16px 0 4px;display:flex;align-items:baseline;gap:7px}
+.seclab .ct2{color:var(--steel)}
+.newnote{font-size:10.5px;color:var(--ash);line-height:1.5;margin:0 0 6px}
+.mini2{margin-top:9px}
+.mini2 .r{display:flex;align-items:center;gap:8px;padding:3.5px 0}
+.mini2 .r .av{width:20px;height:20px;border-radius:6px;font-size:7.5px}
+.mini2 .r .n2{flex:1;font-size:11.5px;color:var(--steel);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.mini2 .r .s2{font-family:var(--mono);font-weight:700;font-size:10.5px;font-variant-numeric:tabular-nums}
+.mini2 .rest{font-family:var(--mono);font-size:8px;color:var(--ash);letter-spacing:.1em;
+  padding-top:6px;text-transform:uppercase}
+
+/* +1 */
+.p1box{display:flex;align-items:center;gap:10px;margin-top:10px;padding:10px 12px;
+  border:1px solid var(--line);border-radius:10px}
+.p1box .lb2{flex:1;font-size:12px}
+.p1box .lb2 small{display:block;font-family:var(--mono);font-size:7.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ash);margin-top:4px}
+.p1box button{width:29px;height:29px;border-radius:7px;border:1px solid var(--line);
+  font-family:var(--mono);font-size:13px;display:grid;place-items:center;color:var(--silver)}
+.p1box .ct{font-family:var(--mono);font-weight:700;font-size:15px;min-width:18px;text-align:center}
+.p1box.on{border-color:var(--jade-lo);background:var(--jade-dim)}
+
+/* calendars */
+.vswitch{display:flex;gap:5px;margin-bottom:4px}
+.vswitch button{font-family:var(--mono);font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;
+  padding:7px 12px;border-radius:20px;border:1px solid var(--line);color:var(--steel)}
+.vswitch button.on{background:var(--silver);border-color:var(--silver);color:#0A0B0D;font-weight:700}
+.mnav{display:flex;align-items:center;justify-content:space-between;margin:16px 0 8px}
+.mnav .mo{font-family:var(--disp);font-size:18px;letter-spacing:-.01em}
+.mnav button{font-family:var(--mono);font-size:14px;color:var(--steel);padding:5px 13px;
+  border:1px solid var(--line);border-radius:7px;line-height:1}
+.mgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.mgrid .h{font-family:var(--mono);font-size:7.5px;color:var(--ash);text-align:center;padding-bottom:4px}
+.mcell{aspect-ratio:1;border-radius:7px;background:var(--s1);border:1px solid var(--line2);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+.mcell.out{background:none;border-color:transparent;opacity:.28}
+.mcell.today{border-color:var(--silver);background:rgba(255,255,255,.05)}
+.mcell .d{font-family:var(--mono);font-size:9.5px;color:var(--steel)}
+.mcell.today .d{color:var(--silver);font-weight:700}
+.mcell .dots{display:flex;gap:2px;height:4px}
+.mcell .dots i{width:4px;height:4px;border-radius:50%;display:block}
+.wk{font-family:var(--mono);font-size:8px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ash);margin:14px 0 6px}
+
+.inv{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--line2);
+  width:100%;text-align:left}
+.inv .body{flex:1;min-width:0}
+.inv .t{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.inv .m{font-family:var(--mono);font-size:8px;color:var(--ash);margin-top:4px;letter-spacing:.09em}
+.inv .m.warn{color:var(--rust)}
+.pill{font-family:var(--mono);font-size:7.5px;letter-spacing:.13em;text-transform:uppercase;
+  padding:4px 8px;border-radius:20px;border:1px solid var(--line);color:var(--steel);flex:none}
+.pill.go{background:var(--jade);border-color:var(--jade);color:#08130D;font-weight:700}
+.pill.no{border-color:var(--rust-lo);color:var(--rust)}
+.pill.by{border-color:var(--line);background:var(--s3);color:var(--silver)}
+
+/* sheets */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:60;
+  display:flex;align-items:flex-end;justify-content:center}
+.sheet{width:100%;max-width:420px;background:var(--s1);border-radius:16px 16px 0 0;
+  border-top:1px solid var(--line);padding:16px 16px calc(26px + var(--safe));
+  max-height:88vh;overflow-y:auto;animation:up .24s cubic-bezier(.22,1,.36,1)}
+@keyframes up{from{transform:translateY(101%)}}
+.grab{width:30px;height:3px;border-radius:2px;background:var(--s4);margin:0 auto 15px}
+.rsvp{display:grid;gap:7px;margin-top:14px}
+.rsvp button{padding:13px 15px;border-radius:10px;border:1px solid var(--line);
+  font-size:13px;text-align:left}
+.rsvp button.sel{background:var(--jade);border-color:var(--jade);color:#08130D;font-weight:700}
+.rsvp button.sel.n{background:var(--rust);border-color:var(--rust);color:#160705}
+.rsvp button.sel.b{background:var(--silver);border-color:var(--silver);color:#0A0B0D}
+.rsvp small{display:block;font-family:var(--mono);font-size:7.5px;letter-spacing:.12em;
+  text-transform:uppercase;opacity:.62;margin-top:4px}
+.dates{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}
+.dates button{font-family:var(--mono);font-size:9px;padding:7px 10px;border-radius:7px;
+  border:1px solid var(--line);color:var(--steel)}
+.dates button.on{background:var(--silver);border-color:var(--silver);color:#0A0B0D;font-weight:700}
+
+/* check-in */
+.cirow{display:flex;gap:8px;margin-top:14px;align-items:stretch}
+.entry{flex:1;background:var(--s1);border:1px solid var(--line);border-radius:10px;
+  padding:14px 13px;color:var(--silver);font-family:var(--mono);font-size:15px;
+  letter-spacing:.05em;text-transform:uppercase}
+.entry::placeholder{color:var(--ash);letter-spacing:.14em;font-size:11px}
+.go2{flex:none;padding:0 19px;border-radius:10px;background:var(--jade);color:#08130D;
+  font-family:var(--body);font-weight:500;font-size:13.5px;display:grid;place-items:center}
+.done{text-align:center;padding:38px 16px}
+.done .ring{width:62px;height:62px;border-radius:50%;background:var(--jade);color:#08130D;
+  display:grid;place-items:center;font-size:27px;margin:0 auto 16px;
+  animation:pop .42s cubic-bezier(.22,1.4,.4,1)}
+@keyframes pop{from{transform:scale(.5);opacity:0}}
+
+/* projection */
+.proj{background:linear-gradient(168deg,var(--s2),var(--s1) 62%);
+  border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:11px}
+.big{font-family:var(--mono);font-weight:700;font-size:40px;line-height:.9;
+  color:var(--silver);letter-spacing:-.045em}
+.band{margin-top:15px;height:23px;position:relative}
+.band .tr{position:absolute;top:10px;left:0;right:0;height:2px;background:var(--s4);border-radius:2px}
+.band .fl{position:absolute;top:10px;height:2px;background:var(--silver);border-radius:2px;
+  transition:left .3s,width .3s}
+.band .tk{position:absolute;top:5px;width:1px;height:12px;background:var(--silver);transition:left .3s}
+.band .lb{position:absolute;top:19px;font-family:var(--mono);font-size:7.5px;color:var(--ash)}
+.ceil{border-top:1px solid var(--line);margin-top:13px;padding-top:11px;
+  display:flex;align-items:baseline;justify-content:space-between}
+.ceil .n{font-family:var(--mono);font-weight:700;font-size:18px;color:var(--steel)}
+.ceil .k{font-family:var(--mono);font-size:7.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ash)}
+.warnbox{border:1px solid var(--rust-lo);background:var(--rust-dim);border-radius:9px;
+  padding:11px 12px;margin-top:10px;font-size:11.5px;line-height:1.55;color:var(--steel)}
+.warnbox b{color:var(--rust);font-weight:500}
+
+/* people rows */
+.prow{display:flex;align-items:center;gap:10px;padding:9px 0;
+  border-bottom:1px solid var(--line2);width:100%;text-align:left}
+.prow .nm{flex:1;min-width:0}
+.prow .nm .a{font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prow .nm .b{font-family:var(--mono);font-size:8px;color:var(--ash);margin-top:3px;letter-spacing:.09em}
+.snap{display:flex;gap:9px;flex:none}
+.snap div{text-align:right}
+.snap .v{font-family:var(--mono);font-weight:700;font-size:12px;font-variant-numeric:tabular-nums}
+.snap .k{font-family:var(--mono);font-size:6.5px;letter-spacing:.11em;color:var(--ash);
+  text-transform:uppercase;margin-top:2px}
+.add{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
+  padding:7px 10px;border-radius:7px;border:1px solid var(--line);color:var(--steel);flex:none}
+.add.on{background:var(--silver);border-color:var(--silver);color:#0A0B0D;font-weight:700}
+
+/* record */
+.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:14px 0 0}
+.three div{background:var(--bg);border:1px solid var(--line2);border-radius:10px;padding:11px 9px}
+.three .v{font-family:var(--mono);font-weight:700;font-size:18px;line-height:1}
+.three .k{font-family:var(--mono);font-size:7px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ash);margin-top:6px;line-height:1.35}
+.lockbox{background:var(--s1);border:1px solid var(--line);border-radius:10px;
+  padding:13px;font-size:11.5px;color:var(--steel);line-height:1.6}
+.lockbox b{color:var(--silver);font-weight:500}
+
+/* door */
+.codebox{background:var(--s1);border:1px solid var(--line);border-radius:14px;
+  padding:24px 18px;text-align:center;margin-top:8px}
+.code{font-family:var(--mono);font-weight:700;font-size:25px;letter-spacing:.02em;
+  color:var(--jade);line-height:1.3}
+.tick{height:2px;background:var(--s3);border-radius:2px;margin-top:16px;overflow:hidden}
+.tick i{display:block;height:100%;background:var(--jade);width:100%;transform-origin:left}
+.drow{display:flex;align-items:center;gap:10px;padding:10px 11px;border-radius:10px;
+  border:1px solid var(--line2);margin-bottom:6px;background:var(--s1);transition:all .25s}
+.drow.in{border-color:var(--jade-lo);background:var(--jade-dim)}
+.drow.part{border-color:var(--line);background:var(--s2)}
+.drow .st{font-family:var(--mono);font-size:7.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ash)}
+.dact{display:flex;gap:5px;flex:none;align-items:center}
+.dact button{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
+  padding:6px 9px;border-radius:7px;border:1px solid var(--line);color:var(--steel)}
+.dact button.p1b{color:var(--silver)}
+.dact .ok{width:24px;height:24px;border-radius:50%;background:var(--jade);color:#08130D;
+  display:grid;place-items:center;font-size:10px;font-weight:700;flex:none}
+.dact .okp{background:var(--s4);color:var(--silver)}
+.chk{width:18px;height:18px;border-radius:50%;background:var(--jade);color:#08130D;
+  display:grid;place-items:center;font-size:10px;font-weight:700;flex:none}
+.tapin{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
+  padding:6px 10px;border-radius:7px;border:1px solid var(--line);color:var(--steel)}
+
+.bigcode{position:fixed;inset:0;z-index:90;background:#000;display:flex;
+  flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
+.bigcode .w{font-family:var(--mono);font-weight:700;color:var(--jade);line-height:1.05;
+  font-size:clamp(38px,13vw,96px);letter-spacing:-.02em;word-break:break-word}
+.bigcode .cd{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ash);margin-top:28px}
+.bigcode .ev{font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ash);position:absolute;top:26px}
+.bigcode .x{position:absolute;bottom:34px;font-family:var(--mono);font-size:9px;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--steel);
+  border:1px solid var(--line);border-radius:7px;padding:11px 18px}
+.bigcode .bar{position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--s3)}
+.bigcode .bar i{display:block;height:100%;background:var(--jade);transform-origin:left}
+
+/* rating */
+.rate{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.rate button{padding:16px 10px;border-radius:10px;border:1px solid var(--line);
+  font-family:var(--body);font-size:13px}
+.rate button.sel{background:var(--jade);border-color:var(--jade);color:#08130D;font-weight:500}
+.rate button.sel.n{background:var(--s3);border-color:var(--steel);color:var(--silver)}
+textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;
+  padding:12px;color:var(--silver);font-family:var(--body);font-size:13px;min-height:74px;
+  resize:vertical;margin-top:10px}
+textarea::placeholder{color:var(--ash)}
+
+/* create */
+.lab{font-family:var(--mono);font-size:8px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ash);margin:18px 0 7px;display:block}
+input[type=time],input[type=number],select,.in,.field{
+  width:100%;background:var(--s1);border:1px solid var(--line);border-radius:10px;
+  padding:13px;color:var(--silver);font-family:var(--body);font-size:15px;
+  -webkit-appearance:none;appearance:none}
+input[type=time]{font-family:var(--mono);letter-spacing:.02em}
+input[type=number]{font-family:var(--mono);font-weight:700;font-size:19px;text-align:center}
+select{background-image:linear-gradient(45deg,transparent 50%,var(--steel) 50%),
+  linear-gradient(135deg,var(--steel) 50%,transparent 50%);
+  background-position:calc(100% - 19px) 50%,calc(100% - 14px) 50%;
+  background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:38px}
+select option{background:var(--s2);color:var(--silver)}
+input::-webkit-calendar-picker-indicator{filter:invert(.65)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cal{margin-top:6px}
+.calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.calhead .mo{font-family:var(--disp);font-size:17px;letter-spacing:-.01em}
+.calhead button{font-family:var(--mono);font-size:13px;color:var(--steel);padding:5px 12px;
+  border:1px solid var(--line);border-radius:7px;line-height:1}
+.cg{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cg .h{font-family:var(--mono);font-size:7.5px;color:var(--ash);text-align:center;padding-bottom:4px}
+.cg button{aspect-ratio:1;border-radius:7px;font-family:var(--mono);font-size:11px;
+  color:var(--steel);background:var(--s1);border:1px solid var(--line2);
+  display:grid;place-items:center}
+.cg button.pastd{opacity:.25}
+.cg button.sel{background:var(--silver);border-color:var(--silver);color:#0A0B0D;font-weight:700}
+.cg span{aspect-ratio:1}
+.pol{display:grid;gap:6px;margin-top:4px}
+.pol button{padding:12px 13px;border-radius:10px;border:1px solid var(--line);text-align:left;font-size:12.5px}
+.pol button.on{background:var(--s2);border-color:var(--silver)}
+.pol .ttl{display:block}
+.pol small{display:block;font-family:var(--mono);font-size:7.5px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--ash);margin-top:4px}
+.badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:7.5px;
+  letter-spacing:.14em;text-transform:uppercase;padding:5px 9px;border-radius:20px;
+  border:1px solid var(--line);color:var(--steel)}
+.badge.open{color:var(--silver)}
+.badge.none{opacity:.6}
+.fab{position:absolute;right:16px;bottom:calc(72px + var(--safe));z-index:20;
+  background:var(--silver);color:#0A0B0D;border-radius:24px;padding:13px 19px;
+  font-family:var(--body);font-weight:500;font-size:13.5px;
+  box-shadow:0 8px 26px rgba(0,0,0,.7), 0 0 0 4px rgba(8,9,11,.9)}
+.gate{border:1px solid var(--rust-lo);background:var(--rust-dim);border-radius:11px;
+  padding:14px;margin-bottom:12px}
+.gate h4{font-family:var(--disp);font-size:16px;margin:0 0 7px;color:var(--rust);letter-spacing:-.008em}
+.gate p{margin:0;font-size:11.5px;line-height:1.6;color:var(--steel)}
+.evrow{display:flex;align-items:center;gap:11px;padding:12px 0;
+  border-bottom:1px solid var(--line2);width:100%;text-align:left}
+.evrow .bd{flex:1;min-width:0}
+.evrow .t{font-size:13.5px}
+.evrow .m{font-family:var(--mono);font-size:8px;color:var(--ash);margin-top:4px;letter-spacing:.09em}
+.evrow .m.due{color:var(--rust)}
+.rev{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line2);font-size:12.5px}
+.rev .k{color:var(--ash)}
+.rev .v{font-family:var(--mono);font-size:11px}
+
+/* pause */
+.sw{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line2)}
+.sw:last-of-type{border-bottom:0}
+.sw .cp{flex:1}
+.sw .cp b{display:block;font-weight:500;font-size:12.5px}
+.sw .cp small{display:block;font-size:10.5px;color:var(--ash);line-height:1.55;margin-top:4px}
+.tog{width:42px;height:25px;border-radius:13px;background:var(--s3);position:relative;
+  flex:none;transition:background .2s;border:1px solid var(--line)}
+.tog i{position:absolute;top:2px;left:2px;width:19px;height:19px;border-radius:50%;
+  background:var(--ash);transition:transform .2s,background .2s}
+.tog.on{background:var(--jade-dim);border-color:var(--jade-lo)}
+.tog.on i{transform:translateX(17px);background:var(--jade)}
+
+/* disclosure */
+.disc{padding:26px 20px calc(26px + var(--safe));min-height:100%;display:flex;flex-direction:column}
+.disc h1{font-size:30px;margin-bottom:20px;line-height:1.14}
+.dblock{border-left:1px solid var(--line);padding-left:15px;margin-bottom:19px}
+.dblock.key{border-color:var(--jade);background:var(--jade-dim);
+  padding:13px 15px;border-radius:0 8px 8px 0}
+.dblock h4{font-family:var(--disp);font-size:16px;margin:0 0 7px;letter-spacing:-.008em}
+.dblock p{margin:0;font-size:12.5px;line-height:1.62;color:var(--steel)}
+.dblock .sc{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+.dblock .sc span{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
+  border:1px solid var(--jade-lo);color:var(--jade);padding:4px 9px;border-radius:20px}
+.steps{display:none}
+.opts{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+.opts button{font-family:var(--mono);font-size:9.5px;padding:9px 12px;border-radius:8px;
+  border:1px solid var(--line);color:var(--steel)}
+.opts button.on{background:var(--silver);border-color:var(--silver);color:#0A0B0D;font-weight:700}
+/* ── invitations ── */
+.slot{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid var(--line2)}
+.slot .ic{width:30px;height:30px;border-radius:8px;border:1px dashed var(--ash);flex:none;
+  display:grid;place-items:center;font-family:var(--mono);font-size:11px;color:var(--ash)}
+.slot .ic.used{border:1px solid var(--line);background:var(--s2);color:var(--steel)}
+.slot .ic.claimed{border:0;background:var(--jade);color:#08130D;font-weight:700}
+.slot .bd{flex:1;min-width:0}
+.slot .bd .t{font-size:12.5px}
+.slot .bd .m{font-family:var(--mono);font-size:8px;color:var(--ash);margin-top:4px;letter-spacing:.1em}
+.slot .bd .m.live{color:var(--jade)}
+.slot .act{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
+  padding:7px 10px;border-radius:7px;border:1px solid var(--line);color:var(--steel);flex:none}
+.slot .act.pri{background:var(--silver);border-color:var(--silver);color:#0A0B0D;font-weight:700}
+
+.linkbox{background:var(--s1);border:1px solid var(--line);border-radius:10px;padding:13px;
+  margin-top:12px;display:flex;align-items:center;gap:10px}
+.linkbox code{flex:1;font-family:var(--mono);font-size:11px;color:var(--jade);
+  word-break:break-all;line-height:1.5}
+.linkbox button{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
+  padding:8px 11px;border-radius:7px;background:var(--silver);color:#0A0B0D;font-weight:700;flex:none}
+.meta{display:flex;gap:14px;margin-top:12px;padding-top:11px;border-top:1px solid var(--line2)}
+.meta div .v{font-family:var(--mono);font-weight:700;font-size:13px}
+.meta div .k{font-family:var(--mono);font-size:7px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ash);margin-top:4px}
+
+/* claim page */
+.claim{padding:30px 22px calc(30px + var(--safe));min-height:100%;display:flex;flex-direction:column}
+.crest{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);
+  display:grid;place-items:center;font-family:var(--disp);font-size:20px;color:var(--jade);
+  margin-bottom:22px}
+.fromwho{display:flex;align-items:center;gap:11px;padding:13px;border:1px solid var(--line);
+  border-radius:10px;background:var(--s1);margin:18px 0}
+.fromwho .bd{flex:1}
+.fromwho .bd .t{font-size:13px}
+.fromwho .bd .m{font-family:var(--mono);font-size:8px;color:var(--ash);margin-top:4px;letter-spacing:.1em}
+
+/* referral queue */
+.qrow{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid var(--line2)}
+.qrow .n{font-family:var(--mono);font-size:9px;color:var(--ash);width:14px;flex:none}
+.qrow .bd{flex:1;min-width:0}
+.qrow .bd .t{font-size:12.5px}
+.qrow .bd .m{font-family:var(--mono);font-size:8px;color:var(--ash);margin-top:4px;letter-spacing:.1em}
+.qrow .act{display:flex;gap:5px;flex:none}
+.qrow .act button{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
+  padding:7px 9px;border-radius:7px;border:1px solid var(--line);color:var(--steel)}
+.qrow .act button.pri{background:var(--jade);border-color:var(--jade);color:#08130D;font-weight:700}
+.emptyq{border:1px dashed var(--line);border-radius:10px;padding:20px 16px;text-align:center;
+  color:var(--ash);font-size:11.5px;line-height:1.6;margin-top:10px}
+
+/* vouch request */
+.vouch{border:1px solid var(--jade-lo);background:var(--jade-dim);border-radius:11px;
+  padding:14px;margin-bottom:11px}
+.vouch h4{font-family:var(--disp);font-size:16px;margin:0 0 7px;letter-spacing:-.008em}
+.vouch p{margin:0;font-size:11.5px;line-height:1.6;color:var(--steel)}
+.vouch .row{display:flex;gap:7px;margin-top:12px}
+.vouch .row button{flex:1;padding:10px;border-radius:8px;border:1px solid var(--line);
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
+.vouch .row button.yes{background:var(--jade);border-color:var(--jade);color:#08130D;font-weight:700}
+
+.wl{padding:26px 20px calc(26px + var(--safe));min-height:100%;display:flex;flex-direction:column}
+.pos{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--jade);border:1px solid var(--jade-lo);background:var(--jade-dim);
+  border-radius:20px;padding:7px 13px;display:inline-flex;align-self:flex-start}
+
+/* ── sponsorship ── */
+.spon{display:flex;align-items:center;gap:11px;padding:13px 0;border-bottom:1px solid var(--line2)}
+.spon .bd{flex:1;min-width:0}
+.spon .bd .t{font-size:12.5px}
+.spon .bd .m{font-family:var(--mono);font-size:8px;color:var(--ash);margin-top:4px;letter-spacing:.1em}
+.spon .bd .m.good{color:var(--jade)}
+.spon .bd .m.bad{color:var(--rust)}
+.prog{display:flex;gap:3px;margin-top:7px}
+.prog i{width:20px;height:3px;border-radius:2px;background:var(--s3);display:block}
+.prog i.k{background:var(--jade)}
+.prog i.f{background:var(--rust)}
+.earn{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
+  padding:5px 9px;border-radius:20px;flex:none;border:1px solid var(--line);color:var(--ash)}
+.earn.yes{border-color:var(--jade-lo);background:var(--jade-dim);color:var(--jade)}
+.earn.no{border-color:var(--rust-lo);background:var(--rust-dim);color:var(--rust)}
+.avail{display:flex;align-items:baseline;gap:11px;margin-top:14px}
+.avail .n{font-family:var(--mono);font-weight:700;font-size:42px;color:var(--silver);
+  line-height:.9;letter-spacing:-.04em}
+.avail .k{font-family:var(--mono);font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--ash)}
+
+/* ── invitation ledger ── */
+.ledg{margin-top:6px}
+.ledg .r{display:flex;align-items:baseline;gap:10px;padding:10px 0;border-bottom:1px solid var(--line2)}
+.ledg .r:last-child{border-bottom:0}
+.ledg .r .lb3{flex:1;font-size:12.5px}
+.ledg .r .lb3 small{display:block;font-family:var(--mono);font-size:7.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ash);margin-top:4px}
+.ledg .r .amt{font-family:var(--mono);font-weight:700;font-size:14px;flex:none;
+  font-variant-numeric:tabular-nums}
+.ledg .r .amt.plus{color:var(--jade)}
+.ledg .r .amt.minus{color:var(--steel)}
+.ledg .tot{display:flex;align-items:baseline;gap:10px;padding-top:12px;margin-top:4px;
+  border-top:1px solid var(--line)}
+.ledg .tot .lb3{flex:1;font-size:12.5px;color:var(--silver)}
+.ledg .tot .amt{font-family:var(--mono);font-weight:700;font-size:19px;color:var(--silver)}
+
+.tiers{display:grid;gap:4px;margin-top:10px}
+.tiers .t2{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;
+  border:1px solid var(--line2);font-family:var(--mono);font-size:9.5px;color:var(--ash)}
+.tiers .t2.you{border-color:var(--jade-lo);background:var(--jade-dim);color:var(--jade)}
+.tiers .t2 .rg{flex:1}
+.tiers .t2 .gv{font-weight:700}
+.locked{border:1px dashed var(--line);border-radius:10px;padding:18px 16px;text-align:center;
+  color:var(--ash);font-size:11.5px;line-height:1.65;margin-top:14px}
+.locked b{color:var(--steel);font-weight:500}
+
+/* ── cycle allowance ── */
+.cyc{background:linear-gradient(168deg,var(--s2),var(--s1) 62%);border:1px solid var(--line);
+  border-radius:14px;padding:16px;margin-top:14px}
+.cyc .hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px}
+.cyc .hd .k{font-family:var(--mono);font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--ash)}
+.cyc .big2{font-family:var(--mono);font-weight:700;font-size:38px;color:var(--silver);
+  line-height:.9;letter-spacing:-.04em}
+.cyc .sub2{font-family:var(--mono);font-size:8px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ash);margin-top:7px}
+.pips{display:flex;gap:5px;margin-top:14px}
+.pips i{flex:1;height:5px;border-radius:3px;background:var(--s3);display:block;max-width:34px}
+.pips i.left{background:var(--silver)}
+.pips i.gone{background:var(--s4)}
+.nxt{border-top:1px solid var(--line);margin-top:14px;padding-top:12px;
+  display:flex;align-items:baseline;justify-content:space-between}
+.nxt .k{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;color:var(--ash)}
+.nxt .v{font-family:var(--mono);font-weight:700;font-size:16px}
+.nxt .v.up{color:var(--jade)} .nxt .v.dn{color:var(--rust)}
+.contrib{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid var(--line2)}
+.contrib .bd{flex:1;min-width:0}
+.contrib .bd .t{font-size:12.5px}
+.contrib .bd .m{font-family:var(--mono);font-size:8px;color:var(--ash);margin-top:4px;letter-spacing:.1em}
+.contrib .d{font-family:var(--mono);font-weight:700;font-size:13px;flex:none}
+.contrib .d.plus{color:var(--jade)} .contrib .d.minus{color:var(--rust)} .contrib .d.zero{color:var(--ash)}
+
+.gone{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--rust);border:1px solid var(--rust-lo);background:var(--rust-dim);
+  border-radius:20px;padding:3px 8px;flex:none}
+
+/* ── host notes on the card ── */
+.deets{font-size:11.5px;line-height:1.55;color:var(--steel);margin-top:10px;
+  padding-left:11px;border-left:1px solid var(--line);
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.deets.full{-webkit-line-clamp:unset;display:block}
+textarea.deets-in{min-height:88px}
+
+
+/* ── answer-first invitation rows ── */
+.inv.needs{background:var(--s1);border:1px solid var(--line);border-radius:10px;
+  padding:12px;margin-bottom:7px;border-bottom:1px solid var(--line)}
+.pill.answer{background:var(--silver);border-color:var(--silver);color:#0A0B0D;
+  font-weight:700;padding:7px 13px;font-size:8.5px}
+.divid{font-family:var(--mono);font-size:8px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ash);margin:20px 0 8px}
+
+/* ── host: past event summary ── */
+.sumrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line2)}
+.sumrow:last-child{border-bottom:0}
+.sumrow .k2{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ash);flex:none;width:104px}
+.sumrow .v2{flex:1;font-size:12.5px}
+.sumrow .v2 small{display:block;font-family:var(--mono);font-size:8px;color:var(--ash);
+  margin-top:3px;letter-spacing:.1em}
+.turnout{display:flex;align-items:baseline;gap:9px;margin:2px 0 10px}
+.turnout .n3{font-family:var(--mono);font-weight:700;font-size:30px;letter-spacing:-.03em}
+.turnout .n3.good{color:var(--jade)} .turnout .n3.off{color:var(--rust)}
+.turnout .k3{font-family:var(--mono);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--ash)}
+
+/* ── +1 confirm state ── */
+.dact button.p1b.on{background:var(--jade);border-color:var(--jade);color:#08130D;font-weight:700}
+.dact button.p1b.off{background:var(--s3);border-color:var(--line);color:var(--ash)}
+
+/* ── deadlines on Today ── */
+.dl-strip{margin-bottom:14px}
+.dl-row{display:flex;align-items:center;gap:11px;padding:12px;border-radius:10px;
+  border:1px solid var(--line);background:var(--s1);margin-bottom:7px;width:100%;text-align:left}
+.dl-row.urgent{border-color:var(--rust-lo);background:var(--rust-dim)}
+.dl-row.lapsed{border-color:var(--line2);background:none;opacity:.75}
+.dl-row .bd{flex:1;min-width:0}
+.dl-row .bd .t{font-size:13px}
+.dl-row .bd .m{font-family:var(--mono);font-size:8px;color:var(--ash);margin-top:4px;letter-spacing:.11em}
+.dl-row.urgent .bd .m{color:var(--rust)}
+.dl-row .cta{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
+  padding:7px 11px;border-radius:7px;background:var(--silver);color:#0A0B0D;font-weight:700;flex:none}
+.dl-row.lapsed .cta{background:none;border:1px solid var(--line);color:var(--ash);font-weight:400}
+.rtline{display:flex;align-items:center;gap:9px;margin-top:10px;padding:10px 12px;
+  border-radius:9px;border:1px solid var(--line2)}
+.rtline .v4{font-family:var(--mono);font-weight:700;font-size:15px;color:var(--silver)}
+.rtline .k4{flex:1;font-size:11px;color:var(--ash);line-height:1.5}
+
+/* ── answer cards ── */
+.face.ask{background:linear-gradient(168deg,#2A1512,#160C0A 62%);border-color:var(--rust-lo)}
+.stack.behind .face.ask{background:#1A0E0C}
+.duepill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:8px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--rust);
+  border:1px solid var(--rust-lo);background:var(--rust-dim);border-radius:20px;padding:4px 9px}
+.duepill i{width:5px;height:5px;border-radius:50%;background:var(--rust);display:block}
+.waited{display:flex;align-items:baseline;gap:9px;margin-top:12px;padding:10px 12px;
+  border-radius:9px;border:1px solid var(--line)}
+.waited .v5{font-family:var(--mono);font-weight:700;font-size:17px;color:var(--silver)}
+.waited .k5{flex:1;font-size:10.5px;color:var(--ash);line-height:1.5}
+.waited.slow .v5{color:var(--rust)}
+.stamp.yes2{right:18px;border:1px solid var(--jade);color:var(--jade);transform:rotate(8deg)}
+.stamp.no2{left:18px;border:1px solid var(--rust);color:var(--rust);transform:rotate(-8deg)}
+
+/* ── lapsed list ── */
+.lapsehead{font-family:var(--mono);font-size:8px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ash);margin:22px 0 8px}
+.lapse{display:flex;align-items:center;gap:11px;padding:12px;border-radius:10px;
+  border:1px solid var(--line2);margin-bottom:7px}
+.lapse .bd{flex:1;min-width:0}
+.lapse .bd .t{font-size:12.5px;color:var(--steel)}
+.lapse .bd .m{font-family:var(--mono);font-size:8px;color:var(--ash);margin-top:4px;letter-spacing:.11em}
+.lapse .wl2{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
+  padding:8px 11px;border-radius:7px;border:1px solid var(--line);color:var(--silver);flex:none}
+.lapse .wl2.on{background:var(--silver);border-color:var(--silver);color:#0A0B0D;font-weight:700}
+.lapse .wl2.full{opacity:.4}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div id="app">
+  <div id="demo"></div>
+  <div class="top"><div class="mark">Roster<span>.</span></div><div class="ctx" id="ctx"></div></div>
+  <div class="screen" id="screen"></div>
+  <div class="nav" id="nav"></div>
+</div>
+<div id="mount"></div>
+<script>
+/* ═══════════ MODEL ═══════════
+   Outcomes: K attended · F no-show · C cancel>48h · L cancel<24h · N declined · G lapse
+   reliability = (Σcredit + k·m)/(n + k)   k=4, m measured. No decay in beta. All events weigh 1.
+   response    = median hours from invite to answer. Lapses reported separately, never averaged in. */
+const CRED={K:1,F:0,C:.80,L:.35,N:1}, K_=4, M_=.82;
+
+const RAW=[
+  ['Maya Okonkwo',   'KKNKKKNKCKKNKK',   38,  4],
+  ['Rafa Ibarra',    'KKKNKKCKKNKKKNK',  14,  2],
+  ['Priya Nair',     'NNKNKNNKNKN',     225,  1],
+  ['Dot Chen',       'KKNKKKNKKK',       52,  9],
+  ['June Park',      'KKNKKKNK',        292, 20],
+  ['Bo Achebe',      'KKKKFKNKKCK',     168, 30],
+  ['Suki Tanaka',    'NKNNKGKNK',       200, 52],
+  ['Theo Lindqvist', 'KCLKCKKLNKCK',     12,  6],
+  ['Nils Bergström', 'KFNKK',           262, 14],
+  ['Ilya Voronin',   'KFLKGKFNKFKG',    322, 96],
+  ['Devin Roux',     'KFKFFLKFKCFKFLKFK', 6, 40],
+  ['Cass Moreau',    'FLKFGFKF',        340,124],
+  ['Sam Ito',        'KKN',              96,  8],
+  ['Wren Adeyemi',   'KN',              180, 16],
+];
+
+/* human-readable median: 4 → "4h", 40 → "2d" */
+function fmtRT(h){
+  if(h<1) return '<1h';
+  if(h<48) return Math.round(h)+'h';
+  return Math.round(h/24)+'d';
+}
+
+const P=RAW.map(([name,h,hue,rt])=>{
+  const ev=[...h];
+  const answered=ev.filter(c=>c!=='G');
+  const num=answered.reduce((a,c)=>a+CRED[c],0);
+  const yes=ev.filter(c=>'KFCL'.includes(c));
+  return {
+    name, hue, ev, rt, n:answered.length,
+    lapses: ev.filter(c=>c==='G').length,
+    ini:name.split(' ').map(w=>w[0]).join(''),
+    rel:(num+K_*M_)/(answered.length+K_),
+    cad:(ev.length/4).toFixed(1),
+    pYes: yes.length ? (yes.filter(c=>c==='K').length + 2*.78)/(yes.length+2) : .78
+  };
+});
+const byName=n=>P.find(p=>p.name===n);
+
+/* ═══════════ STATE ═══════════ */
+let phase=3, actor='guest', tab='today', seen=false;
+const N_SELF=3, N_PUB=8;
+const visSelf=p=>p.n>=N_SELF, visPub=p=>p.n>=N_PUB;
+const pct=v=>Math.round(v*100)+'%';
+
+function setActor(a){ actor=a; tab=null; render() }
+function setPhase(p){ phase=p; render() }
+function begin(){ seen=true; render() }
+
+/* ── guest ── */
+let deck=[], deckDone=[];
+function resetDeck(){
+  deck=[
+    {t:'Supper Club No. 4', who:'Maya Okonkwo', when:'Tonight · 8:00 PM', where:'24th & Harrison',
+     plus:'ask', mine:0, live:true,
+     details:'Buzzer is broken — text me and I\'ll come down. Bring nothing, I\'ve got it covered. '
+            +'Dog is friendly but will try the cheese.',
+     going:['Rafa Ibarra','Dot Chen','June Park','Bo Achebe','Priya Nair','Theo Lindqvist',
+            'Sam Ito','Nils Bergström'],
+     dropped:['Devin Roux','Cass Moreau'], p1:{'Rafa Ibarra':1}},
+    {t:'Nightcap at Zeitgeist', who:'Rafa Ibarra', when:'Tonight · 11:00 PM', where:'Valencia & 14th',
+     plus:'ask', mine:0, live:false,
+     details:'Back patio, under the heaters. Kitchen shuts at eleven so eat first.',
+     cap:4, going:['Maya Okonkwo','Suki Tanaka','Wren Adeyemi','Dot Chen'], p1:{}},
+  ];
+  deckDone=[];
+}
+resetDeck();
+
+let INV=[
+  {id:1,t:'Rooftop, Potrero',  host:'Dot Chen',   day:'Sat 2 Aug', dl:'Answer by tonight',
+   warn:1, due:'tonight', st:null, waited:6, where:'18th & Texas', cap:24,
+   plus:'ask', mine:0, going:['Maya Okonkwo','Rafa Ibarra','Bo Achebe','Theo Lindqvist','Sam Ito','Devin Roux'],
+   p1:{'Rafa Ibarra':1,'Bo Achebe':1}},
+  {id:2,t:'Sunday long lunch', host:'June Park',  day:'Sun 3 Aug', dl:'3 days left', st:'go',
+   plus:'ask', mine:0, going:['Priya Nair','Dot Chen','Suki Tanaka','Wren Adeyemi'], p1:{}},
+  {id:3,t:"Bo's birthday",     host:'Bo Achebe',  day:'Fri 8 Aug', dl:'Answer by tomorrow',
+   warn:1, due:'tomorrow', st:null, waited:2, where:'Alamo Square', cap:30,
+   plus:'ask', mine:0, going:['Maya Okonkwo','Rafa Ibarra','Dot Chen','June Park','Theo Lindqvist',
+     'Ilya Voronin','Cass Moreau','Devin Roux','Nils Bergström'], p1:{'Maya Okonkwo':1,'Devin Roux':1}},
+  {id:4,t:'Film night',        host:'Priya Nair', day:'Wed 13 Aug',dl:'12 days left', st:'by', byd:'6 Aug',
+   plus:'none', mine:0, going:['Dot Chen','Sam Ito'], p1:{}},
+  {id:5,t:'Warehouse, 3rd St', host:'Theo Lindqvist', day:'Sat 26 July', dl:'Deadline passed',
+   lapsed:true, st:null, plus:'none', mine:0, cap:40,
+   going:['Maya Okonkwo','Rafa Ibarra','Suki Tanaka'], p1:{}},
+  {id:6,t:'Dinner, Bernal',    host:'June Park',  day:'Sun 27 July', dl:'Deadline passed',
+   lapsed:true, st:null, plus:'none', mine:0, cap:4,
+   going:['Dot Chen','Priya Nair','Suki Tanaka','Wren Adeyemi'], p1:{}},
+];
+
+/* ── host ── */
+const ROSTER=['Maya Okonkwo','Rafa Ibarra','Dot Chen','June Park','Bo Achebe','Theo Lindqvist',
+  'Devin Roux','Ilya Voronin','Nils Bergström','Sam Ito','Cass Moreau','Priya Nair','Suki Tanaka','Wren Adeyemi'];
+
+/* the unconfirmed event gates everything else */
+let hostTab='future';
+let ARCHIVE=[
+  {title:'Supper Club No. 3', when:'11 July', invited:14, projected:[10,13], came:12,
+   best:'Priya Nair', worst:'Devin Roux', late:1, ghosts:1},
+  {title:'Kitchen sessions',  when:'28 June', invited:22, projected:[14,18], came:15,
+   best:'Rafa Ibarra', worst:'Cass Moreau', late:3, ghosts:2},
+];
+let PAST={
+  id:0, title:'Rooftop, Potrero', when:'Last night · 27 July', cap:16,
+  p1:{'Rafa Ibarra':1,'Bo Achebe':1,'Devin Roux':1}, p1in:{'Rafa Ibarra':1},
+  guests:['Maya Okonkwo','Rafa Ibarra','Dot Chen','Bo Achebe','Theo Lindqvist','Devin Roux',
+          'Ilya Voronin','Sam Ito','June Park','Cass Moreau'],
+  door:{}, confirmed:false
+};
+['Maya Okonkwo','Rafa Ibarra','Dot Chen','Bo Achebe','Sam Ito','June Park','Theo Lindqvist']
+  .forEach(n=>PAST.door[n]='in');
+
+let EVENTS=[
+  {id:1, title:'Supper Club No. 4', when:'Fri 1 Aug · 8:00 PM', where:'24th & Harrison',
+   cap:14, dl:'Wed 30 July', plus:'ask', ends:'11:30 PM', live:true,
+   details:"Buzzer is broken — text me and I'll come down. Bring nothing, I've got it covered.",
+   guests:['Maya Okonkwo','Rafa Ibarra','Dot Chen','June Park','Bo Achebe','Theo Lindqvist',
+           'Devin Roux','Ilya Voronin','Nils Bergström','Sam Ito','Cass Moreau'],
+   p1:{'Rafa Ibarra':1,'Bo Achebe':1,'Devin Roux':1}, door:{}}
+];
+let curEv=1;
+const ev=()=>EVENTS.find(e=>e.id===curEv);
+
+const gated=()=>!PAST.confirmed;
+
+/* create flow */
+let draft=null;
+
+/* A plus-one arrives with the person who vouched for them, near enough.
+   P(+1 shows) ~= 0.9 x P(voucher shows). They carry no record of their own. */
+function roomStats(going, p1){
+  const scored=going.map(byName).filter(visPub);
+  const avg = scored.length ? scored.reduce((a,p)=>a+p.rel,0)/scored.length : null;
+  const nPlus = Object.values(p1||{}).reduce((a,b)=>a+b,0);
+  let mu=0,va=0;
+  going.forEach(n=>{ const p=byName(n).pYes; mu+=p; va+=p*(1-p);
+    const k=(p1||{})[n]||0;
+    for(let i=0;i<k;i++){ const q=p*.9; mu+=q; va+=q*(1-q) } });
+  const sd=Math.sqrt(va);
+  return { avg, scored:scored.length, total:going.length, nPlus,
+           mu, lo:Math.max(0,Math.round(mu-1.15*sd)), hi:Math.round(mu+1.15*sd),
+           ranked:[...going].sort((a,b)=>{
+             const A=byName(a),B=byName(b);
+             if(visPub(A)!==visPub(B)) return visPub(A)?-1:1;
+             return visPub(A)? B.rel-A.rel : A.name.localeCompare(B.name);
+           }) };
+}
+
+function projection(list){
+  let mu=0,va=0;
+  list.forEach(n=>{const p=byName(n).pYes; mu+=p; va+=p*(1-p)});
+  const sd=Math.sqrt(va);
+  return {mu, lo:Math.max(0,Math.round(mu-1.15*sd)), hi:Math.round(mu+1.15*sd)};
+}
+
+/* ═══════════ HELPERS ═══════════ */
+const el=h=>{const d=document.createElement('div');d.innerHTML=h.trim();return d.firstElementChild};
+const av=(p,s)=>`<div class="av" style="background:hsl(${p.hue} 9% ${58+(p.hue%7)*3}%)${
+  s?`;width:${s}px;height:${s}px;font-size:${s*.32}px`:''}">${p.ini}</div>`;
+const strip=(p,max=26)=>`<div class="strip">${p.ev.slice(-max).map(c=>`<i class="${c}"></i>`).join('')}</div>`;
+const LEG=`<div class="legend">
+  <span><b style="background:var(--jade)"></b>Showed</span>
+  <span><b style="background:var(--rust)"></b>No-show</span>
+  <span><b style="background:var(--jade);opacity:.38"></b>Cancelled early</span>
+  <span><b style="background:var(--steel);opacity:.55"></b>Honest no</span>
+  <span><b style="border:1px dashed var(--ash)"></b>Ghosted</span></div>`;
+
+function attendeeList(going,p1,live,dropped){
+  const arr=live?arrivalsFor(live):{};
+  const here=n=>arr[n]==='in';
+  dropped=dropped||[];
+  const rated=going.filter(n=>visPub(byName(n)))
+    .sort((a,b)=>(here(b)-here(a)) || byName(b).rel-byName(a).rel);
+  const fresh=going.filter(n=>!visPub(byName(n)))
+    .sort((a,b)=>(here(b)-here(a)) || a.localeCompare(b));
+  const row=(n,i)=>{const p=byName(n), k=(p1||{})[n]||0, rated_=visPub(p);
+    return `<div class="rank">
+      <div class="ix">${here(n)?'':phase===3&&rated_?i+1:'·'}</div>
+      ${av(p,26)}
+      <div class="nm">${p.name}</div>
+      ${k?`<span class="p1">+${k}</span>`:''}
+      ${here(n)?`<span class="there">There</span>`
+        :`<div class="sc ${!rated_?'na':p.rel>=.88?'hi':p.rel<.70?'lo':''}">${
+          phase===3&&rated_?pct(p.rel):'—'}</div>`}</div>`};
+
+  if(phase<3) return `<div style="margin-top:4px">${going.map((n,i)=>row(n,i)).join('')}</div>
+    <div class="note">Reliability appears at week 9.${live?' Arrivals show live.':''}</div>`;
+
+  return `
+    ${rated.length?`<div class="seclab">${live?'In the room and on the way':'Going'} <span class="ct2">${rated.length}</span></div>
+      ${rated.map((n,i)=>row(n,i)).join('')}`:''}
+    ${fresh.length?`<div class="seclab new">New here <span class="ct2">${fresh.length}</span></div>
+      <p class="newnote">Fewer than eight events. No number yet — for them or anyone else.</p>
+      ${fresh.map(n=>row(n)).join('')}`:''}
+    ${dropped.length?`<div class="seclab" style="color:var(--rust)">Cancelled today
+        <span class="ct2">${dropped.length}</span></div>
+      ${dropped.map(n=>{const p=byName(n);return `<div class="rank" style="opacity:.72">
+        <div class="ix"></div>${av(p,26)}
+        <div class="nm">${p.name}</div>
+        <span class="gone">Cancelled</span></div>`}).join('')}
+      <p class="newnote" style="margin-top:8px">Shown rather than removed. Someone pulling out on the
+        day is worth knowing about, and quietly deleting them would hide it.</p>`:''}
+    ${Object.values(p1||{}).some(Boolean)?`<div class="note">Plus-ones carry no record of their own.
+      They're projected off whoever's bringing them.</div>`:''}`;
+}
+
+/* compact version for the swipe card */
+function miniList(going,p1,live,dropped){
+  const arr=live?arrivalsFor(live):{};
+  const here=n=>arr[n]==='in';
+  dropped=dropped||[];
+  const rated=going.filter(n=>visPub(byName(n)))
+    .sort((a,b)=>(here(b)-here(a)) || byName(b).rel-byName(a).rel);
+  const fresh=going.filter(n=>!visPub(byName(n)));
+  const order=phase===3?rated.concat(fresh):[...going].sort((a,b)=>here(b)-here(a));
+  const show=order.slice(0,4), rest=going.length-show.length;
+  const nHere=going.filter(here).length;
+  return `<div class="mini2">
+    ${show.map(n=>{const p=byName(n),k=(p1||{})[n]||0;return `<div class="r">
+      ${av(p,20)}<div class="n2">${p.name}${k?' +'+k:''}</div>
+      ${here(n)?`<span class="there">There</span>`
+        :`<div class="s2 ${phase===3&&visPub(p)?(p.rel>=.88?'hi':p.rel<.70?'lo':'mid'):'na'}">${
+          phase===3&&visPub(p)?pct(p.rel):'—'}</div>`}</div>`}).join('')}
+    ${dropped.slice(0,2).map(n=>{const p=byName(n);return `<div class="r" style="opacity:.6">
+      ${av(p,20)}<div class="n2">${p.name}</div>
+      <span class="gone">Cancelled</span></div>`}).join('')}
+    ${rest>0||dropped.length>2?`<div class="rest">+${rest} more${
+      nHere?` · ${nHere} there`:''}${dropped.length?` · ${dropped.length} cancelled`:''}</div>`:''}
+  </div>`;
+}
+
+function openRoom(id){
+  const i=INV.find(x=>x.id===id);
+  const s2=el(`<div class="scrim" onclick="if(event.target===this)close_()"><div class="sheet">
+    <div class="grab"></div>
+    <div class="eyebrow">${i.t} · ${i.day}</div>
+    <h1 style="font-size:20px;margin-bottom:2px">Who's going</h1>
+    ${attendeeList(i.going,i.p1,null)}
+    <button class="btn g sm" style="margin-top:14px" onclick="close_()">Close</button>
+  </div></div>`);
+  const m=document.getElementById('mount'); m.innerHTML=''; m.appendChild(s2);
+}
+
+/* ═══════════ SIGNUP ═══════════ */
+function disclosure(){return `<div class="disc">
+  <div class="eyebrow">Before you sign up</div>
+  <h1>This is a small experiment in social accountability.</h1>
+
+  <div class="dblock">
+    <h4>What it's for</h4>
+    <p>Most invitations get a yes that doesn't mean much, and hosts cook for twenty and feed
+       thirteen. Roster records whether people actually turn up, so a yes is worth something again.
+       That only works if everyone is accountable to the same record.</p>
+  </div>
+
+  <div class="dblock">
+    <h4>Why we ask for more than usual</h4>
+    <p>Your full name and a social handle, because a record attached to a half-identity isn't a
+       record — it's a costume. Everyone here can see who you are, and you can see them.</p>
+  </div>
+
+  <div class="dblock key">
+    <h4>Three numbers, visible to everyone after eight events</h4>
+    <p>Below eight events nobody sees anything, including you. A strong record is also what earns
+       you invitations of your own.</p>
+    <div class="sc"><span>Reliability</span><span>Response time</span><span>Cadence</span></div>
+  </div>
+
+  <div class="dblock">
+    <h4>Saying no costs you nothing</h4>
+    <p>An early decline counts as an accurate answer. Only saying yes and not turning up hurts.</p>
+  </div>
+
+  <div class="dblock">
+    <h4>You can step back whenever</h4>
+    <p>Pause clears what you've committed to and declines new invitations for you, with a neutral
+       note to hosts. No reason required, and nobody is told why.</p>
+  </div>
+
+  <div style="flex:1;min-height:16px"></div>
+  <input class="field" placeholder="First name">
+  <input class="field" placeholder="Last name" style="margin-top:8px">
+  <input class="field" placeholder="Phone number" inputmode="tel" style="margin-top:8px">
+  <input class="field" placeholder="Instagram or Twitter" style="margin-top:8px">
+  <button class="btn" style="margin-top:12px" onclick="begin()">Continue</button>
+  <div class="note" style="text-align:center">Nothing is collected until you tap Continue. You can
+    delete your account and your whole record at any time.</div>
+</div>`}
+
+/* ═══════════ GUEST ═══════════ */
+const CARD_H=488, PEEK=54;
+
+function p1Control(o, fn, policy, full){
+  if(!policy || policy==='none') return '';
+  if(full) return `<div class="p1box" style="opacity:.55">
+    <div class="lb2">Bringing someone?<small>Full — no room for plus-ones</small></div>
+    <div class="ct">—</div></div>`;
+  return `<div class="p1box ${o.mine?'on':''}">
+    <div class="lb2">Bringing someone?
+      <small>${o.mine?'The host will be asked':'The host approves each one'}</small></div>
+    <button onclick="event.stopPropagation();${fn}${fn.endsWith(',')?'-1)':'(-1)'}">−</button>
+    <div class="ct">${o.mine||0}</div>
+    <button onclick="event.stopPropagation();${fn}${fn.endsWith(',')?'1)':'(1)'}">+</button>
+  </div>`;
+}
+
+/* The deck is answers first, then tonight. You can't get to the party
+   until you've dealt with what's owed. */
+function buildDeck(){
+  const owed=INV.filter(i=>!i.st && i.due && !i.lapsed)
+    .map(i=>({kind:'ask', inv:i, t:i.t, who:i.host, when:`${i.day} · answer by ${i.due}`,
+              where:i.where||'', going:i.going, p1:i.p1, waited:i.waited, sent:i.sent}));
+  return [...owed, ...deck];
+}
+
+function vToday(){
+  const cards=buildDeck();
+  const lapsed=INV.filter(i=>i.lapsed);
+
+  if(!cards.length) return `
+    <div class="eyebrow">Thursday 31 July</div>
+    <h1>Nothing left to settle.</h1>
+    <div class="card" style="margin-top:16px"><div class="note" style="margin:0">
+      You answered ${deckDone.length} today.</div></div>
+    ${lapsedList(lapsed)}
+    <button class="btn g sm" style="margin-top:14px" onclick="resetDeck();render()">Reset demo deck</button>`;
+
+  const n=Math.min(cards.length,3);
+  const owedCount=cards.filter(c=>c.kind==='ask').length;
+
+  const stack=cards.slice(0,n).map((c,d)=>{
+    const y=(n-1-d)*PEEK, sc=1-d*.035, top=d===0, ask=c.kind==='ask';
+    const full=(c.going.length + Object.values(c.p1||{}).reduce((a,b)=>a+b,0)) >= (c.cap||99);
+    return `<div class="stack ${top?'':'behind'}" style="
+        transform:translateY(${y}px) scale(${sc}); opacity:${top?1:.62}; z-index:${10-d}">
+      <div class="swipe" ${top?'id="card"':''} style="height:${CARD_H}px">
+        ${top?`<div class="stamp ${ask?'yes2':'go'}" id="sgo">${ask?'YES':'GOING'}</div>
+               <div class="stamp ${ask?'no2':'no'}" id="sno">${ask?'NO':'OUT'}</div>`:''}
+        <div class="flipper" ${top?'id="flip"':''} style="height:${CARD_H}px">
+          <div class="face front ${ask?'ask':''}">
+            <div class="whenrow">
+              <span class="when">${c.when}</span>
+              ${ask?`<span class="duepill"><i></i>Answer due</span>`
+                   :c.live?`<span class="livepill"><i></i>Happening now</span>`:''}
+            </div>
+            <h3>${c.t}</h3>
+            <div class="who">${c.who}${c.where?' · '+c.where:''}</div>
+            ${top&&c.details?`<div class="deets">${c.details}</div>`:''}
+            ${top?`
+              <div class="spacer"></div>
+              ${miniList(c.going,c.p1,c.live?c.t:null,c.dropped)}
+              ${ask?waitedLine(c):p1Control(c,'bumpDeck',c.plus,full)}
+              ${!ask&&c.live?liveBar(c):''}
+              <div class="hintrow" style="margin-top:11px">
+                <span style="color:var(--rust)">← ${ask?"Can't come":"Can't make it"}</span>
+                <span style="color:var(--jade)">${ask?"I'll be there":"Still going"} →</span></div>
+              <div class="flipcue" style="margin-top:9px">Tap for everyone</div>`:''}
+          </div>
+          ${top?`<div class="face back ${ask?'ask':''}">
+            <div class="eyebrow" style="margin-bottom:2px">${c.t}</div>
+            <div class="scrollr">
+              ${c.details?`<div class="deets full" style="margin:8px 0 4px">${c.details}</div>`:''}
+              ${attendeeList(c.going,c.p1,c.live?c.t:null,c.dropped)}</div>
+            <div class="flipcue" style="margin-top:9px">Tap to flip back</div>
+          </div>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  return `
+  <div class="eyebrow">Thursday 31 July</div>
+  <h1>${owedCount?`${owedCount} to answer first.`:'Still on for these?'}</h1>
+  <div class="note" style="margin:6px 0 0">${owedCount
+    ? `Deadlines tonight and tomorrow. Tonight's events are behind these.`
+    : `Right if you're going, left if you can't. Tap the card to see who else is.`}</div>
+  <div class="deck" style="height:${CARD_H+(n-1)*PEEK}px">${stack}</div>
+  <div style="display:flex;gap:8px;margin-top:14px">
+    <button class="btn g sm" onclick="answer('no')">${cards[0].kind==='ask'?"Can't come":"Can't make it"}</button>
+    <button class="btn sm" onclick="answer('go')">${cards[0].kind==='ask'?"I'll be there":"Still going"}</button></div>
+  ${lapsedList(lapsed)}`;
+}
+
+/* how long they've been sitting on it — the point is that delay is visible */
+function waitedLine(c){
+  const slow=c.waited>=4;
+  return `<div class="waited ${slow?'slow':''}">
+    <div class="v5">${c.waited}d</div>
+    <div class="k5">since ${c.who.split(' ')[0]} invited you${
+      slow?`. You usually answer in ${fmtRT(5)}.`:'.'}</div></div>`;
+}
+
+function lapsedList(lapsed){
+  if(!lapsed.length) return '';
+  return `<div class="lapsehead">Deadline passed · ${lapsed.length}</div>
+    ${lapsed.map(i=>{
+      const full=i.going.length>=(i.cap||99);
+      return `<div class="lapse">
+        ${av(byName(i.host),30)}
+        <div class="bd"><div class="t">${i.t}</div>
+          <div class="m">${i.day.toUpperCase()} · ANSWERED AS NOT GOING</div></div>
+        ${full?`<span class="wl2 full">Full</span>`
+          :`<button class="wl2 ${i.wl?'on':''}" onclick="toggleWl(${i.id})">${
+            i.wl?'On the list':'Late spot'}</button>`}
+      </div>`}).join('')}
+    <div class="note">Not answering counted as no. If there's still room the host can take you late,
+      but it's their call and it doesn't undo the miss.</div>`;
+}
+function toggleWl(id){ const i=INV.find(x=>x.id===id); i.wl=!i.wl; render() }
+
+function answer(a){
+  const cards=buildDeck();
+  const c=cards[0]; if(!c) return;
+  if(c.kind==='ask'){ c.inv.st = a==='go'?'go':'no'; render(); return }
+  deck.shift(); deckDone.push({...c,a}); render();
+}
+
+function bumpDeck(n){
+  const c=buildDeck()[0]; if(!c||c.kind==='ask') return;
+  c.mine=Math.max(0,Math.min(2,(c.mine||0)+n));
+  render();
+}
+
+/* Arrivals come from the host's door record for the same event, so a host
+   checking someone in updates every guest's card. */
+function arrivalsFor(title){
+  const e=EVENTS.find(x=>x.title===title);
+  return e ? (e.door||{}) : {};
+}
+
+function liveBar(c){
+  const at=myCheckin[c.t];
+  if(at) return `<div class="cibar">
+    <div class="tick2">✓</div>
+    <div class="tx">You're here<small>Checked in ${at}</small></div></div>`;
+  return `<div class="cibar">
+    <div class="tx">Not checked in yet<small>${c.who.split(' ')[0]} has the words up</small></div>
+    <button onclick="event.stopPropagation();goCheckin('${c.t.replace(/'/g,"\\'")}')">Check in</button>
+  </div>`;
+}
+function goCheckin(title){ ciEvent=title; ciState='enter'; ciVal=''; tab='checkin'; render() }
+
+
+
+/* Tap flips, horizontal drag answers, vertical drag scrolls the back face.
+   Axis is locked on the first meaningful move so the three never fight. */
+let swipeCtl=null;
+function bindSwipe(){
+  if(swipeCtl) swipeCtl.abort();          // drop the previous render's listeners
+  const card=document.getElementById('card'); if(!card) return;
+  swipeCtl=new AbortController();
+  const sig={signal:swipeCtl.signal};
+  const flip=document.getElementById('flip');
+  const go=document.getElementById('sgo'), no=document.getElementById('sno');
+  const TAP=9, THROW=95;
+  let x0=0,y0=0,dx=0,dy=0,drag=false,axis=null,moved=0;
+
+  const pt=e=>e.touches&&e.touches[0]?e.touches[0]:e;
+
+  const down=e=>{
+    const p=pt(e); x0=p.clientX; y0=p.clientY;
+    dx=dy=moved=0; axis=null; drag=true;
+    card.style.transition='none';
+  };
+  const move=e=>{
+    if(!drag) return;
+    const p=pt(e); dx=p.clientX-x0; dy=p.clientY-y0;
+    moved=Math.max(moved,Math.hypot(dx,dy));
+    if(!axis && moved>TAP) axis = Math.abs(dx)>Math.abs(dy) ? 'x' : 'y';
+    if(axis!=='x') return;                       // let the back face scroll
+    if(e.cancelable && e.type==='touchmove') e.preventDefault();
+    card.style.transform=`translateX(${dx}px) rotate(${dx*.045}deg)`;
+    go.style.opacity=Math.max(0,Math.min(1,dx/THROW));
+    no.style.opacity=Math.max(0,Math.min(1,-dx/THROW));
+  };
+  const up=()=>{
+    if(!drag) return; drag=false;
+    card.style.transition='transform .3s ease, opacity .3s ease';
+
+    if(moved<=TAP){                              // a tap: flip it
+      flip.classList.toggle('flip');
+      card.style.transform=''; go.style.opacity=0; no.style.opacity=0;
+      return;
+    }
+    if(axis==='x' && Math.abs(dx)>THROW){
+      const dir=dx>0?1:-1, a=dx>0?'go':'no';
+      card.style.transform=`translateX(${dir*540}px) rotate(${dir*22}deg)`;
+      card.style.opacity='0';
+      drag=false; moved=0;
+      setTimeout(()=>answer(a),190);
+      return;
+    }
+    card.style.transform=''; go.style.opacity=0; no.style.opacity=0;
+  };
+
+  card.addEventListener('pointerdown',down,sig);
+  window.addEventListener('pointermove',move,sig);
+  window.addEventListener('pointerup',up,sig);
+  window.addEventListener('pointercancel',up,sig);
+  card.addEventListener('touchstart',down,{passive:true,...sig});
+  card.addEventListener('touchmove',move,{passive:false,...sig});
+  card.addEventListener('touchend',up,sig);
+  card.addEventListener('touchcancel',up,sig);
+}
+
+let calView='fortnight', mMo=6, mYr=2026;      // July 2026
+
+/* seeded commitments so both views have something to show */
+const BUSY={'2026-7-2':['K'],'2026-7-4':['K'],'2026-7-5':['K','N'],'2026-7-8':['K'],
+  '2026-7-11':['K'],'2026-7-13':['K'],'2026-7-16':['K'],'2026-7-19':['K','K'],
+  '2026-7-22':['N'],'2026-7-26':['K'],'2026-6-31':['K','K']};
+
+function vFortnight(){
+  return `
+  <div class="eyebrow">Your calendar</div>
+  <h1>What's coming.</h1>
+  <div class="vswitch" style="margin-top:12px">
+    <button class="${calView==='fortnight'?'on':''}" onclick="calView='fortnight';render()">Two weeks</button>
+    <button class="${calView==='month'?'on':''}" onclick="calView='month';render()">Month</button>
+  </div>
+  ${calView==='fortnight'?fortnightGrid():monthGrid()}
+
+  <div class="wk" style="margin-top:22px">Waiting on you · ${INV.filter(i=>!i.st&&!i.lapsed).length}</div>
+  ${INV.filter(i=>!i.st&&!i.lapsed).map(i=>`<button class="inv needs" onclick="openInv(${i.id})">
+    ${av(byName(i.host),32)}
+    <div class="body"><div class="t">${i.t}</div>
+      <div class="m ${i.warn||i.lapsed?'warn':''}">${i.day.toUpperCase()} · ${i.dl.toUpperCase()}</div></div>
+    <span class="pill ${i.lapsed?'no':'answer'}">${i.lapsed?'Late':'Answer'}</span></button>`).join('')
+    || '<div class="emptyq">Nothing waiting on you.</div>'}
+
+  <div class="divid">Answered · ${INV.filter(i=>i.st||i.lapsed).length}</div>
+  <div class="card q" style="padding:2px 12px 10px">
+    ${INV.filter(i=>i.st||i.lapsed).map(i=>`<button class="inv" onclick="openInv(${i.id})">
+      ${av(byName(i.host),30)}
+      <div class="body"><div class="t">${i.t}</div>
+        <div class="m">${i.day.toUpperCase()}${i.st==='by'?' · CONFIRM BY '+i.byd.toUpperCase():''}${i.mine?` · +${i.mine}`:''}</div></div>
+      <span class="pill ${i.lapsed?'no':i.st}">${i.lapsed?'Missed':i.st==='go'?'Going':i.st==='no'?'Out':'By '+i.byd}</span></button>`).join('')}
+  </div>
+`;
+}
+
+function dayCell(dd,inMonth){
+  const k=key(dd), marks=BUSY[k]||[];
+  const isToday = k===key(TODAY);
+  return `<div class="mcell ${inMonth?'':'out'} ${isToday?'today':''}">
+    <div class="d">${dd.getDate()}</div>
+    <div class="dots">${marks.map(m=>
+      `<i style="background:${m==='K'?'var(--jade)':'var(--steel)'}"></i>`).join('')}</div></div>`;
+}
+
+function fortnightGrid(){
+  const start=addDays(TODAY,-((TODAY.getDay()+6)%7));
+  const rows=[0,1].map(w=>`
+    <div class="wk">Week of ${fmtDay(key(addDays(start,w*7)))}</div>
+    <div class="mgrid">${DOW.map(d=>`<div class="h">${d[0]}</div>`).join('')}</div>
+    <div class="mgrid">${Array.from({length:7},(_,i)=>dayCell(addDays(start,w*7+i),true)).join('')}</div>`);
+  return rows.join('');
+}
+
+function monthGrid(){
+  const first=new Date(mYr,mMo,1);
+  const lead=(first.getDay()+6)%7;
+  const start=addDays(first,-lead);
+  return `
+  <div class="mnav">
+    <button onclick="moveMonth(-1)">‹</button>
+    <div class="mo">${MOS[mMo]} ${mYr}</div>
+    <button onclick="moveMonth(1)">›</button>
+  </div>
+  <div class="mgrid">${DOW.map(d=>`<div class="h">${d[0]}</div>`).join('')}</div>
+  <div class="mgrid">${Array.from({length:42},(_,i)=>{
+    const dd=addDays(start,i);
+    return dayCell(dd, dd.getMonth()===mMo);
+  }).join('')}</div>
+`;
+}
+function moveMonth(n){ let m=mMo+n,y=mYr; if(m<0){m=11;y--} if(m>11){m=0;y++} mMo=m;mYr=y;render() }
+
+function openInv(id){
+  const i=INV.find(x=>x.id===id), h=byName(i.host);
+  const s=el(`<div class="scrim" onclick="if(event.target===this)close_()"><div class="sheet">
+    <div class="grab"></div>
+    <div class="eyebrow">${i.day} · invited by</div>
+    <div style="display:flex;align-items:center;gap:11px;margin-bottom:4px">
+      ${av(h)}<div style="flex:1"><div style="font-size:14px;font-weight:500">${h.name}</div>
+      <div class="eyebrow" style="margin:4px 0 0">${i.dl}</div></div></div>
+    <h1 style="font-size:24px;margin:14px 0 2px">${i.t}</h1>
+    <div class="note" style="margin-top:4px">8:00 PM · 24th & Harrison · 14 spots</div>
+    <div style="margin-top:9px">${plusBadge(i.plus)}</div>
+    ${miniList(i.going,i.p1,null)}
+    <button class="btn g sm" style="margin-top:10px" onclick="openRoom(${id})">See everyone going</button>
+    <div class="rsvp">
+      <button class="${i.st==='go'?'sel':''}" onclick="setRsvp(${id},'go')">Going
+        <small>Counts as a commitment</small></button>
+      <button class="${i.st==='no'?'sel n':''}" onclick="setRsvp(${id},'no')">Not going
+        <small>Scores as an accurate answer</small></button>
+      <button class="${i.st==='by'?'sel b':''}" onclick="setRsvp(${id},'by')">I'll confirm by…
+        <small>Must land before the host's deadline</small></button></div>
+    ${i.st==='by'?`<div class="dates">${['3 Aug','5 Aug','6 Aug'].map(d=>
+      `<button class="${i.byd===d?'on':''}" onclick="setBy(${id},'${d}')">${d}</button>`).join('')}</div>
+      <div class="note">Missing your own date counts as a lapse, same as never answering. Until you
+        confirm you count as half a seat in the host's projection.</div>`:''}
+    ${i.st==='go'?`${p1Control(i,`bumpMine(${id},`,i.plus,false)}
+      ${i.mine?`<div class="note">Counted in ${h.name.split(' ')[0]}'s projection at nine-tenths of
+        your own show rate — your guest arrives when you do. If they don't come, that lands on you.</div>`
+      :i.plus!=='none'?`<div class="note">Say now rather than at the door. A head the host didn't plan
+        for is the one thing the projection can't see coming.</div>`:''}`:''}
+    <button class="btn g sm" style="margin-top:16px" onclick="close_()">Done</button>
+  </div></div>`);
+  const m=document.getElementById('mount'); m.innerHTML=''; m.appendChild(s);
+}
+function setRsvp(id,st){const i=INV.find(x=>x.id===id);i.st=st;if(st==='by'&&!i.byd)i.byd='5 Aug';openInv(id)}
+function setBy(id,d){const i=INV.find(x=>x.id===id);i.byd=d;openInv(id)}
+function bumpMine(id,n){const i=INV.find(x=>x.id===id);i.mine=Math.max(0,Math.min(2,i.mine+n));openInv(id)}
+function close_(){document.getElementById('mount').innerHTML='';render()}
+
+let ciState='enter', ciVal='', rating=null, rtext='';
+let myCheckin={};            // event title -> time checked in
+let ciEvent='Supper Club No. 4';
+let pauseCancel=false, pauseDecline=false;
+function vCheckin(){
+  if(ciState==='done') return `<div class="done">
+    <div class="ring">✓</div>
+    <h1 style="font-size:21px">You're in.</h1>
+    <div class="note" style="margin-top:8px">${ciEvent} · checked in ${myCheckin[ciEvent]||'now'}</div>
+    <button class="btn g sm" style="margin-top:22px" onclick="ciState='rate';render()">Rate the event</button>
+    <button class="btn g sm" onclick="go('today')">Back to today</button></div>`;
+  if(ciState==='rate') return vRate();
+  return `
+  <div class="eyebrow">You're at</div>
+  <h1>${ciEvent}</h1>
+  <div class="note" style="margin:6px 0 0">Ask ${
+    (deck.find(d=>d.t===ciEvent)||{who:'the host'}).who.split(' ')[0]} for the words on their screen.</div>
+  <div class="cirow">
+    <input class="entry" placeholder="two words" value="${ciVal}"
+      oninput="ciVal=this.value" onkeydown="if(event.key==='Enter')tryCi()">
+    <button class="go2" onclick="tryCi()">Enter</button>
+  </div>
+  <div class="note" style="text-align:center" id="cdown">Words change in 6 seconds</div>`;
+}
+
+function tryCi(){
+  if((ciVal||'').trim().length<3) return;
+  myCheckin[ciEvent]='8:14 PM';
+  ciState='done'; render();
+}
+/* demo: let a guest arrive so the live list visibly changes */
+function arrive(name){
+  const e=EVENTS.find(x=>x.title===deck[0]?.t);
+  if(e){ e.door[name]='in'; render() }
+}
+function vRate(){return `
+  <div class="eyebrow">${ciEvent} · tonight</div>
+  <h1>How was it?</h1>
+  <div class="rate">
+    <button class="${rating==='good'?'sel':''}" onclick="rating='good';render()">Good</button>
+    <button class="${rating==='imp'?'sel n':''}" onclick="rating='imp';render()">Needs improvement</button></div>
+  ${rating==='imp'?`<textarea placeholder="What would have made it better?" oninput="rtext=this.value">${rtext}</textarea>
+    <div class="note"><b>Maya will see this with your name on it.</b> It stays between the two of you —
+      it isn't published, aggregated, or shown to other hosts.</div>`
+   :rating==='good'?`<div class="note">Sent. Nothing else recorded.</div>`:''}
+  ${rating?`<button class="btn" style="margin-top:14px" onclick="ciState='done';rating=null;rtext='';render()">Send</button>`:''}
+  <div class="note" style="margin-top:20px">Guests rate events. Hosts don't rate guests — nothing
+    subjective is recorded about a person anywhere in this beta.</div>`}
+
+function vMe(){
+  if(meTab==='invites') return `
+    <div class="vswitch">
+      <button onclick="meTab='record';render()">Record</button>
+      <button class="on">Invitations</button>
+    </div>
+    ${vInvites()}`;
+  const me={name:'You',hue:38,ev:[...'KKNKKCKKNKKK'],ini:'YOU',rt:5,lapses:0};
+  me.n=me.ev.filter(c=>c!=='G').length;
+  const num=me.ev.filter(c=>c!=='G').reduce((a,c)=>a+CRED[c],0);
+  me.rel=(num+K_*M_)/(me.n+K_); me.cad='3.0';
+  const sw=`<div class="vswitch">
+      <button class="on">Record</button>
+      <button onclick="meTab='invites';render()">Invitations${
+        phase>=3||isFounder?` · ${remaining()}`:''}</button>
+    </div>`;
+  if(phase===1) return sw+`
+    <div class="eyebrow">Weeks 1–6 · shadow</div>
+    <h1>No numbers yet.</h1>
+    <div class="card" style="margin-top:16px"><div class="eyebrow">Your history so far</div>
+      ${strip(me)}${LEG}</div>
+    <div class="lockbox"><b>Nothing is being shown to anyone, including you.</b> Attendance is being
+      recorded so that when scores do appear they're built on something. Six weeks of history first.</div>`;
+  return sw+`
+  <div class="eyebrow">${phase===2?'Weeks 7–8 · visible to you only':'Weeks 9–12 · visible to everyone'}</div>
+  <h1>Your record.</h1>
+  <div class="card" style="margin-top:14px">
+    ${strip(me)}${LEG}
+    ${visSelf(me)?`<div class="three">
+      <div><div class="v hi">${pct(me.rel)}</div><div class="k">Reliability</div></div>
+      <div><div class="v">${fmtRT(me.rt)}</div><div class="k">Usual<br>reply</div></div>
+      <div><div class="v">${me.cad}</div><div class="k">Per<br>quarter</div></div></div>
+    <div class="note">You've never left an invitation unanswered.</div>`:''}
+  </div>
+  ${phase===2?`<div class="lockbox">Only you can see this. At week 9 it becomes visible to other
+    members — but only once you've passed <b>eight events</b>.</div>`
+  :`<div class="lockbox">Everyone can see these numbers.</div>`}
+
+  <div class="card ${pauseDecline||pauseCancel?'':'q'}" style="margin-top:20px${
+    pauseDecline||pauseCancel?';border-color:var(--jade-lo);background:var(--jade-dim)':''}">
+    <h2 style="margin:0 0 4px">Step back</h2>
+    <div class="note" style="margin:0 0 6px">No reason required. Nobody is told why.</div>
+
+    <div class="sw">
+      <div class="cp"><b>Mark everything you've said yes to as can't go</b>
+        <small>${goingCount()} event${goingCount()===1?'':'s'}. Hosts are told now, not at the door.
+        These count as cancellations, same as if you'd swiped each one — early ones barely register,
+        tonight's costs something.</small></div>
+      <button class="tog ${pauseCancel?'on':''}" onclick="pauseCancel=!pauseCancel;render()"><i></i></button>
+    </div>
+
+    <div class="sw">
+      <div class="cp"><b>Automatically decline all new invitations</b>
+        <small>They still arrive, and answer themselves with a neutral note. A decline is an accurate
+        answer, so nothing here works against you.</small></div>
+      <button class="tog ${pauseDecline?'on':''}" onclick="pauseDecline=!pauseDecline;render()"><i></i></button>
+    </div>
+
+    ${pauseCancel||pauseDecline?`<div class="note" style="margin-top:12px">
+      Hosts see a small marker while this is on — deliberately. It's an opening for someone to check
+      in on you, not a flag.</div>`:''}
+  </div>`;
+}
+
+function goingCount(){ return INV.filter(i=>i.st==='go').length + deck.length }
+
+function confirmP1(n){
+  PAST.p1in=PAST.p1in||{};
+  const k=(PAST.p1||{})[n]||0;
+  PAST.p1in[n] = (PAST.p1in[n]||0) >= k ? 0 : k;     // toggle
+  if(PAST.p1in[n] && PAST.door[n]!=='in') PAST.door[n]='in';
+  render();
+}
+function vConfirm(){
+  const arrived=PAST.guests.filter(n=>PAST.door[n]==='in');
+  const missing=PAST.guests.filter(n=>PAST.door[n]!=='in');
+  if(PAST.confirmed) return `
+    <div class="eyebrow">Settled</div>
+    <h1>Nothing to confirm.</h1>
+    <div class="card" style="margin-top:16px"><div class="note" style="margin:0">
+      ${PAST.title} was confirmed. ${arrived.length} of ${PAST.guests.length} came.
+      Guests have 24 hours to contest before anything scores.</div></div>
+    <button class="btn g sm" onclick="PAST.confirmed=false;render()">Reset demo gate</button>`;
+  return `
+  <div class="gate">
+    <h4>Settle this before your next door</h4>
+    <p>You can plan and invite freely — but check-in stays locked until ${PAST.title} is confirmed.
+      This is the record every guest's numbers are built from, and ${PAST.guests.length} people are
+      waiting on it.</p>
+  </div>
+  <div class="eyebrow">${PAST.when} · settle by 8 PM</div>
+  <h1>Who actually came?</h1>
+  <div class="card" style="margin-top:14px">
+    <div class="eyebrow">Checked themselves in · ${arrived.length}</div>
+    ${arrived.map(n=>{const p=byName(n), k=(PAST.p1||{})[n]||0, pin=(PAST.p1in||{})[n]||0;
+      return `<div class="prow" style="border:0;padding:8px 0">
+      ${av(p,26)}<div class="nm"><div class="a">${p.name}</div>
+        ${k?`<div class="b">${pin}/${k} GUEST${k===1?'':'S'} CONFIRMED</div>`:''}</div>
+      <div class="dact">
+        <div class="ok">✓</div>
+        ${k?`<button class="p1b ${pin>=k?'on':'off'}" onclick="confirmP1('${n}')">+${k}</button>`:''}
+      </div></div>`}).join('') || '<div class="note" style="margin:0">Nobody.</div>'}
+  </div>
+  <div class="card">
+    <div class="eyebrow" style="color:var(--rust)">No record · ${missing.length}</div>
+    <div class="note" style="margin:0 0 8px">If they were here and forgot to type the words, mark them
+      now. A missed tap becomes a no-show on someone's public record.</div>
+    ${missing.map(n=>{const p=byName(n), k=(PAST.p1||{})[n]||0;
+      return `<div class="prow" style="border:0;padding:8px 0">
+      ${av(p,26)}<div class="nm"><div class="a">${p.name}</div>
+        ${k?`<div class="b">BRINGING ${k}</div>`:''}</div>
+      <div class="dact">
+        <button onclick="PAST.door['${n}']='in';render()">Was here</button>
+        ${k?`<button class="p1b off" onclick="confirmP1('${n}')">+${k}</button>`:''}
+      </div></div>`}).join('') || '<div class="note" style="margin:0">Everyone accounted for.</div>'}
+  </div>
+  ${Object.keys(PAST.p1||{}).length?`<div class="note">Green means their guest came too. Grey means
+    they turned up alone — a different fact from not turning up, and it lands on them either way.</div>`:''}
+  <button class="btn" onclick="PAST.confirmed=true;hostTab='past';tab='events';render()">
+    Confirm ${arrived.length + Object.values(PAST.p1in||{}).reduce((a,b)=>a+b,0)} of ${
+      PAST.guests.length + Object.values(PAST.p1||{}).reduce((a,b)=>a+b,0)}</button>
+  <div class="note">Guests see their own status for 24 hours and can contest in one tap before
+    anything counts.</div>`;
+}
+
+/* ═══════════ HOST · EVENTS LIST ═══════════ */
+function vEvents(){
+  return `
+  <div class="eyebrow">You're hosting</div>
+  <h1>Your events.</h1>
+  <div class="vswitch" style="margin-top:14px">
+    <button class="${hostTab==='future'?'on':''}" onclick="hostTab='future';render()">Coming up</button>
+    <button class="${hostTab==='past'?'on':''}" onclick="hostTab='past';render()">Past${
+      gated()?' · 1 to settle':''}</button>
+  </div>
+  ${hostTab==='future'?futureEvents():pastEvents()}
+  <button class="fab" onclick="startCreate()">+ New event</button>`;
+}
+
+function futureEvents(){
+  return `
+  <div class="card q" style="padding:2px 12px 8px;margin-top:12px">
+    ${EVENTS.map(e=>{
+      const pr=roomStats(e.guests,e.p1||{});
+      return `<button class="evrow" onclick="curEv=${e.id};tab='event';render()">
+        <div class="bd"><div class="t">${e.title}</div>
+          <div class="m">${e.when.toUpperCase()} · ${pr.lo}–${pr.hi} OF ${e.cap} PROJECTED</div>
+          <div style="margin-top:6px">${plusBadge(e.plus)}</div></div>
+        <span class="pill">Open</span></button>`}).join('')}
+  </div>
+  <div class="note">The door opens on the night, once the last event is settled.</div>`;
+}
+
+function pastEvents(){
+  return `
+  ${gated()?`<button class="evrow" style="border:1px solid var(--rust-lo);background:var(--rust-dim);
+      border-radius:10px;padding:12px;margin-top:12px" onclick="tab='confirm';render()">
+      <div class="bd"><div class="t">${PAST.title}</div>
+        <div class="m due">${PAST.when.toUpperCase()} · NOT SETTLED</div></div>
+      <span class="pill no">Confirm</span></button>
+    <div class="note">Nothing scores until you confirm who came — and the door stays shut for your
+      next event until you do.</div>`
+   :`<div class="card q" style="padding:2px 12px 8px;margin-top:12px">
+      <button class="evrow" onclick="tab='confirm';render()">
+        <div class="bd"><div class="t">${PAST.title}</div>
+          <div class="m">${PAST.when.toUpperCase()} · SETTLED</div></div>
+        <span class="pill">Open</span></button></div>`}
+
+  ${ARCHIVE.map(a=>{
+    const mid=(a.projected[0]+a.projected[1])/2, off=a.came-mid;
+    return `<div class="card" style="margin-top:11px">
+      <div class="eyebrow">${a.when} · ${a.title}</div>
+      <div class="turnout">
+        <div class="n3 ${Math.abs(off)<=1?'good':'off'}">${a.came}</div>
+        <div class="k3">came<br>of ${a.invited} invited</div>
+        <div style="flex:1"></div>
+        <div style="text-align:right">
+          <div class="n3" style="font-size:16px;color:var(--steel)">${a.projected[0]}–${a.projected[1]}</div>
+          <div class="k3">projected</div>
+        </div>
+      </div>
+      <div class="sumrow"><div class="k2">Most reliable</div>
+        <div class="v2">${a.best}<small>SAID YES, TURNED UP, EVERY TIME</small></div></div>
+      <div class="sumrow"><div class="k2">Cost you a seat</div>
+        <div class="v2">${a.worst}<small>SAID YES, DIDN'T ARRIVE</small></div></div>
+      <div class="sumrow"><div class="k2">Late cancels</div><div class="v2">${a.late}</div></div>
+      <div class="sumrow"><div class="k2">Never answered</div><div class="v2">${a.ghosts}</div></div>
+      <div class="note">Projection was ${Math.abs(off)<=1?'within a seat':`off by ${Math.abs(off).toFixed(0)}`}.
+        ${Math.abs(off)<=1?'Plan on that number next time.':'Worth inviting a few more than the band suggests.'}</div>
+    </div>`}).join('')}`;
+}
+
+/* ═══════════ HOST · CREATE ═══════════ */
+const TODAY=new Date(2026,6,31);
+const MOS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DOW=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const key=d=>`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+const parseKey=k=>{const[a,b,c]=k.split('-').map(Number);return new Date(a,b,c)};
+const fmtDay=k=>{const d=parseKey(k);return `${DOW[(d.getDay()+6)%7]} ${d.getDate()} ${MOS[d.getMonth()].slice(0,3)}`};
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+const dayDiff=(a,b)=>Math.round((parseKey(a)-parseKey(b))/864e5);
+const t12=hhmm=>{const[h,m]=hhmm.split(':').map(Number);
+  const ap=h<12?'AM':'PM', h12=h%12===0?12:h%12; return `${h12}:${String(m).padStart(2,'0')} ${ap}`};
+
+const PLUS_LABEL={none:'No plus-ones', ask:'Plus-ones on request'};
+const plusBadge=p=>`<span class="badge ${p||'none'}">${PLUS_LABEL[p||'none']}</span>`;
+
+function newDraft(){
+  const d=addDays(TODAY,8);
+  return { title:'', where:'', details:'', date:key(d), start:'20:00', end:'23:00', dlDays:null,
+           cap:14, plus:'ask', guests:new Set(), calMo:d.getMonth(), calYr:d.getFullYear() };
+}
+function startCreate(){ draft=newDraft(); tab='create'; render() }
+
+function calendar(d){
+  const yr=d.calYr, mo=d.calMo;
+  const lead=(new Date(yr,mo,1).getDay()+6)%7, ndays=new Date(yr,mo+1,0).getDate();
+  let cells='';
+  for(let i=0;i<lead;i++) cells+='<span></span>';
+  for(let n=1;n<=ndays;n++){
+    const dd=new Date(yr,mo,n), k=key(dd), past=dd<TODAY;
+    cells+=`<button class="${past?'pastd':''} ${k===d.date?'sel':''}" ${past?'disabled':''}
+      onclick="pickDate('${k}')">${n}</button>`;
+  }
+  return `<div class="cal">
+    <div class="calhead"><button onclick="calMove(-1)">‹</button>
+      <div class="mo">${MOS[mo]} ${yr}</div>
+      <button onclick="calMove(1)">›</button></div>
+    <div class="cg">${DOW.map(x=>`<div class="h">${x[0]}</div>`).join('')}</div>
+    <div class="cg">${cells}</div></div>`;
+}
+function calMove(n){ let m=draft.calMo+n,y=draft.calYr;
+  if(m<0){m=11;y--} if(m>11){m=0;y++} draft.calMo=m; draft.calYr=y; render() }
+function pickDate(k){ draft.date=k; render() }
+function setPlus(p){ draft.plus=p; render() }
+function toggleDraft(n){ draft.guests.has(n)?draft.guests.delete(n):draft.guests.add(n); render() }
+
+function draftMath(d){
+  const list=[...d.guests];
+  const st=roomStats(list,{});
+  return { ...st, list, ceiling: d.plus==='open'?list.length*2:list.length };
+}
+
+/* Recommendation has two constraints pulling opposite ways:
+   leave enough runway to backfill, but give this particular list time to answer. */
+function recommendDl(d){
+  const list=[...d.guests];
+  const lead=dayDiff(d.date,key(TODAY));
+  const BACKFILL=3;                                    // days needed to fill gaps
+  let p80=1;
+  if(list.length){
+    const rts=list.map(n=>byName(n).rt/24).sort((x,y)=>x-y);
+    p80=Math.ceil(rts[Math.min(rts.length-1,Math.floor(rts.length*.8))]);
+  }
+  const needed=Math.max(1,p80);                        // days the list needs to reply
+  const ideal=Math.min(BACKFILL, Math.max(0, lead-needed));
+  const conflict = lead - needed < BACKFILL;
+  return { days:ideal, needed, lead, conflict, p80,
+           date:key(addDays(parseKey(d.date),-ideal)) };
+}
+
+function dlOptions(d){
+  const lead=dayDiff(d.date,key(TODAY));
+  const out=[];
+  for(let i=0;i<=Math.min(lead,21);i++) out.push(i);
+  return out;
+}
+
+function vCreate(){
+  const d=draft||newDraft();
+  const m=draftMath(d);
+  const cap=Math.max(1,d.cap||1);
+  const L=m.lo/cap*100, W=Math.max(2,(m.hi-m.lo)/cap*100);
+  const rec=recommendDl(d);
+  const over=false;
+  if(d.dlDays==null) d.dlDays=rec.days;
+
+  return `
+  <div class="eyebrow">New event</div>
+  <h1>${d.title||'Untitled'}</h1>
+
+  <label class="lab">Name</label>
+  <input class="in" placeholder="Supper Club No. 5" value="${d.title}" oninput="draft.title=this.value">
+
+  <label class="lab">Location</label>
+  <input class="in" placeholder="24th & Harrison" value="${d.where}" oninput="draft.where=this.value">
+
+  <label class="lab">Anything they should know</label>
+  <textarea class="deets-in" placeholder="Broken buzzer, what to bring, where to park, when the kitchen shuts…"
+    oninput="draft.details=this.value">${d.details}</textarea>
+
+  <label class="lab">Date</label>
+  ${calendar(d)}
+  <div class="two" style="margin-top:14px">
+    <div><label class="lab" style="margin-top:0">Starts</label>
+      <input type="time" value="${d.start}" onchange="draft.start=this.value;render()"></div>
+    <div><label class="lab" style="margin-top:0">Ends</label>
+      <input type="time" value="${d.end}" onchange="draft.end=this.value;render()"></div>
+  </div>
+  <div class="note">The end time is what tells the app when to open check-in and when to ask you to
+    confirm who came.</div>
+
+  <label class="lab">Maximum attendance</label>
+  <input type="number" min="2" max="200" value="${d.cap}"
+    oninput="draft.cap=+this.value" onchange="render()">
+
+  <label class="lab">Invitations</label>
+  <div class="card q" style="padding:2px 12px 8px">
+    ${ROSTER.map(n=>guestRow(n,d.guests.has(n),`toggleDraft('${n}')`)).join('')}
+  </div>
+
+  <label class="lab">Plus-ones</label>
+  <div class="pol">
+    <button class="${d.plus==='none'?'on':''}" onclick="setPlus('none')">
+      <span class="ttl">No plus-ones</span><small>Everyone in the room has a record</small></button>
+    <button class="${d.plus==='ask'?'on':''}" onclick="setPlus('ask')">
+      <span class="ttl">Ask me first</span><small>You approve each one · closes at capacity</small></button>
+  </div>
+  ${d.plus!=='none'?`<div class="note">A plus-one has no record of their own — they're counted off
+    whoever brings them, and that person carries their no-show.</div>`:''}
+
+  <div class="proj" style="margin-top:18px">
+    <div class="eyebrow">Projected turnout</div>
+    <div style="display:flex;align-items:flex-end;gap:12px">
+      <div class="big">${m.lo}–${m.hi}</div>
+      <div style="padding-bottom:5px"><div class="num" style="font-size:15px;color:var(--ash)">${m.list.length}</div>
+        <div class="eyebrow" style="margin:3px 0 0">Invited</div></div></div>
+    <div class="band"><div class="tr"></div>
+      <div class="fl" style="left:${L}%;width:${W}%"></div>
+      <div class="tk" style="left:${L}%"></div><div class="tk" style="left:${L+W}%"></div>
+      <div class="lb" style="left:0">0</div><div class="lb" style="right:0">${cap} max</div></div>
+    ${m.hi<cap?`<div class="note"><b>Short by ${cap-m.hi}.</b> Invite more than you have seats for —
+      that's what the number is for.</div>`:`<div class="note">Enough to fill the room.</div>`}
+    ${over?`<div class="warnbox"><b>${m.ceiling} could arrive.</b> ${m.list.length} invited, each able
+      to bring one, against ${cap} places.</div>`:''}
+  </div>
+
+  <label class="lab">Answers due by</label>
+  <select onchange="draft.dlDays=+this.value;render()">
+    ${dlOptions(d).map(v=>`<option value="${v}" ${d.dlDays===v?'selected':''}>${
+      fmtDay(key(addDays(parseKey(d.date),-v)))}${v===rec.days?' · recommended':''}</option>`).join('')}
+  </select>
+  ${m.list.length?`<div class="note">
+    <b>${fmtDay(rec.date)} recommended.</b> Most of this list answers within ${rec.p80} day${
+    rec.p80===1?'':'s'}, and it leaves ${rec.days} day${rec.days===1?'':'s'} to fill whatever opens up.
+    ${d.dlDays!==rec.days?` You've set ${fmtDay(key(addDays(parseKey(d.date),-d.dlDays)))}.`:''}</div>`
+  :`<div class="note">Add guests and this gets computed from how fast they actually reply.</div>`}
+  ${rec.conflict&&m.list.length?`<div class="warnbox"><b>Tight.</b> This list typically takes
+    ${rec.p80} days to answer and the event is ${rec.lead} days out. Expect lapses rather than
+    answers — or invite people who reply faster.</div>`:''}
+
+  <button class="btn" style="margin-top:14px" onclick="sendDraft()">Send ${m.list.length} invitation${m.list.length===1?'':'s'}</button>
+  <button class="btn g sm" onclick="tab='events';render()">Cancel</button>`;
+}
+
+function sendDraft(){
+  const d=draft;
+  if(!d.guests.size){ alert('Add at least one guest.'); return }
+  const id=Math.max(...EVENTS.map(e=>e.id),1)+1;
+  EVENTS.push({ id, title:d.title||'Untitled', details:d.details,
+    when:`${fmtDay(d.date)} · ${t12(d.start)}`, where:d.where||'TBC',
+    ends:t12(d.end), cap:d.cap, plus:d.plus,
+    dl:fmtDay(key(addDays(parseKey(d.date),-d.dlDays))),
+    guests:[...d.guests], p1:{}, door:{} });
+  curEv=id; draft=null; tab='event'; render();
+}
+
+function guestRow(n,on,fn){
+  const p=byName(n), pub=visPub(p);
+  return `<div class="prow">
+    ${av(p,30)}
+    <div class="nm"><div class="a">${p.name}</div>
+      <div class="b">${pub?`WORTH ${p.pYes.toFixed(2)} OF A SEAT`:`${p.n} OF 8 EVENTS`}</div></div>
+    ${phase===3&&pub?`<div class="snap">
+      <div><div class="v ${p.rel>=.88?'hi':p.rel<.70?'lo':''}">${pct(p.rel)}</div><div class="k">Rel</div></div>
+      <div><div class="v rt">${fmtRT(p.rt)}</div><div class="k">Reply</div></div>
+    </div>`:`<div class="snap"><div><div class="v na">—</div><div class="k">Rel</div></div></div>`}
+    <button class="add ${on?'on':''}" onclick="${fn}">${on?'In':'Add'}</button></div>`;
+}
+
+/* ═══════════ HOST · EVENT ═══════════ */
+function vEvent(){
+  const e=ev(); if(!e){tab='events';return vEvents()}
+  const pr=roomStats(e.guests, e.p1||{});
+  const L=pr.lo/e.cap*100, W=Math.max(2,(pr.hi-pr.lo)/e.cap*100);
+  return `
+  <div class="eyebrow">${e.when}</div>
+  <h1>${e.title}</h1>
+  <div class="note" style="margin:5px 0 10px">${e.where} · max ${e.cap} · answers due ${e.dl}</div>
+  <div style="margin-bottom:${e.details?'10px':'14px'}">${plusBadge(e.plus)}</div>
+  ${e.details?`<div class="deets full" style="margin-bottom:14px">${e.details}</div>`:''}
+  <div class="proj">
+    <div class="eyebrow">Projected turnout</div>
+    <div style="display:flex;align-items:flex-end;gap:12px">
+      <div class="big">${pr.lo}–${pr.hi}</div>
+      <div style="padding-bottom:5px">
+        <div class="num" style="font-size:15px;color:var(--ash);text-decoration:line-through">${
+          e.guests.length}${pr.nPlus?` + ${pr.nPlus}`:''}</div>
+        <div class="eyebrow" style="margin:3px 0 0">Said going${pr.nPlus?' + plus-ones':''}</div></div></div>
+    <div class="band"><div class="tr"></div>
+      <div class="fl" style="left:${L}%;width:${W}%"></div>
+      <div class="tk" style="left:${L}%"></div><div class="tk" style="left:${L+W}%"></div>
+      <div class="lb" style="left:0">0</div><div class="lb" style="right:0">${e.cap} seats</div></div>
+    ${pr.nPlus?`<div class="ceil">
+      <div><div class="k">Declared plus-ones</div></div>
+      <div class="n">${pr.nPlus}</div></div>`:''}
+    ${pr.hi<e.cap?`<div class="note"><b>You're short.</b> Invite ${e.cap-pr.hi} more to fill the table.</div>`
+      :`<div class="note">Enough to fill the table.</div>`}
+    ${pr.nPlus?`<div class="note">Plus-ones are already in the number above — projected at nine-tenths
+      of whoever's bringing them, since they arrive together. They carry no record of their own.</div>`:''}
+  </div>
+
+  <div class="card q" style="padding:2px 12px 8px">
+    <div class="wk" style="margin:12px 0 2px">Guest list · ${e.guests.length}</div>
+    ${ROSTER.map(n=>guestRow(n,e.guests.includes(n),`toggleEv('${n}')`)).join('')}
+  </div>
+  <div class="note">${phase===3
+    ? 'Reliability and usual reply time are visible to every member from week 9. Seat-worth is derived from them.'
+    : 'Scores are hidden until week 9, but projection still runs — computed from history nobody can see yet.'}</div>
+  <button class="fab" onclick="startCreate()">+ New event</button>`;
+}
+function toggleEv(n){
+  const e=ev(); const i=e.guests.indexOf(n);
+  i<0?e.guests.push(n):e.guests.splice(i,1); render();
+}
+
+/* ═══════════ HOST · DOOR ═══════════ */
+const W1=['AMBER','VELVET','COPPER','SALT','PLUM','IRON','MOSS','GLASS'];
+const W2=['OTTER','COMET','LANTERN','FERRY','THISTLE','MAGPIE','ANCHOR','PEPPER'];
+let codeIdx=0, codeTimer=null;
+const code=()=>W1[codeIdx%W1.length]+' '+W2[(codeIdx*3+2)%W2.length];
+
+function vDoor(){
+  const e=ev(); if(!e){tab='events';return vEvents()}
+  const inN=e.guests.filter(n=>e.door[n]==='in').length
+    + Object.values(e.p1in||{}).reduce((a,b)=>a+b,0);
+  const pr=projection(e.guests);
+  return `
+  <div class="eyebrow">Live · ${e.title}</div>
+  <div style="margin-bottom:10px">${plusBadge(e.plus)}</div>
+  <div class="codebox">
+    <div class="eyebrow" style="margin-bottom:12px">Read this to guests</div>
+    <div class="code" id="codetext">${code()}</div>
+    <div class="tick"><i id="tickbar"></i></div>
+    <div class="note" style="margin-top:12px" id="cdown">Words change in 6 seconds</div>
+    <button class="btn g sm" style="margin-top:14px" onclick="bigCode()">Show full screen</button></div>
+  <div class="card" style="display:flex;align-items:center;gap:14px;margin-top:11px">
+    <div><div class="num" style="font-size:30px;color:var(--jade);line-height:1">${inN}</div>
+      <div class="eyebrow" style="margin:5px 0 0">In the room</div></div>
+    <div style="flex:1;border-left:1px solid var(--line);padding-left:14px">
+      <div class="num" style="font-size:14px;color:var(--steel)">${pr.lo}–${pr.hi} projected</div>
+      <div class="note" style="margin-top:4px">${e.guests.length} said going</div></div></div>
+  ${e.guests.map(n=>{
+    const p=byName(n), inn=e.door[n]==='in', k=(e.p1||{})[n]||0;
+    const pin=(e.p1in||{})[n]||0, full=inn&&pin>=k;
+    return `
+    <div class="drow ${full&&k?'in':inn&&k&&pin<k?'part':inn?'in':''}">${av(p,28)}
+      <div class="nm"><div class="a">${p.name}</div>
+        ${k?`<div class="st">${pin}/${k} guest${k===1?'':'s'} in</div>`:''}</div>
+      <div class="dact">
+        ${inn?'<div class="ok">✓</div>'
+             :`<button onclick="checkIn('${n}')">Check in</button>`}
+        ${k?(pin>=k?'<div class="ok okp">+'+k+'</div>'
+                  :`<button class="p1b" onclick="checkInP1('${n}')">+1</button>`):''}
+      </div></div>`}).join('')}
+  <div class="note">Guests type the words themselves; this list is your backstop. Cache the roster
+    when this screen opens — party wifi is where check-in fails.</div>`;
+}
+let bigOn=false;
+function bigCode(){
+  bigOn=true;
+  const e=ev();
+  const m=document.getElementById('mount');
+  m.innerHTML=`<div class="bigcode" onclick="closeBig()">
+    <div class="ev">${e.title} · tap anywhere to exit</div>
+    <div class="w" id="bigw">${code()}</div>
+    <div class="cd" id="bigcd">Words change in ${secsLeft} seconds</div>
+    <div class="x">Close</div>
+    <div class="bar"><i id="bigbar"></i></div>
+  </div>`;
+  paintBig();
+  if(navigator.wakeLock&&navigator.wakeLock.request){
+    navigator.wakeLock.request('screen').then(l=>{wakeLock=l}).catch(()=>{});
+  }
+}
+let wakeLock=null;
+function closeBig(){
+  bigOn=false;
+  document.getElementById('mount').innerHTML='';
+  if(wakeLock){ try{wakeLock.release()}catch(e){} wakeLock=null }
+  render();
+}
+function paintBig(){
+  if(!bigOn) return;
+  const w=document.getElementById('bigw'), cd=document.getElementById('bigcd'),
+        b=document.getElementById('bigbar');
+  if(w) w.textContent=code();
+  if(cd) cd.textContent=`Words change in ${secsLeft} second${secsLeft===1?'':'s'}`;
+  if(b){ b.style.transition='none'; b.style.transform=`scaleX(${secsLeft/ROT})`;
+    requestAnimationFrame(()=>{ b.style.transition=`transform ${secsLeft}s linear`;
+      b.style.transform='scaleX(0)' }) }
+}
+
+function checkIn(n){ const e=ev(); e.door[n]='in'; render() }
+function checkInP1(n){
+  const e=ev(); e.p1in=e.p1in||{};
+  const k=(e.p1||{})[n]||0;
+  e.p1in[n]=Math.min(k,(e.p1in[n]||0)+1);
+  if(!e.door[n]) e.door[n]='in';        // the +1 arrived, so they did
+  render();
+}
+
+/* ═══════════ INVITATIONS ═══════════
+   Invitations are earned, not allotted. Someone you brought who turns up through their
+   first three events earns you another. Someone who doesn't, doesn't. Totals are never
+   quoted — what a member sees is what they can spend right now. */
+
+const HOLD_DAYS=14;
+
+/* Invitations are a standing, not a balance.
+   Every cycle your allowance is recomputed from your own record and the records of
+   everyone you brought — ongoing, not just their first few events. Unused allowance
+   does not roll over, and a link nobody claims inside HOLD_DAYS is consumed, not
+   returned: someone ignoring an invitation for a fortnight is itself a signal about
+   who you chose. */
+const CYCLE_DAYS=30;
+const TIERS=[
+  {min:.90, n:3, lbl:'90% and up'},
+  {min:.80, n:2, lbl:'80–89%'},
+  {min:.70, n:1, lbl:'70–79%'},
+  {min:0,   n:0, lbl:'Below 70%'},
+];
+const tierFor=rel=>TIERS.find(t=>rel>=t.min).n;
+
+/* Someone you brought counts heavily at first and stops counting once they've held
+   good standing long enough — at that point they're on their own record, not yours.
+   Trouble keeps counting for as long as it lasts. */
+const SETTLE_DAYS=120;
+function contribution(sp){
+  const p=byName(sp.name);
+  if(!p || !visPub(p))    return {d:0,  st:'new',     why:'no record yet'};
+  if(p.rel<.70)           return {d:-1, st:'costing', why:'costing you'};
+  if(p.rel<.88)           return {d:0,  st:'holding', why:'holding'};
+  if(sp.days>=SETTLE_DAYS)return {d:0,  st:'settled', why:'settled · on their own record'};
+  return {d:+1, st:'earning', why:'reliable'};
+}
+
+const isFounder=true;
+const FOUNDING_SEED=5;              // the original thirty, first cycle only
+const myRel=.92, myN=12;
+let cycleDay=19;                    // 19 of 30
+let usedThisCycle=1;
+let SPONSORED=[
+  {name:'Dot Chen',     days:48},    // reliable, still counting
+  {name:'Maya Okonkwo', days:190},   // reliable, long settled
+  {name:'Ilya Voronin', days:150},   // trouble keeps counting regardless of age
+  {name:'Sam Ito',      days:12},    // too new to have a record
+];
+
+function allowance(){
+  if(phase<3 && !isFounder) return {base:0,inv:0,seed:0,total:0};
+  const seed = isFounder && phase>=1 ? FOUNDING_SEED : 0;
+  const base = phase>=3 && myN>=8 ? tierFor(myRel) : 0;
+  const inv  = SPONSORED.reduce((a,sp)=>a+contribution(sp).d,0);
+  return {seed, base, inv, total:Math.max(0, seed+base+inv)};
+}
+const remaining = () => Math.max(0, allowance().total - usedThisCycle - LINKS.length);
+const nextCycle = () => Math.max(0, (phase>=3&&myN>=8?tierFor(myRel):0)
+  + SPONSORED.reduce((a,sp)=>a+contribution(sp).d,0));
+
+let LINKS=[ {id:1, token:'rstr.to/k7-mq2', days:9} ];
+let claimStep=0;
+
+function vInvites(){
+  const al=allowance(), rem=remaining();
+  if(phase<3 && !isFounder) return `
+    <div class="locked" style="margin-top:16px"><b>Not yet.</b> Nobody can bring anyone until they have a record —
+      only the original hosts started with any. Yours opens at week 9, and what you get then
+      depends on how reliably you've been answering.</div>`;
+
+  return `
+  <div class="note" style="margin:14px 0 0">Recomputed every ${CYCLE_DAYS} days from your record and
+    the records of everyone you brought. What you don't use, you lose.</div>
+
+  ${slotsView()}`;
+}
+
+function slotsView(){
+  const al=allowance(), rem=remaining(), used=usedThisCycle+LINKS.length;
+  const nxt=nextCycle(), delta=nxt-al.total;
+  return `
+  <div class="cyc">
+    <div class="hd"><span class="k">This cycle</span>
+      <span class="k">${CYCLE_DAYS-cycleDay} days left</span></div>
+    <div style="display:flex;align-items:flex-end;gap:12px">
+      <div class="big2">${rem}</div>
+      <div class="sub2">of ${al.total}<br>still yours</div>
+    </div>
+    <div class="pips">${Array.from({length:Math.max(al.total,1)},(_,i)=>
+      `<i class="${i<rem?'left':'gone'}"></i>`).join('')}</div>
+    <div class="nxt">
+      <span class="k">Next cycle, on today's records</span>
+      <span class="v ${delta>0?'up':delta<0?'dn':''}">${nxt}${delta?` (${delta>0?'+':''}${delta})`:''}</span>
+    </div>
+  </div>
+  <div class="note">Anything left when the cycle turns is gone.</div>
+
+  ${rem?`<button class="btn" style="margin-top:14px" onclick="mintLink()">Create an invitation link</button>`
+   :`<div class="emptyq" style="margin-top:14px">Nothing left this cycle.<br>
+     ${nxt?`${nxt} arrive${nxt===1?'s':''} in ${CYCLE_DAYS-cycleDay} days.`:'Your record has to recover first.'}</div>`}
+
+  ${LINKS.length?`<div class="wk" style="margin-top:20px">Out, unclaimed · ${LINKS.length}</div>
+    ${LINKS.map(l=>`<div class="slot">
+      <div class="ic used">↗</div>
+      <div class="bd"><div class="t">${l.sentTo||'Link sent'}</div>
+        <div class="m ${HOLD_DAYS-l.days<=4?'bad':'live'}">${HOLD_DAYS-l.days} DAYS TO CLAIM · THEN IT'S GONE</div></div>
+      <button class="act" onclick="revokeLink(${l.id})">Revoke</button></div>`).join('')}
+    <div class="linkbox">
+      <code>${LINKS.slice(-1)[0].token}</code>
+      <button onclick="alert('Copied. The preview shows only the Roster mark — not your name, and not that it is an invitation.')">Copy</button>
+    </div>
+    <div class="note"><b>Unclaimed means spent.</b> If they don't answer inside ${HOLD_DAYS} days it
+      doesn't come back to you — someone ignoring an invitation for a fortnight told you something
+      about how they'd treat an event. Revoking now returns it; letting it lapse doesn't.</div>`:''}
+
+  <div class="wk" style="margin-top:22px">What sets the number</div>
+  <div class="card q" style="padding:4px 13px 13px">
+    <div class="contrib">
+      <div class="bd"><div class="t">Your own record</div>
+        <div class="m">${phase>=3?pct(myRel).toUpperCase()+' RELIABILITY':'NOT VISIBLE UNTIL WEEK 9'}</div></div>
+      <div class="d ${al.base>0?'plus':'zero'}">${al.base>0?'+'+al.base:'0'}</div>
+    </div>
+    ${al.seed?`<div class="contrib">
+      <div class="bd"><div class="t">Founding host</div>
+        <div class="m">FIRST CYCLE ONLY · NOT REPEATED</div></div>
+      <div class="d plus">+${al.seed}</div></div>`:''}
+    ${SPONSORED.map(sp=>{const c=contribution(sp), p=byName(sp.name);
+      return `<div class="contrib" ${c.st==='settled'?'style="opacity:.55"':''}>
+        ${p?av(p,26):''}
+        <div class="bd"><div class="t">${sp.name}</div>
+          <div class="m">${p&&visPub(p)?pct(p.rel).toUpperCase()+' · '+c.why.toUpperCase():'NO RECORD YET'}</div></div>
+        <div class="d ${c.d>0?'plus':c.d<0?'minus':'zero'}">${c.d>0?'+1':c.d<0?'−1':'0'}</div>
+      </div>`}).join('')}
+  </div>
+  <div class="note">Someone you brought counts most in their first months. Once they've held a good
+    record long enough they settle and stop counting — they're on their own record by then. Trouble
+    keeps counting for as long as it lasts.</div>
+
+  ${phase>=3?`<div class="wk" style="margin-top:18px">What your own record is worth</div>
+  <div class="tiers">
+    ${TIERS.map(t=>`<div class="t2 ${myN>=8&&myRel>=t.min&&tierFor(myRel)===t.n?'you':''}">
+      <span class="rg">${t.lbl}</span>
+      <span class="gv">${t.n?'+'+t.n:'none'}</span></div>`).join('')}
+  </div>`:''}`;
+}
+
+function mintLink(){
+  if(!remaining()) return;
+  LINKS.push({id:Date.now(), days:0,
+    token:'rstr.to/'+Math.random().toString(36).slice(2,4)+'-'+Math.random().toString(36).slice(2,5)});
+  render();
+}
+function revokeLink(id){ LINKS=LINKS.filter(l=>l.id!==id); render() }
+
+
+
+
+/* ── claim page ── */
+function vClaim(){
+  return `<div class="claim">
+    <div class="crest">R</div>
+    <div style="flex:1"></div>
+    <h1>Maya Okonkwo<br>has invited you.</h1>
+    <div class="fromwho" style="margin-top:22px">
+      ${av(byName('Maya Okonkwo'),34)}
+      <div class="bd"><div class="t">Maya Okonkwo</div>
+        <div class="m">MEMBER SINCE JUNE</div></div>
+    </div>
+    <div style="flex:1"></div>
+    <button class="btn" onclick="tab=null;seen=false;render()">Continue</button>
+  </div>`;
+}
+
+/* ═══════════ SHELL ═══════════ */
+const GUEST_TABS=[['today','Today'],['fortnight','Fortnight'],['checkin','Check in'],['me','You']];
+let meTab='record';
+const HOST_TABS_ALL =[['events','Events'],['door','Door'],['confirm','Confirm']];
+const hostTabs = () => gated()
+  ? HOST_TABS_ALL.filter(t=>t[0]!=='door')
+  : HOST_TABS_ALL.filter(t=>t[0]!=='confirm');
+const CTX={today:'Thu 31 July',fortnight:'Your calendar',checkin:'At the door',me:'Your record',
+  events:'Hosting',event:'Hosting',create:'New event',
+  door:'Live now',confirm:'Settling',claim:'Invitation'};
+
+function render(){
+  const scr=document.getElementById('screen'), nav=document.getElementById('nav');
+  if(!seen){
+    scr.innerHTML=disclosure(); nav.innerHTML=''; scr.style.padding='0';
+    document.getElementById('ctx').textContent='Signup'; demoBar(); return;
+  }
+  if(tab==='claim'){
+    scr.innerHTML = vClaim();
+    scr.style.padding='0';
+    nav.innerHTML='';
+    document.getElementById('ctx').textContent=CTX[tab];
+    demoBar(); return;
+  }
+  scr.style.padding='';
+  const host = actor==='host';
+  const tabs = host?hostTabs():GUEST_TABS;
+
+  /* an unsettled event removes the door entirely rather than showing it locked */
+  if(host && gated() && tab==='door') tab='confirm';
+  if(host && !gated() && tab==='confirm' && PAST.confirmed) { /* stays reachable from Past */ }
+  if(!tab || (!tabs.find(t=>t[0]===tab) && !['event','create'].includes(tab))) tab=tabs[0][0];
+
+  const views={today:vToday,fortnight:vFortnight,checkin:vCheckin,me:vMe,
+    events:vEvents,event:vEvent,create:vCreate,door:vDoor,confirm:vConfirm,
+    claim:vClaim};
+  scr.innerHTML=views[tab]();
+  document.getElementById('ctx').textContent=CTX[tab]||'';
+
+  nav.style.gridTemplateColumns=`repeat(${tabs.length},1fr)`;
+  nav.innerHTML=tabs.map(([k,l])=>{
+    const locked = false;
+    const on = tab===k || (k==='events'&&['event','create'].includes(tab));
+    return `<button class="${on?'on':''}${locked?' lk':''}"
+      onclick="${locked?'lockedTap()':`go('${k}')`}">${locked?'◦ ':''}${l}</button>`;
+  }).join('');
+
+  demoBar();
+  if(tab==='today') bindSwipe();
+  if(tab==='door' || (tab==='checkin' && ciState==='enter')) startCode(); else stopCode();
+}
+function go(t){ tab=t; render(); document.getElementById('screen').scrollTop=0 }
+function lockedTap(){ tab='confirm'; render();
+  alert('Settle '+PAST.title+' before opening another door. Everything else stays open.') }
+
+function demoBar(){
+  document.getElementById('demo').innerHTML=`
+    <span class="lbl">Demo</span>
+    <button class="${actor==='guest'?'on':''}" onclick="setActor('guest')">Guest</button>
+    <button class="${actor==='host'?'on':''}" onclick="setActor('host')">Host</button>
+    <button class="${tab==='claim'?'on':''}" onclick="tab='claim';claimStep=0;render()">Claim</button>
+    <span class="sp"></span>
+    <span class="lbl">Phase</span>
+    ${[1,2,3].map(p=>`<button class="${phase===p?'on':''}" onclick="setPhase(${p})">${p}</button>`).join('')}`;
+}
+
+const ROT=6;
+let secsLeft=ROT, tickTimer=null;
+function startCode(){
+  if(codeTimer) return;
+  secsLeft=ROT;
+  const bar=()=>document.getElementById('tickbar');
+  const run=()=>{ const b=bar(); if(!b) return;
+    b.style.transition='none'; b.style.transform='scaleX(1)';
+    requestAnimationFrame(()=>{b.style.transition=`transform ${ROT}s linear`;b.style.transform='scaleX(0)'}) };
+  const paint=()=>{ const c=document.getElementById('cdown');
+    if(c) c.textContent=`Words change in ${secsLeft} second${secsLeft===1?'':'s'}`;
+    if(bigOn){ const bc=document.getElementById('bigcd');
+      if(bc) bc.textContent=`Words change in ${secsLeft} second${secsLeft===1?'':'s'}` } };
+  run(); paint();
+
+  tickTimer=setInterval(()=>{
+    if(!document.getElementById('cdown') && !bigOn){ stopCode(); return }
+    secsLeft--; if(secsLeft<0) secsLeft=ROT;
+    paint();
+  },1000);
+
+  codeTimer=setInterval(()=>{ codeIdx++; secsLeft=ROT;
+    const t=document.getElementById('codetext');
+    if(t) t.textContent=code();
+    run(); paint(); paintBig();
+  },ROT*1000);
+}
+function stopCode(){
+  if(codeTimer){clearInterval(codeTimer);codeTimer=null}
+  if(tickTimer){clearInterval(tickTimer);tickTimer=null}
+}
+
+render();
+
+</script>
