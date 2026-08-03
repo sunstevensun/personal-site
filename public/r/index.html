@@ -13,6 +13,8 @@
   --line:rgba(255,255,255,.085); --line2:rgba(255,255,255,.045);
   --silver:#DFE2E8; --steel:#949AA5; --ash:#5C626D;
   --jade:#5CD49B; --jade-lo:#12301F; --jade-dim:rgba(92,212,155,.10);
+  --sky:#63A9F2; --sky-lo:#12253A;
+  --tang:#E8944A; --tang-lo:#3A2611;
   --rust:#F0614F; --rust-lo:#3A1611; --rust-dim:rgba(240,97,79,.10);
   --disp:'DM Serif Display',Georgia,serif;
   --body:'DM Sans',system-ui,sans-serif;
@@ -42,7 +44,8 @@ button{font-family:inherit;color:inherit;background:none;border:none;cursor:poin
 .top{padding:15px 18px 12px;border-bottom:1px solid var(--line2);flex:none;
   display:flex;align-items:baseline;justify-content:space-between}
 .mark{font-family:var(--disp);font-size:19px;letter-spacing:-.005em;color:var(--silver)}
-.mark span{color:var(--jade)}
+.mark span{color:var(--ash);transition:color .4s}
+.mark span.on{color:var(--jade)}
 .top .ctx{font-family:var(--mono);font-size:8px;letter-spacing:.18em;
   text-transform:uppercase;color:var(--ash)}
 
@@ -79,7 +82,17 @@ h3{font-family:var(--disp);font-weight:400;font-size:25px;margin:9px 0 6px;
 .btn+.btn{margin-top:8px}
 
 .av{border-radius:9px;display:grid;place-items:center;flex:none;
-  font-family:var(--mono);font-weight:700;color:#0A0B0D;width:32px;height:32px;font-size:10px}
+  font-family:var(--mono);font-weight:700;width:32px;height:32px;font-size:10px;
+  box-sizing:border-box}
+.av.st-good{background:rgba(92,212,155,.17);border:1.5px solid var(--jade);color:var(--jade)}
+.av.st-rec{background:rgba(99,169,242,.16);border:1.5px solid var(--sky);color:var(--sky)}
+.av.st-dec{background:rgba(232,148,74,.16);border:1.5px solid var(--tang);color:var(--tang)}
+.av.st-bad{background:rgba(240,97,79,.15);border:1.5px solid var(--rust);color:var(--rust)}
+.av.st-none{color:#0A0B0D}
+.stkey{display:flex;flex-wrap:wrap;gap:11px;margin-top:11px}
+.stkey span{font-family:var(--mono);font-size:7.5px;color:var(--ash);letter-spacing:.09em;
+  text-transform:uppercase;display:flex;align-items:center;gap:5px}
+.stkey b{width:11px;height:11px;border-radius:3px;display:block;box-sizing:border-box}
 
 /* history strip */
 .strip{display:flex;align-items:flex-end;gap:2px;height:19px}
@@ -419,16 +432,17 @@ input::-webkit-calendar-picker-indicator{filter:invert(.65)}
 .tog.on i{transform:translateX(17px);background:var(--jade)}
 
 /* disclosure */
-.disc{padding:26px 20px calc(26px + var(--safe));min-height:100%;display:flex;flex-direction:column}
-.disc h1{font-size:30px;margin-bottom:20px;line-height:1.14}
-.dblock{border-left:1px solid var(--line);padding-left:15px;margin-bottom:19px}
+.disc{padding:30px 22px calc(28px + var(--safe));min-height:100%;display:flex;flex-direction:column}
+.disc h1{font-size:42px;margin-bottom:26px;line-height:1.06}
+.dblock{border-left:1px solid var(--line);padding-left:17px;margin-bottom:28px}
 .dblock.key{border-color:var(--jade);background:var(--jade-dim);
   padding:13px 15px;border-radius:0 8px 8px 0}
-.dblock h4{font-family:var(--disp);font-size:16px;margin:0 0 7px;letter-spacing:-.008em}
-.dblock p{margin:0;font-size:12.5px;line-height:1.62;color:var(--steel)}
+.dblock h4{font-family:var(--disp);font-size:23px;margin:0 0 10px;letter-spacing:-.012em;
+  line-height:1.14}
+.dblock p{margin:0;font-size:16px;line-height:1.6;color:var(--steel)}
 .dblock .sc{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
-.dblock .sc span{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
-  border:1px solid var(--jade-lo);color:var(--jade);padding:4px 9px;border-radius:20px}
+.dblock .sc span{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+  border:1px solid var(--jade-lo);color:var(--jade);padding:5px 10px;border-radius:20px}
 .steps{display:none}
 .opts{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
 .opts button{font-family:var(--mono);font-size:9.5px;padding:9px 12px;border-radius:8px;
@@ -689,12 +703,116 @@ textarea.deets-in{min-height:88px}
 .peek .pt{font-family:var(--disp);font-size:19px;color:var(--steel);letter-spacing:-.012em;
   margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
+/* ── conflict flag ── */
+.clash{display:flex;align-items:center;gap:9px;margin-top:11px;padding:10px 12px;
+  border-radius:9px;border:1px solid rgba(240,97,79,.30);background:var(--rust-dim)}
+.clash .ic2{font-family:var(--mono);font-size:13px;color:var(--rust);flex:none}
+.clash .tx2{flex:1;font-size:11.5px;color:var(--silver);line-height:1.5}
+.clash .tx2 small{display:block;font-family:var(--mono);font-size:7.5px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--rust);margin-top:4px}
+
+/* ── member record sheet ── */
+.rec-hd{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.rec-hd .bd3{flex:1}
+.rec-hd .bd3 .n6{font-family:var(--disp);font-size:21px;letter-spacing:-.01em}
+.rec-hd .bd3 .h6{font-family:var(--mono);font-size:8.5px;color:var(--ash);
+  letter-spacing:.12em;margin-top:4px}
+.rec-hd .big3{font-family:var(--mono);font-weight:700;font-size:28px;letter-spacing:-.03em}
+.reads{border:1px solid var(--line);border-radius:10px;padding:13px;margin-top:14px;
+  font-size:12px;line-height:1.6;color:var(--steel)}
+.reads b{color:var(--silver);font-weight:500}
+
+/* ── settle-first FAB ── */
+.fab.settle{background:var(--rust);color:#160705}
+/* ── suggestions from history ── */
+.sugg{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.sugg button{font-family:var(--mono);font-size:9.5px;padding:8px 11px;border-radius:8px;
+  border:1px dashed rgba(255,255,255,.16);color:var(--steel);display:flex;align-items:center;gap:6px}
+.sugg button:active{border-style:solid}
+.sugg button.on{background:var(--silver);border-color:var(--silver);border-style:solid;
+  color:#0A0B0D;font-weight:700}
+.sugg .why{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--ash)}
+.sugg button.on .why{color:rgba(10,11,13,.55)}
+.recall{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ash);margin-top:9px;display:block}
+.usual{border:1px solid var(--line);border-radius:10px;padding:12px 13px;margin-top:10px;
+  font-size:11.5px;line-height:1.6;color:var(--steel)}
+.usual b{color:var(--silver);font-weight:500}
+.usual .row2{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.usual .row2 button{font-family:var(--mono);font-size:9px;padding:7px 10px;border-radius:7px;
+  border:1px solid var(--line);color:var(--silver)}
+
+/* ── progress toward a record ── */
+.prog2{border:1px solid var(--line);border-radius:12px;padding:15px;margin-top:14px}
+.prog2.done{border-color:var(--jade-lo);background:var(--jade-dim)}
+.prog2 .hd2{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px}
+.prog2 .hd2 .t3{font-family:var(--disp);font-size:18px;letter-spacing:-.01em}
+.prog2 .hd2 .c3{font-family:var(--mono);font-weight:700;font-size:13px;color:var(--steel)}
+.prog2.done .hd2 .c3{color:var(--jade)}
+.pips2{display:flex;gap:4px}
+.pips2 i{flex:1;height:6px;border-radius:3px;background:var(--s3);display:block}
+.pips2 i.fill{background:var(--silver)}
+.prog2.done .pips2 i.fill{background:var(--jade)}
+.rhythm{display:flex;align-items:center;gap:9px;margin-top:13px;padding-top:12px;
+  border-top:1px solid var(--line2)}
+.rhythm .dot3{width:7px;height:7px;border-radius:50%;flex:none}
+.rhythm .tx3{flex:1;font-size:11.5px;color:var(--ash);line-height:1.5}
+.rhythm .tx3 b{color:var(--silver);font-weight:500}
+
+/* opening-week emptiness */
+.cold{border:1px dashed var(--line);border-radius:12px;padding:20px 16px;text-align:center;
+  color:var(--ash);font-size:12px;line-height:1.65;margin-top:12px}
+.cold b{color:var(--steel);font-weight:500}
+
+/* ── global page ── */
+.gstat{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+.gstat div{background:var(--s1);border:1px solid var(--line);border-radius:11px;padding:13px}
+.gstat .v6{font-family:var(--mono);font-weight:700;font-size:24px;line-height:1;letter-spacing:-.03em}
+.gstat .k6{font-family:var(--mono);font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ash);margin-top:7px;line-height:1.35}
+.gstat .tr6{font-family:var(--mono);font-size:9px;margin-top:6px}
+.gstat .tr6.up{color:var(--jade)} .gstat .tr6.dn{color:var(--rust)}
+.spark{display:flex;align-items:flex-end;gap:2px;height:22px;margin-top:9px}
+.spark i{flex:1;background:var(--s4);border-radius:1px;display:block;min-width:3px}
+.spark i.last{background:var(--silver)}
+.gline{border:1px solid var(--line);border-radius:11px;padding:14px;margin-top:12px;
+  font-size:12.5px;line-height:1.62;color:var(--steel)}
+.gline b{color:var(--silver);font-weight:500}
+.gleft{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--line2)}
+.gleft .bd4{flex:1}
+.gleft .bd4 .t4{font-size:12.5px}
+.gleft .bd4 .m4{font-family:var(--mono);font-size:8px;color:var(--ash);margin-top:4px;letter-spacing:.1em}
+.gleft .v7{font-family:var(--mono);font-weight:700;font-size:14px}
+
+/* ── how are we doing ── */
+.hero2{background:linear-gradient(168deg,var(--s2),var(--s1) 62%);border:1px solid var(--jade-lo);
+  border-radius:14px;padding:18px;margin-top:14px}
+.hero2 .k7{font-family:var(--mono);font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--ash)}
+.hero2 .v8{font-family:var(--mono);font-weight:700;font-size:46px;line-height:.9;
+  letter-spacing:-.045em;color:var(--jade);margin-top:9px}
+.hero2 .d8{font-family:var(--mono);font-size:10px;color:var(--jade);margin-top:9px}
+.hero2 .sub8{font-size:12px;color:var(--steel);line-height:1.6;margin-top:11px}
+.hero2 .sub8 b{color:var(--silver);font-weight:500}
+.twoup{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px}
+.twoup div{background:var(--s1);border:1px solid var(--line);border-radius:11px;padding:14px}
+.twoup .v9{font-family:var(--mono);font-weight:700;font-size:26px;line-height:1;letter-spacing:-.03em}
+.twoup .k9{font-family:var(--mono);font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ash);margin-top:7px;line-height:1.35}
+.twoup .t9{font-family:var(--mono);font-size:9px;margin-top:6px;color:var(--jade)}
+
+.slipped{border:1px solid var(--tang);background:rgba(232,148,74,.13);border-radius:12px;
+  padding:15px;margin-top:14px}
+.slipped h4{font-family:var(--disp);font-size:19px;margin:0 0 8px;color:var(--tang);letter-spacing:-.01em}
+.slipped p{margin:0;font-size:12.5px;line-height:1.6;color:var(--silver)}
+.slipped .strip i.K{background:var(--tang)}
+.slipped .pips2 i.fill{background:var(--tang)}
+
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
 <div id="app">
   <div id="demo"></div>
-  <div class="top"><div class="mark">Roster<span>.</span></div><div class="ctx" id="ctx"></div></div>
+  <div class="top"><div class="mark">Roster<span id="dot">.</span></div><div class="ctx" id="ctx"></div></div>
   <div class="screen" id="screen"></div>
   <div class="nav" id="nav"></div>
 </div>
@@ -712,7 +830,7 @@ const RAW=[
   ['Priya Nair',     'NNKNKNNKNKN',     225,  1],
   ['Dot Chen',       'KKNKKKNKKK',       52,  9],
   ['June Park',      'KKNKKKNK',        292, 20],
-  ['Bo Achebe',      'KKKKFKNKKCK',     168, 30],
+  ['Bo Achebe',      'KKKKKKNKKLF',     168, 30],
   ['Suki Tanaka',    'NKNNKGKNK',       200, 52],
   ['Theo Lindqvist', 'KCLKCKKLNKCK',     12,  6],
   ['Nils Bergström', 'KFNKK',           262, 14],
@@ -762,6 +880,7 @@ function resetDeck(){
   deck=[
     {t:'Supper Club No. 4', who:'Maya Okonkwo', when:'Tonight · 8:00 PM', where:'24th & Harrison',
      plus:'ask', mine:0, live:true,
+     ends:'11:30 PM',
      details:'Buzzer is broken — text me and I\'ll come down. Bring nothing, I\'ve got it covered. '
             +'Dog is friendly but will try the cheese.',
      going:['Rafa Ibarra','Dot Chen','June Park','Bo Achebe','Priya Nair','Theo Lindqvist',
@@ -769,6 +888,7 @@ function resetDeck(){
      dropped:['Devin Roux','Cass Moreau'], p1:{'Rafa Ibarra':1}},
     {t:'Nightcap at Zeitgeist', who:'Rafa Ibarra', when:'Tonight · 11:00 PM', where:'Valencia & 14th',
      plus:'ask', mine:0, live:false,
+     ends:'1:00 AM', clashWith:'Supper Club No. 4',
      details:'Back patio, under the heaters. Kitchen shuts at eleven so eat first.',
      cap:4, going:['Maya Okonkwo','Suki Tanaka','Wren Adeyemi','Dot Chen'], p1:{}},
   ];
@@ -783,8 +903,8 @@ let INV=[
    p1:{'Rafa Ibarra':1,'Bo Achebe':1}},
   {id:2,t:'Sunday long lunch', host:'June Park',  day:'Sun 3 Aug', dl:'3 days left', st:'go',
    plus:'ask', mine:0, going:['Priya Nair','Dot Chen','Suki Tanaka','Wren Adeyemi'], p1:{}},
-  {id:3,t:"Bo's birthday",     host:'Bo Achebe',  day:'Fri 8 Aug', dl:'Answer by tomorrow',
-   warn:1, due:'tomorrow', st:null, waited:2, where:'Alamo Square', cap:30,
+  {id:3,t:"Bo's birthday",     host:'Bo Achebe',  day:'Fri 8 Aug', dl:'6 days left',
+   st:null, waited:2, where:'Alamo Square', cap:30,
    plus:'ask', mine:0, going:['Maya Okonkwo','Rafa Ibarra','Dot Chen','June Park','Theo Lindqvist',
      'Ilya Voronin','Cass Moreau','Devin Roux','Nils Bergström'], p1:{'Maya Okonkwo':1,'Devin Roux':1}},
   {id:4,t:'Film night',        host:'Priya Nair', day:'Wed 13 Aug',dl:'12 days left', st:'by', byd:'6 Aug',
@@ -825,7 +945,8 @@ let EVENTS=[
    details:"Buzzer is broken — text me and I'll come down. Bring nothing, I've got it covered.",
    guests:['Maya Okonkwo','Rafa Ibarra','Dot Chen','June Park','Bo Achebe','Theo Lindqvist',
            'Devin Roux','Ilya Voronin','Nils Bergström','Sam Ito','Cass Moreau'],
-   p1:{'Rafa Ibarra':1,'Bo Achebe':1,'Devin Roux':1}, door:{}}
+   p1:{'Rafa Ibarra':1,'Bo Achebe':1,'Devin Roux':1},
+   door:{'Dot Chen':'in','Sam Ito':'in'}, p1in:{}}
 ];
 let curEv=1;
 const ev=()=>EVENTS.find(e=>e.id===curEv);
@@ -864,9 +985,45 @@ function projection(list){
 
 /* ═══════════ HELPERS ═══════════ */
 const el=h=>{const d=document.createElement('div');d.innerHTML=h.trim();return d.firstElementChild};
-const av=(p,s)=>`<div class="av" style="background:hsl(${p.hue} 9% ${58+(p.hue%7)*3}%)${
-  s?`;width:${s}px;height:${s}px;font-size:${s*.32}px`:''}">${p.ini}</div>`;
-const strip=(p,max=26)=>`<div class="strip">${p.ev.slice(-max).map(c=>`<i class="${c}"></i>`).join('')}</div>`;
+/* Standing is level plus direction. Two rules on top of that:
+     · slipping is shown only to the person themselves — it's a nudge, not a mark
+     · recovering is public, because the point is to lift someone on the way back up
+   Nothing renders until the number itself is public. */
+function standing(p, self){
+  if(!p || phase<3 || !visPub(p)) return 'none';
+  const cr=c=>CRED[c]!==undefined?CRED[c]:null;
+  const scored=p.ev.map(cr).filter(v=>v!==null);
+  const recent=scored.slice(-4), prior=scored.slice(-9,-4);
+  const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
+  const r=avg(recent), q=avg(prior);
+  const trend = (r!==null&&q!==null) ? r-q : 0;
+  if(p.rel<.70) return trend>=.20 ? 'rec' : 'bad';
+  if(trend<=-.20) return self ? 'dec' : 'good';   // only you see the slip
+  if(p.rel>=.88) return 'good';
+  return trend>=.20 ? 'rec' : 'good';
+}
+
+const av=(p,s)=>{
+  const st=standing(p);
+  const base = st==='none' ? `background:hsl(${p.hue} 9% ${58+(p.hue%7)*3}%);` : '';
+  return `<div class="av st-${st}" style="${base}${
+    s?`width:${s}px;height:${s}px;font-size:${s*.32}px`:''}">${p.ini}</div>`;
+};
+
+const STANDING_KEY=`<div class="stkey">
+  <span><b style="background:rgba(92,212,155,.17);border:1.5px solid var(--jade)"></b>Good standing</span>
+  <span><b style="background:rgba(99,169,242,.16);border:1.5px solid var(--sky)"></b>On the way back</span>
+  <span><b style="background:rgba(240,97,79,.15);border:1.5px solid var(--rust)"></b>Bad standing</span>
+</div>`;
+/* In the opening weeks the network has barely any history — the demo should
+   show that rather than pretending everyone arrives with a record. */
+const shownEv = p => phase===1 ? p.ev.slice(0, p.hue%3) : p.ev;
+const strip=(p,max=26)=>{
+  const ev=shownEv(p).slice(-max);
+  return ev.length
+    ? `<div class="strip">${ev.map(c=>`<i class="${c}"></i>`).join('')}</div>`
+    : `<div class="strip" style="opacity:.35">${'<i class="G"></i>'.repeat(6)}</div>`;
+};
 const LEG=`<div class="legend">
   <span><b style="background:var(--jade)"></b>Showed</span>
   <span><b style="background:var(--rust)"></b>No-show</span>
@@ -883,7 +1040,7 @@ function attendeeList(going,p1,live,dropped){
   const fresh=going.filter(n=>!visPub(byName(n)))
     .sort((a,b)=>(here(b)-here(a)) || a.localeCompare(b));
   const row=(n,i)=>{const p=byName(n), k=(p1||{})[n]||0, rated_=visPub(p);
-    return `<div class="rank">
+    return `<div class="rank" onclick="event.stopPropagation();openRecord('${n}')">
       <div class="ix">${here(n)?'':phase===3&&rated_?i+1:'·'}</div>
       ${av(p,26)}
       <div class="nm">${p.name}</div>
@@ -909,6 +1066,7 @@ function attendeeList(going,p1,live,dropped){
         <span class="gone">Cancelled</span></div>`}).join('')}
       <p class="newnote" style="margin-top:8px">Shown rather than removed. Someone pulling out on the
         day is worth knowing about, and quietly deleting them would hide it.</p>`:''}
+    ${phase===3?STANDING_KEY:''}
     ${Object.values(p1||{}).some(Boolean)?`<div class="note">Plus-ones carry no record of their own.
       They're projected off whoever's bringing them.</div>`:''}`;
 }
@@ -925,7 +1083,8 @@ function miniList(going,p1,live,dropped){
   const show=order.slice(0,4), rest=going.length-show.length;
   const nHere=going.filter(here).length;
   return `<div class="mini2">
-    ${show.map(n=>{const p=byName(n),k=(p1||{})[n]||0;return `<div class="r">
+    ${show.map(n=>{const p=byName(n),k=(p1||{})[n]||0;return `<div class="r"
+      onclick="event.stopPropagation();openRecord('${n}')">
       ${av(p,20)}<div class="n2">${p.name}${k?' +'+k:''}</div>
       ${here(n)?`<span class="there">There</span>`
         :`<div class="s2 ${phase===3&&visPub(p)?(p.rel>=.88?'hi':p.rel<.70?'lo':'mid'):'na'}">${
@@ -950,43 +1109,103 @@ function openRoom(id){
   const m=document.getElementById('mount'); m.innerHTML=''; m.appendChild(s2);
 }
 
+/* Why a number is what it is. The strip is the argument; the number is a summary of it. */
+function openRecord(name){
+  const p=byName(name); if(!p) return;
+  const ys=p.ev.filter(c=>'KFCL'.includes(c)), nos=p.ev.filter(c=>c==='N').length;
+  const shows=ys.filter(c=>c==='K').length;
+  const cls2 = !visPub(p)?'na':p.rel>=.88?'hi':p.rel<.70?'lo':'mid';
+  const reading = !visPub(p)
+    ? `Only ${p.n} answered invitations so far. Nobody sees a number until eight, including ${p.name.split(' ')[0]}.`
+    : nos/p.ev.length>=.4
+      ? `Turns down most of what they're invited to and shows up to nearly everything they accept.`
+      : p.rel<.70
+        ? `Says yes often and arrives sometimes. ${p.ev.filter(c=>c==='F'||c==='L').length} no-shows
+           across ${p.ev.length} invitations. <b>The gap between the yes and the turnout is the number.</b>`
+        : `Answers most things and turns up to most of what they accept.`;
+
+  const sheet=el(`<div class="scrim" onclick="if(event.target===this)close_()"><div class="sheet">
+    <div class="grab"></div>
+    <div class="rec-hd">
+      ${av(p,42)}
+      <div class="bd3"><div class="n6">${p.name}</div>
+        <div class="h6">${p.n} ANSWERED · ${p.ev.length} INVITED</div></div>
+      <div class="big3 ${cls2}">${phase===3&&visPub(p)?pct(p.rel):'—'}</div>
+    </div>
+    <div style="margin-top:16px">${strip(p)}</div>
+    ${LEG}
+    ${phase===3&&visPub(p)?`<div class="three">
+      <div><div class="v ${cls2}">${pct(p.rel)}</div><div class="k">Reliability</div></div>
+      <div><div class="v">${fmtRT(p.rt)}</div><div class="k">Usual<br>reply</div></div>
+      <div><div class="v">${p.cad}</div><div class="k">Per<br>quarter</div></div>
+    </div>
+    ${p.lapses?`<div class="note">Left ${p.lapses} invitation${p.lapses===1?'':'s'} unanswered.
+      That counts against reply time, not reliability.</div>`:''}`:''}
+    <div class="reads">${reading}</div>
+    <button class="btn g sm" style="margin-top:14px" onclick="close_()">Close</button>
+  </div></div>`);
+  const m=document.getElementById('mount'); m.innerHTML=''; m.appendChild(sheet);
+}
+
 /* ═══════════ SIGNUP ═══════════ */
 function disclosure(){return `<div class="disc">
   <div class="eyebrow">Before you sign up</div>
-  <h1>This is a small experiment in social accountability.</h1>
+  <h1>Parties that count.</h1>
 
   <div class="dblock">
-    <h4>What it's for</h4>
-    <p>Most invitations get a yes that doesn't mean much, and hosts cook for twenty and feed
-       thirteen. Roster records whether people actually turn up, so a yes is worth something again.
-       That only works if everyone is accountable to the same record.</p>
+    <p>Partiful is built for volume and potential. The optimization is breadth. Roster is built for
+       getting closer to your favorites. The optimization is depth.</p>
   </div>
 
   <div class="dblock">
-    <h4>Why we ask for more than usual</h4>
-    <p>Your full name and a social handle, because a record attached to a half-identity isn't a
-       record — it's a costume. Everyone here can see who you are, and you can see them.</p>
+    <h4>How Roster works</h4>
+    <p>Let's clear up the signal: you shouldn't feel bad for missing a Partiful event. You should if
+       you flake for a Roster one.</p>
+    <p style="margin-top:12px">Attendance is recorded two ways — a check-in at the event and the host
+       confirming afterwards. From that comes a record: how reliably you turn up, how fast you
+       answer, how often you're out. Full names and real socials, no pseudonyms.</p>
   </div>
 
   <div class="dblock key">
-    <h4>Three numbers, visible to everyone after eight events</h4>
-    <p>Below eight events nobody sees anything, including you. A strong record is also what earns
-       you invitations of your own.</p>
-    <div class="sc"><span>Reliability</span><span>Response time</span><span>Cadence</span></div>
+    <h4>The only mark against you is saying yes and flaking</h4>
+    <p>Roster wants you to decline. Declines count as an honest answer, and the sooner and more
+       often you do it the better. Roster wants your yes to actually mean yes.</p>
   </div>
 
   <div class="dblock">
-    <h4>Saying no costs you nothing</h4>
-    <p>An early decline counts as an accurate answer. Only saying yes and not turning up hurts.</p>
+    <h4>The reward</h4>
+    <p>Reliable people should be celebrated. Instead of having to build that reputation up from
+       scratch every time, or rely on hosts to communicate that to each other, Roster celebrates
+       that on every occasion.</p>
   </div>
 
   <div class="dblock">
-    <h4>You can step back whenever</h4>
-    <p>Pause clears what you've committed to and declines new invitations for you, with a neutral
-       note to hosts. No reason required, and nobody is told why.</p>
+    <h4>Social breaks and redemption</h4>
+    <p>Recent behaviour counts for far more than old behaviour, and marks age out. A bad stretch
+       doesn't follow you around — most people have one, and there's a pause for exactly that.
+       It's meant to be easier to repair a record than to ruin one.</p>
+    <p style="margin-top:12px">You see your own before anyone else does. You should never learn what
+       you look like here from someone else's reaction to it.</p>
   </div>
 
-  <div style="flex:1;min-height:16px"></div>
+  <div class="dblock">
+    <h4>It's a social credit score</h4>
+    <p>That punishes one thing and one thing only: being flakey with your friends.</p>
+  </div>
+
+  <div class="dblock">
+    <h4>Two events a month, or don't bother</h4>
+    <p>Below that there isn't enough for a record to mean anything, and the app can't tell anyone
+       anything about you. If you go out less than that, this isn't for you yet.</p>
+  </div>
+
+  <div class="dblock">
+    <h4>This isn't for everyone</h4>
+    <p>Roster is built to be smaller and more accurate rather than larger and vaguer. It's meant to
+       celebrate the real ones.</p>
+  </div>
+
+  <div style="flex:1;min-height:20px"></div>
   <input class="field" placeholder="First name">
   <input class="field" placeholder="Last name" style="margin-top:8px">
   <input class="field" placeholder="Phone number" inputmode="tel" style="margin-top:8px">
@@ -1042,14 +1261,17 @@ function vToday(){
 
   const stack=cards.slice(0,n).map((c,d)=>{
     const y=(n-1-d)*PEEK, sc=1-d*.03, top=d===0, ask=c.kind==='ask';
+    const clashing = c.clashWith && deck.concat(deckDone.filter(x=>x.a==='go'))
+      .some(x=>x.t===c.clashWith);
+    const red = ask || clashing;
     const full=(c.going.length + Object.values(c.p1||{}).reduce((a,b)=>a+b,0)) >= (c.cap||99);
     return `<div class="stack ${top?'':'behind'}" style="
         transform:translateY(${y}px) scale(${sc}); opacity:${top?1:.9}; z-index:${10-d}">
       <div class="swipe" ${top?'id="card"':''} style="height:${CARD_H}px">
-        ${top?`<div class="stamp ${ask?'yes2':'go'}" id="sgo">${ask?'YES':'GOING'}</div>
-               <div class="stamp ${ask?'no2':'no'}" id="sno">${ask?'NO':'OUT'}</div>`:''}
+        ${top?`<div class="stamp ${red?'yes2':'go'}" id="sgo">${ask?'YES':'GOING'}</div>
+               <div class="stamp ${red?'no2':'no'}" id="sno">${ask?'NO':'OUT'}</div>`:''}
         <div class="flipper" ${top?'id="flip"':''} style="height:${CARD_H}px">
-          <div class="face front ${ask?'ask':''}" ${top?'':'style="padding:0"'}>
+          <div class="face front ${red?'ask':''}" ${top?'':'style="padding:0"'}>
             ${!top?`<div class="peek">
               <div class="pw2">${c.when}</div>
               <div class="pt">${c.t}</div>
@@ -1057,6 +1279,7 @@ function vToday(){
             <div class="whenrow">
               <span class="when">${c.when}</span>
               ${ask?`<span class="duepill"><i></i>Answer due</span>`
+                   :clashing?`<span class="duepill"><i></i>Clash</span>`
                    :c.live?`<span class="livepill"><i></i>Happening now</span>`:''}
             </div>
             <h3>${c.t}</h3>
@@ -1065,6 +1288,7 @@ function vToday(){
             ${top?`
               <div class="spacer"></div>
               ${miniList(c.going,c.p1,c.live?c.t:null,c.dropped)}
+              ${clashing?clashLine(c):''}
               ${ask?waitedLine(c):p1Control(c,'bumpDeck',c.plus,full)}
               ${!ask&&c.live?liveBar(c):''}
               <div class="hintrow" style="margin-top:12px">
@@ -1072,7 +1296,7 @@ function vToday(){
                 <span class="flipcue">Tap</span>
                 <span style="color:var(--jade)">${ask?"I'll be there":"Still going"} →</span></div>`:''}
           </div>
-          ${top?`<div class="face back ${ask?'ask':''}">
+          ${top?`<div class="face back ${red?'ask':''}">
             <div class="eyebrow" style="margin-bottom:2px">${c.t}</div>
             <div class="scrollr">
               ${c.details?`<div class="deets full" style="margin:8px 0 4px">${c.details}</div>`:''}
@@ -1087,6 +1311,16 @@ function vToday(){
   return `
   ${owed?`<div class="eyebrow" style="margin-bottom:10px">${owed} to answer first</div>`:''}
   <div class="deck" style="height:${CARD_H+(n-1)*PEEK}px;margin-top:${owed?0:4}px">${stack}</div>`;
+}
+
+/* You said yes to two things that overlap. Nobody is stopped; the point is
+   that this surfaces days early rather than at eleven at night. */
+function clashLine(c){
+  return `<div class="clash">
+    <div class="ic2">⚠</div>
+    <div class="tx2">Aren't you at ${c.clashWith}?
+      <small>You said yes to both · they overlap</small></div>
+  </div>`;
 }
 
 /* how long they've been sitting on it — the point is that delay is visible */
@@ -1371,31 +1605,64 @@ function vRate(){return `
   <div class="note" style="margin-top:20px">Guests rate events. Hosts don't rate guests — nothing
     subjective is recorded about a person anywhere in this beta.</div>`}
 
-function vMe(){
-  if(meTab==='invites') return `
-    <div class="vswitch">
-      <button onclick="meTab='record';render()">Record</button>
-      <button class="on">Invitations</button>
+const ME_TABS=[['record','Record'],['plusones','Your +1s'],['invites','Invite'],['global','Network']];
+function meSwitch(){
+  return `<div class="vswitch">${ME_TABS.map(([k,l])=>
+    `<button class="${meTab===k?'on':''}" onclick="meTab='${k}';render()">${l}</button>`).join('')}</div>`;
+}
+
+function progressBlock(me){
+  const have=Math.min(me.n,N_PUB), left=Math.max(0,N_PUB-me.n), done=left===0;
+  const perMonth=2.4, rhythm=perMonth>=2;
+  return `<div class="prog2 ${done?'done':''}">
+    <div class="hd2">
+      <div class="t3">${done?'Your record is live':`${left} more to go`}</div>
+      <div class="c3">${have} / ${N_PUB}</div>
     </div>
-    ${vInvites()}`;
-  const me={name:'You',hue:38,ev:[...'KKNKKCKKNKKK'],ini:'YOU',rt:5,lapses:0};
+    <div class="pips2">${Array.from({length:N_PUB},(_,i)=>
+      `<i class="${i<have?'fill':''}"></i>`).join('')}</div>
+    <div class="note" style="margin-top:11px">${done
+      ? 'Eight answered invitations is enough for the number to mean something. It updates from here.'
+      : `Answer ${left} more invitation${left===1?'':'s'} — yes or no, both count — and your record
+         appears. Nobody sees anything before that, including you.`}</div>
+    <div class="rhythm">
+      <div class="dot3" style="background:${rhythm?'var(--jade)':'var(--tang)'}"></div>
+      <div class="tx3">${rhythm
+        ? `<b>You're at rhythm.</b> ${perMonth} events a month. Roster needs two to be worth
+           anything to you.`
+        : `<b>Below rhythm.</b> ${perMonth} events a month, against a floor of two. Under that
+           the app can't tell anyone anything about you.`}</div>
+    </div>
+  </div>`;
+}
+
+function vMe(){
+  if(meTab==='invites')  return meSwitch()+vInvites();
+  if(meTab==='plusones') return meSwitch()+vPlusOnes();
+  if(meTab==='global')   return meSwitch()+vGlobal();
+  const me={name:'You',hue:38,ev:[...'KKKKNKKKNKLF'],ini:'YOU',rt:5,lapses:0};
   me.n=me.ev.filter(c=>c!=='G').length;
   const num=me.ev.filter(c=>c!=='G').reduce((a,c)=>a+CRED[c],0);
   me.rel=(num+K_*M_)/(me.n+K_); me.cad='3.0';
-  const sw=`<div class="vswitch">
-      <button class="on">Record</button>
-      <button onclick="meTab='invites';render()">Invitations${
-        phase>=3||isFounder?` · ${remaining()}`:''}</button>
-    </div>`;
+  const myStand=standing(me,true);
+  const sw=meSwitch();
   if(phase===1) return sw+`
-    <div class="eyebrow">Weeks 1–6 · shadow</div>
-    <h1>No numbers yet.</h1>
-    <div class="card" style="margin-top:16px"><div class="eyebrow">Your history so far</div>
-      ${strip(me)}${LEG}</div>
-    <div class="lockbox"><b>Nothing is being shown to anyone, including you.</b> Attendance is being
-      recorded so that when scores do appear they're built on something. Six weeks of history first.</div>`;
+    <div class="eyebrow">Week 1 · opening</div>
+    <h1>Nobody has a record yet.</h1>
+    <div class="cold">Roster launched this week. <b>Every person here has answered one or two
+      invitations at most</b>, including you. There is nothing to show and nothing to compare
+      against — the first month is the app quietly collecting.</div>
+    ${progressBlock({n:2})}
+    <div class="lockbox" style="margin-top:12px">Projection still runs. With no history it assumes
+      everyone is average, which is wrong in both directions but no worse than guessing.</div>`;
   return sw+`
-  <div class="eyebrow">${phase===2?'Weeks 7–8 · visible to you only':'Weeks 9–12 · visible to everyone'}</div>
+  ${myStand==='dec'?`<div class="slipped">
+    <h4>Your last few have slipped</h4>
+    <p>A late cancel and a no-show in your most recent four. Nobody else sees this — it's on your
+      record only, and the next handful of things you say yes to will move it back.</p>
+  </div>`:''}
+  <div class="eyebrow" style="margin-top:${myStand==='dec'?'18px':'0'}">${
+    phase===2?'Weeks 7–8 · visible to you only':'Weeks 9–12 · visible to everyone'}</div>
   <h1>Your record.</h1>
   <div class="card" style="margin-top:14px">
     ${strip(me)}${LEG}
@@ -1405,27 +1672,23 @@ function vMe(){
       <div><div class="v">${me.cad}</div><div class="k">Per<br>quarter</div></div></div>
     <div class="note">You've never left an invitation unanswered.</div>`:''}
   </div>
+  ${progressBlock(me)}
   ${phase===2?`<div class="lockbox">Only you can see this. At week 9 it becomes visible to other
-    members — but only once you've passed <b>eight events</b>.</div>`
-  :`<div class="lockbox">Everyone can see these numbers.</div>`}
+    members — but only once you've passed <b>eight events</b>.</div>`:''}
 
   <div class="card ${pauseDecline||pauseCancel?'':'q'}" style="margin-top:20px${
     pauseDecline||pauseCancel?';border-color:var(--jade-lo);background:var(--jade-dim)':''}">
     <h2 style="margin:0 0 4px">Step back</h2>
-    <div class="note" style="margin:0 0 6px">No reason required. Nobody is told why.</div>
+    <div class="note" style="margin:0 0 6px">No reason required.</div>
 
     <div class="sw">
-      <div class="cp"><b>Mark everything you've said yes to as can't go</b>
-        <small>${goingCount()} event${goingCount()===1?'':'s'}. Hosts are told now, not at the door.
-        These count as cancellations, same as if you'd swiped each one — early ones barely register,
-        tonight's costs something.</small></div>
+      <div class="cp"><b>Decline all current</b>
+        <small>${goingCount()} event${goingCount()===1?'':'s'}. Hosts are told now, not at the door.</small></div>
       <button class="tog ${pauseCancel?'on':''}" onclick="pauseCancel=!pauseCancel;render()"><i></i></button>
     </div>
 
     <div class="sw">
-      <div class="cp"><b>Automatically decline all new invitations</b>
-        <small>They still arrive, and answer themselves with a neutral note. A decline is an accurate
-        answer, so nothing here works against you.</small></div>
+      <div class="cp"><b>Automatically decline all new invitations</b></div>
       <button class="tog ${pauseDecline?'on':''}" onclick="pauseDecline=!pauseDecline;render()"><i></i></button>
     </div>
 
@@ -1507,7 +1770,7 @@ function vEvents(){
       gated()?' · 1 to settle':''}</button>
   </div>
   ${hostTab==='future'?futureEvents():pastEvents()}
-  <button class="fab" onclick="startCreate()">+ New event</button>`;
+  ${fab()}`;
 }
 
 function futureEvents(){
@@ -1578,6 +1841,20 @@ const t12=hhmm=>{const[h,m]=hhmm.split(':').map(Number);
 const PLUS_LABEL={none:'No plus-ones', ask:'Plus-ones on request'};
 const plusBadge=p=>`<span class="badge ${p||'none'}">${PLUS_LABEL[p||'none']}</span>`;
 
+/* Derived from the host's own history. Every suggestion says why it's there —
+   a recommendation you can't interrogate is just a default. */
+const HISTORY={
+  venues:[{v:'24th & Harrison', n:9},{v:'Alamo Square Park', n:3},{v:'Dogpatch Boulders', n:2}],
+  times:[{t:'20:00', n:7, lbl:'evenings'},{t:'11:00', n:3, lbl:'brunches'}],
+  ends:{'20:00':'23:30','11:00':'14:00'},
+  caps:[{c:14, n:8},{c:22, n:4}],
+  medianInvited:17, medianCame:13,
+  regulars:['Maya Okonkwo','Rafa Ibarra','Dot Chen','June Park','Priya Nair','Theo Lindqvist',
+            'Bo Achebe','Sam Ito','Suki Tanaka','Nils Bergström'],
+  usualDow:5,                       // Friday
+  usualLead:9                       // days out when they normally create
+};
+
 function newDraft(){
   const d=addDays(TODAY,8);
   return { title:'', where:'', details:'', date:key(d), start:'20:00', end:'23:00', dlDays:null,
@@ -1606,7 +1883,28 @@ function calMove(n){ let m=draft.calMo+n,y=draft.calYr;
   if(m<0){m=11;y--} if(m>11){m=0;y++} draft.calMo=m; draft.calYr=y; render() }
 function pickDate(k){ draft.date=k; render() }
 function setPlus(p){ draft.plus=p; render() }
+/* With a short fuse, a fast answer is worth more than a perfect record —
+   you need to know tonight, and you can still fill the seat if they decline. */
+function orderedRoster(d){
+  const lead=dayDiff(d.date,key(TODAY));
+  const list=[...ROSTER];
+  if(lead>4) return list;
+  return list.sort((a,b)=>{
+    const A=byName(a), B=byName(b);
+    const score=p=>{
+      if(!visPub(p)) return -1;
+      const speed=Math.max(0, 1 - Math.log10(1+p.rt)/2.2);   // hours -> 0..1
+      return speed*0.65 + p.rel*0.35;
+    };
+    return score(B)-score(A);
+  });
+}
+
 function toggleDraft(n){ draft.guests.has(n)?draft.guests.delete(n):draft.guests.add(n); render() }
+function addRegulars(k){
+  HISTORY.regulars.slice(0,k||HISTORY.regulars.length).forEach(n=>draft.guests.add(n));
+  render();
+}
 
 function draftMath(d){
   const list=[...d.guests];
@@ -1654,9 +1952,19 @@ function vCreate(){
 
   <label class="lab">Name</label>
   <input class="in" placeholder="Supper Club No. 5" value="${d.title}" oninput="draft.title=this.value">
+  <div class="sugg">
+    ${['Supper Club No. 5','Rooftop, Potrero','Sunday brunch'].map(t=>
+      `<button class="${d.title===t?'on':''}" onclick="draft.title='${t}';render()">
+        ${t}<span class="why">${t.startsWith('Supper')?'next in series':'hosted before'}</span></button>`).join('')}
+  </div>
 
   <label class="lab">Location</label>
   <input class="in" placeholder="24th & Harrison" value="${d.where}" oninput="draft.where=this.value">
+  <div class="sugg">
+    ${HISTORY.venues.map(v=>`<button class="${d.where===v.v?'on':''}" onclick="draft.where='${v.v}';render()">
+      ${v.v}<span class="why">${v.n}×</span></button>`).join('')}
+  </div>
+  <span class="recall">You've hosted here ${HISTORY.venues[0].n} times</span>
 
   <label class="lab">Anything they should know</label>
   <textarea class="deets-in" placeholder="Broken buzzer, what to bring, where to park, when the kitchen shuts…"
@@ -1664,7 +1972,12 @@ function vCreate(){
 
   <label class="lab">Date</label>
   ${calendar(d)}
-  <div class="two" style="margin-top:14px">
+  <div class="sugg" style="margin-top:14px">
+    ${HISTORY.times.map(t=>`<button class="${d.start===t.t?'on':''}"
+      onclick="draft.start='${t.t}';draft.end='${HISTORY.ends[t.t]}';render()">
+      ${t12(t.t)}<span class="why">your ${t.lbl}</span></button>`).join('')}
+  </div>
+  <div class="two" style="margin-top:10px">
     <div><label class="lab" style="margin-top:0">Starts</label>
       <input type="time" value="${d.start}" onchange="draft.start=this.value;render()"></div>
     <div><label class="lab" style="margin-top:0">Ends</label>
@@ -1676,10 +1989,31 @@ function vCreate(){
   <label class="lab">Maximum attendance</label>
   <input type="number" min="2" max="200" value="${d.cap}"
     oninput="draft.cap=+this.value" onchange="render()">
+  <div class="sugg">
+    ${HISTORY.caps.map(c=>`<button class="${d.cap===c.c?'on':''}" onclick="draft.cap=${c.c};render()">
+      ${c.c}<span class="why">${c.n} events</span></button>`).join('')}
+  </div>
+  <span class="recall">You usually invite ${HISTORY.medianInvited} and
+    ${HISTORY.medianCame} turn up</span>
 
+  ${(()=>{const lead=dayDiff(d.date,key(TODAY));
+    return lead<=4?`<div class="usual" style="border-color:rgba(232,148,74,.3);
+      background:rgba(232,148,74,.07)">
+      <b style="color:var(--tang)">Short notice — ${lead} day${lead===1?'':'s'} out.</b>
+      Sorted by who answers fastest, not by who's most reliable. A 95% who takes five days
+      is no use to you tonight.</div>`:''})()}
   <label class="lab">Invitations</label>
+  ${d.guests.size<3?`<div class="usual">
+    <b>Your regulars.</b> Ten people you've invited to most of your last events.
+    ${(()=>{const m=roomStats(HISTORY.regulars,{});return `They project ${m.lo}–${m.hi} of
+      ${HISTORY.regulars.length}.`})()}
+    <div class="row2">
+      <button onclick="addRegulars()">Add all ten</button>
+      <button onclick="addRegulars(6)">Just the top six</button>
+    </div></div>`:''}
   <div class="card q" style="padding:2px 12px 8px">
-    ${ROSTER.map(n=>guestRow(n,d.guests.has(n),`toggleDraft('${n}')`)).join('')}
+    ${orderedRoster(d).map(n=>guestRow(n,d.guests.has(n),`toggleDraft('${n}')`,
+      dayDiff(d.date,key(TODAY))<=4)).join('')}
   </div>
 
   <label class="lab">Plus-ones</label>
@@ -1738,12 +2072,14 @@ function sendDraft(){
   curEv=id; draft=null; tab='event'; render();
 }
 
-function guestRow(n,on,fn){
+function guestRow(n,on,fn,urgent){
   const p=byName(n), pub=visPub(p);
   return `<div class="prow">
     ${av(p,30)}
     <div class="nm"><div class="a">${p.name}</div>
-      <div class="b">${pub?`WORTH ${p.pYes.toFixed(2)} OF A SEAT`:`${p.n} OF 8 EVENTS`}</div></div>
+      <div class="b">${!pub?`${p.n} OF 8 EVENTS`
+        :urgent?`ANSWERS IN ${fmtRT(p.rt).toUpperCase()}`
+        :`WORTH ${p.pYes.toFixed(2)} OF A SEAT`}</div></div>
     ${phase===3&&pub?`<div class="snap">
       <div><div class="v ${p.rel>=.88?'hi':p.rel<.70?'lo':''}">${pct(p.rel)}</div><div class="k">Rel</div></div>
       <div><div class="v rt">${fmtRT(p.rt)}</div><div class="k">Reply</div></div>
@@ -1779,8 +2115,7 @@ function vEvent(){
       <div class="n">${pr.nPlus}</div></div>`:''}
     ${pr.hi<e.cap?`<div class="note"><b>You're short.</b> Invite ${e.cap-pr.hi} more to fill the table.</div>`
       :`<div class="note">Enough to fill the table.</div>`}
-    ${pr.nPlus?`<div class="note">Plus-ones are already in the number above — projected at nine-tenths
-      of whoever's bringing them, since they arrive together. They carry no record of their own.</div>`:''}
+
   </div>
 
   <div class="card q" style="padding:2px 12px 8px">
@@ -1790,7 +2125,12 @@ function vEvent(){
   <div class="note">${phase===3
     ? 'Reliability and usual reply time are visible to every member from week 9. Seat-worth is derived from them.'
     : 'Scores are hidden until week 9, but projection still runs — computed from history nobody can see yet.'}</div>
-  <button class="fab" onclick="startCreate()">+ New event</button>`;
+  ${fab()}`;
+}
+function fab(){
+  return gated()
+    ? `<button class="fab settle" onclick="tab='confirm';render()">Settle last event</button>`
+    : `<button class="fab" onclick="startCreate()">+ New event</button>`;
 }
 function toggleEv(n){
   const e=ev(); const i=e.guests.indexOf(n);
@@ -2007,17 +2347,13 @@ function slotsView(){
       <div class="bd"><div class="t">Founding host</div>
         <div class="m">FIRST CYCLE ONLY · NOT REPEATED</div></div>
       <div class="d plus">+${al.seed}</div></div>`:''}
-    ${SPONSORED.map(sp=>{const c=contribution(sp), p=byName(sp.name);
-      return `<div class="contrib" ${c.st==='settled'?'style="opacity:.55"':''}>
-        ${p?av(p,26):''}
-        <div class="bd"><div class="t">${sp.name}</div>
-          <div class="m">${p&&visPub(p)?pct(p.rel).toUpperCase()+' · '+c.why.toUpperCase():'NO RECORD YET'}</div></div>
-        <div class="d ${c.d>0?'plus':c.d<0?'minus':'zero'}">${c.d>0?'+1':c.d<0?'−1':'0'}</div>
-      </div>`}).join('')}
+    <div class="contrib">
+      <div class="bd" onclick="meTab='plusones';render()"><div class="t">People you've vouched for</div>
+        <div class="m">${SPONSORED.length} · SEE YOUR +1S</div></div>
+      <div class="d ${al.inv>0?'plus':al.inv<0?'minus':'zero'}">${
+        al.inv>0?'+'+al.inv:al.inv<0?'−'+Math.abs(al.inv):'0'}</div>
+    </div>
   </div>
-  <div class="note">Someone you brought counts most in their first months. Once they've held a good
-    record long enough they settle and stop counting — they're on their own record by then. Trouble
-    keeps counting for as long as it lasts.</div>
 
   ${phase>=3?`<div class="wk" style="margin-top:18px">What your own record is worth</div>
   <div class="tiers">
@@ -2037,6 +2373,81 @@ function revokeLink(id){ LINKS=LINKS.filter(l=>l.id!==id); render() }
 
 
 
+
+function vPlusOnes(){
+  return `
+  <div class="note" style="margin:14px 0 0">People you've vouched for. How they behave feeds back
+    into how many invitations you get.</div>
+  <div class="card q" style="padding:4px 13px 13px;margin-top:12px">
+    ${SPONSORED.map(sp=>{const c=contribution(sp), p=byName(sp.name);
+      return `<div class="contrib" ${c.st==='settled'?'style="opacity:.55"':''}>
+        ${p?av(p,30):''}
+        <div class="bd" onclick="openRecord('${sp.name}')"><div class="t">${sp.name}</div>
+          <div class="m">${p&&visPub(p)?pct(p.rel).toUpperCase()+' · '+c.why.toUpperCase()
+            :'NO RECORD YET · '+sp.days+' DAYS IN'}</div></div>
+        <div class="d ${c.d>0?'plus':c.d<0?'minus':'zero'}">${c.d>0?'+1':c.d<0?'−1':'0'}</div>
+      </div>`}).join('')}
+  </div>
+  <div class="note">Someone you brought counts most in their first months. Once they've held a good
+    record long enough they settle and stop counting — they're on their own record by then.</div>
+  <div class="note">Tap a name to see what their number is made of.</div>`;
+}
+
+/* ── how are we doing ── */
+const NET={
+  rel:[78,80,82,84,86,87],
+  inBand:[0.58,0.63,0.68,0.72,0.76,0.79],
+  cancels:[0.31,0.34,0.29,0.40,0.44,0.47,0.52,0.55,0.58,0.61,0.63,0.66],
+  leftOnTheirOwn:{n:14, rel:58}
+};
+
+function vGlobal(){
+  const r=NET.rel, b=NET.inBand, c=NET.cancels;
+  const relNow=r[r.length-1], relUp=relNow-r[0];
+  const bandNow=Math.round(b[b.length-1]*100), bandUp=bandNow-Math.round(b[0]*100);
+  const cNow=Math.round(c[c.length-1]*100), cWas=Math.round(c[0]*100);
+  return `
+  <div class="eyebrow">Everyone on Roster</div>
+  <h1>How are we doing?</h1>
+
+  <div class="hero2">
+    <div class="k7">Our reliability</div>
+    <div class="v8">${relNow}%</div>
+    <div class="d8">↑ ${relUp} points since records went live</div>
+    <div class="spark" style="height:26px;margin-top:12px">${r.map((v,i)=>
+      `<i class="${i===r.length-1?'last':''}" style="height:${(v-70)/20*100}%"></i>`).join('')}</div>
+    <div class="sub8"><b>When one of us answers honestly, everyone's number goes up.</b>
+      This is the one score we all own.</div>
+  </div>
+
+  <div class="twoup">
+    <div><div class="v9 hi">${bandNow}%</div>
+      <div class="k9">Events that hit<br>their projection</div>
+      <div class="t9">↑ ${bandUp} points</div></div>
+    <div><div class="v9 hi">${cNow}%</div>
+      <div class="k9">Misses that came<br>with notice</div>
+      <div class="t9">was ${cWas}%</div></div>
+  </div>
+
+  <div class="wk" style="margin-top:22px">Cancelling instead of ghosting</div>
+  <div class="card q" style="padding:14px 13px">
+    <div class="spark" style="height:38px">${c.map((v,i)=>
+      `<i class="${i===c.length-1?'last':''}" style="height:${v*100}%"></i>`).join('')}</div>
+    <div class="note" style="margin-top:11px"><b>${cNow}% of missed events now come with notice</b>,
+      up from ${cWas}%. This is the one that moved first and moved most — telling a host early costs
+      you almost nothing and it's the thing they feel soonest.</div>
+  </div>
+
+  <div class="wk" style="margin-top:20px">Who's left</div>
+  <div class="card q" style="padding:14px 13px">
+    <div style="display:flex;align-items:baseline;gap:12px">
+      <div class="v9" style="font-family:var(--mono);font-weight:700;font-size:26px">${NET.leftOnTheirOwn.n}</div>
+      <div class="note" style="margin:0;flex:1">left on their own, averaging
+        <b>${NET.leftOnTheirOwn.rel}%</b>. Roster is a poor fit if you say yes to everything and turn
+        up to a third of it, and that sorting itself out is the system working.</div>
+    </div>
+  </div>`;
+}
 
 /* ── claim page ── */
 function vClaim(){
@@ -2164,6 +2575,7 @@ function render(){
     claim:vClaim};
   scr.innerHTML=views[tab]();
   document.getElementById('ctx').textContent=CTX[tab]||'';
+  const dot=document.getElementById('dot'); if(dot) dot.className = phase>=2 ? 'on' : '';
 
   nav.style.gridTemplateColumns=`repeat(${tabs.length},1fr)`;
   nav.innerHTML=tabs.map(([k,l])=>{
