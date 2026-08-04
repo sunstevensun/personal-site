@@ -19,26 +19,38 @@
   --disp:'DM Serif Display',Georgia,serif;
   --body:'DM Sans',system-ui,sans-serif;
   --mono:'Azeret Mono',ui-monospace,monospace;
+  --edge:#000; --onSilver:#0A0B0D; --onJade:#08130D; --onRust:#160705;
   --safe: env(safe-area-inset-bottom, 0px);
+}
+[data-theme="light"]{
+  --bg:#E2D8A5;
+  --s1:#EBE3B9; --s2:#F1EBC9; --s3:#D2C793; --s4:#BFB37A;
+  --line:rgba(48,40,16,.16); --line2:rgba(48,40,16,.08);
+  --silver:#2A2415; --steel:#5C5334; --ash:#655C3A;
+  --jade:#2E6B46; --jade-lo:#A9C2A2; --jade-dim:rgba(46,107,70,.13);
+  --rust:#A63A21; --rust-lo:#D3B098; --rust-dim:rgba(166,58,33,.11);
+  --sky:#2B5A8C; --sky-lo:#AFC1D6;
+  --tang:#8F5313; --tang-lo:#D5BA85;
+  --edge:#CFC38E; --onSilver:#EFE9CB; --onJade:#EFE9CB; --onRust:#F3EED6;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%}
-body{background:#000;color:var(--silver);font-family:var(--body);
+body{background:var(--edge);color:var(--silver);font-family:var(--body);
   display:flex;justify-content:center;overscroll-behavior:none}
 button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer;padding:0}
 :focus-visible{outline:1px solid var(--jade);outline-offset:2px;border-radius:5px}
 
 #app{width:100%;max-width:420px;background:var(--bg);display:flex;flex-direction:column;
-  height:100dvh;position:relative;overflow:hidden}
+  height:100dvh;position:relative;overflow:hidden;color:var(--silver)}
 
 /* demo bar — not product */
-#demo{background:#000;border-bottom:1px solid var(--line);padding:7px 10px;
-  display:flex;gap:6px;align-items:center;flex:none}
-#demo .lbl{font-family:var(--mono);font-size:7.5px;letter-spacing:.16em;color:#3E434C;
-  text-transform:uppercase;margin-right:2px}
-#demo button{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
-  padding:5px 8px;border-radius:4px;border:1px solid #1E2127;color:#666C77}
-#demo button.on{background:#1E2127;color:var(--silver)}
+#demo{background:var(--edge);border-bottom:1px solid var(--line);padding:6px 8px;
+  display:flex;gap:4px;align-items:center;flex:none;flex-wrap:wrap}
+#demo .lbl{font-family:var(--mono);font-size:7px;letter-spacing:.14em;color:var(--ash);
+  text-transform:uppercase;margin-right:1px}
+#demo button{font-family:var(--mono);font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;
+  padding:5px 7px;border-radius:4px;border:1px solid var(--line);color:var(--ash);white-space:nowrap}
+#demo button.on{background:var(--s3);color:var(--silver)}
 #demo .sp{flex:1}
 
 .top{padding:15px 18px 12px;border-bottom:1px solid var(--line2);flex:none;
@@ -52,7 +64,7 @@ button{font-family:inherit;color:inherit;background:none;border:none;cursor:poin
 .screen{flex:1;overflow-y:auto;overscroll-behavior:contain;
   padding:18px 16px calc(22px + var(--safe));-webkit-overflow-scrolling:touch}
 
-.nav{flex:none;background:rgba(8,9,11,.97);backdrop-filter:blur(14px);
+.nav{flex:none;background:var(--bg);backdrop-filter:blur(14px);
   border-top:1px solid var(--line);display:grid;padding-bottom:var(--safe)}
 .nav button{padding:11px 0 13px;font-family:var(--mono);font-size:8px;
   letter-spacing:.15em;text-transform:uppercase;color:var(--ash);
@@ -76,7 +88,7 @@ h3{font-family:var(--disp);font-weight:400;font-size:25px;margin:9px 0 6px;
 .card.q{background:none;border-color:var(--line2)}
 
 .btn{display:block;width:100%;padding:13px;border-radius:9px;background:var(--silver);
-  color:#0A0B0D;font-family:var(--body);font-weight:500;font-size:14px;letter-spacing:.01em}
+  color:var(--onSilver);font-family:var(--body);font-weight:500;font-size:14px;letter-spacing:.01em}
 .btn.g{background:none;border:1px solid var(--line);color:var(--silver)}
 .btn.sm{padding:11px;font-size:12.5px}
 .btn+.btn{margin-top:8px}
@@ -88,7 +100,7 @@ h3{font-family:var(--disp);font-weight:400;font-size:25px;margin:9px 0 6px;
 .av.st-rec{background:rgba(99,169,242,.16);border:1.5px solid var(--sky);color:var(--sky)}
 .av.st-dec{background:rgba(232,148,74,.16);border:1.5px solid var(--tang);color:var(--tang)}
 .av.st-bad{background:rgba(240,97,79,.15);border:1.5px solid var(--rust);color:var(--rust)}
-.av.st-none{color:#0A0B0D}
+.av.st-none{color:var(--onSilver)}
 .stkey{display:flex;flex-wrap:wrap;gap:11px;margin-top:11px}
 .stkey span{font-family:var(--mono);font-size:7.5px;color:var(--ash);letter-spacing:.09em;
   text-transform:uppercase;display:flex;align-items:center;gap:5px}
@@ -102,7 +114,7 @@ h3{font-family:var(--disp);font-weight:400;font-size:25px;margin:9px 0 6px;
 .strip i.L{background:var(--rust);opacity:.5}
 .strip i.C{background:var(--jade);opacity:.38}
 .strip i.N{background:var(--steel);opacity:.55}
-.strip i.G{background:none;border:1px dashed var(--ash);border-radius:0}
+.strip i.G{background:none;border:1px dashed var(--ash);border-radius:0;opacity:.7}
 .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
 .legend span{font-family:var(--mono);font-size:7.5px;color:var(--ash);
   display:flex;align-items:center;gap:5px;letter-spacing:.08em;text-transform:uppercase}
@@ -113,18 +125,19 @@ h3{font-family:var(--disp);font-weight:400;font-size:25px;margin:9px 0 6px;
 .stack{position:absolute;left:0;right:0;top:0;
   transition:transform .34s cubic-bezier(.22,.9,.28,1),opacity .3s}
 .stack.behind{pointer-events:none}
+[data-theme='light'] .stack.behind .face{background:var(--s1);border-color:var(--line)}
 .stack.behind .face{background:#0E0F12;border-color:rgba(255,255,255,.10);
-  box-shadow:0 -8px 20px rgba(0,0,0,.8)}
+  box-shadow:0 -8px 20px rgba(48,40,16,.18)}
 .swipe{position:relative;background:none;border:0;padding:0;border-radius:14px;
   touch-action:pan-y;will-change:transform;cursor:pointer}
 .flipper{position:relative;width:100%;transform-style:preserve-3d;
   transition:transform .5s cubic-bezier(.22,.9,.28,1)}
 .flipper.flip{transform:rotateY(180deg)}
 .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  border-radius:16px;border:1px solid rgba(255,255,255,.16);padding:18px;
-  background:linear-gradient(168deg,#1E2129,#141619 62%);
+  border-radius:16px;border:1px solid var(--line);padding:18px;
+  background:var(--s2);color:var(--silver);
   display:flex;flex-direction:column;overflow:hidden;
-  box-shadow:0 -12px 30px rgba(0,0,0,.85), 0 2px 0 rgba(255,255,255,.04) inset}
+  box-shadow:0 -12px 30px rgba(48,40,16,.22)}
 .face.front{position:relative}
 .face.back{transform:rotateY(180deg);padding:15px 15px 11px}
 .face.back .scrollr{flex:1;overflow-y:auto;overscroll-behavior:contain;margin:0 -4px;padding:0 4px}
@@ -132,7 +145,7 @@ h3{font-family:var(--disp);font-weight:400;font-size:25px;margin:9px 0 6px;
 .whenrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .when{font-family:var(--mono);font-size:9.5px;letter-spacing:.15em;
   text-transform:uppercase;color:var(--steel)}
-.who{font-size:12px;color:var(--ash)}
+.who{font-size:12px;color:var(--steel)}
 .spacer{flex:1}
 .hintrow{display:flex;justify-content:space-between;align-items:center;gap:8px;
   font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;color:var(--ash)}
@@ -158,8 +171,8 @@ h3{font-family:var(--disp);font-weight:400;font-size:25px;margin:9px 0 6px;
 .cibar .tx small{display:block;font-family:var(--mono);font-size:7.5px;letter-spacing:.13em;
   text-transform:uppercase;color:var(--ash);margin-top:3px}
 .cibar button{font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;
-  padding:8px 13px;border-radius:7px;background:var(--jade);color:#08130D;font-weight:700;flex:none}
-.cibar .tick2{width:21px;height:21px;border-radius:50%;background:var(--jade);color:#08130D;
+  padding:8px 13px;border-radius:7px;background:var(--jade);color:var(--onJade);font-weight:700;flex:none}
+.cibar .tick2{width:21px;height:21px;border-radius:50%;background:var(--jade);color:var(--onJade);
   display:grid;place-items:center;font-size:11px;font-weight:700;flex:none}
 
 /* attendee rows */
@@ -202,7 +215,7 @@ h3{font-family:var(--disp);font-weight:400;font-size:25px;margin:9px 0 6px;
 .vswitch{display:flex;gap:5px;margin-bottom:4px}
 .vswitch button{font-family:var(--mono);font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;
   padding:7px 12px;border-radius:20px;border:1px solid var(--line);color:var(--steel)}
-.vswitch button.on{background:var(--silver);border-color:var(--silver);color:#0A0B0D;font-weight:700}
+.vswitch button.on{background:var(--silver);border-color:var(--silver);color:var(--onSilver);font-weight:700}
 .mnav{display:flex;align-items:center;justify-content:space-between;margin:16px 0 8px}
 .mnav .mo{font-family:var(--disp);font-size:18px;letter-spacing:-.01em}
 .mnav button{font-family:var(--mono);font-size:14px;color:var(--steel);padding:5px 13px;
@@ -228,14 +241,14 @@ h3{font-family:var(--disp);font-weight:400;font-size:25px;margin:9px 0 6px;
 .inv .m.warn{color:var(--rust)}
 .pill{font-family:var(--mono);font-size:7.5px;letter-spacing:.13em;text-transform:uppercase;
   padding:4px 8px;border-radius:20px;border:1px solid var(--line);color:var(--steel);flex:none}
-.pill.go{background:var(--jade);border-color:var(--jade);color:#08130D;font-weight:700}
+.pill.go{background:var(--jade);border-color:var(--jade);color:var(--onJade);font-weight:700}
 .pill.no{border-color:var(--rust-lo);color:var(--rust)}
 .pill.by{border-color:var(--line);background:var(--s3);color:var(--silver)}
 
 /* sheets */
-.scrim{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:60;
+.scrim{position:fixed;inset:0;background:rgba(20,16,6,.55);z-index:60;
   display:flex;align-items:flex-end;justify-content:center}
-.sheet{width:100%;max-width:420px;background:var(--s1);border-radius:16px 16px 0 0;
+.sheet{width:100%;max-width:420px;background:var(--s1);color:var(--silver);border-radius:16px 16px 0 0;
   border-top:1px solid var(--line);padding:16px 16px calc(26px + var(--safe));
   max-height:88vh;overflow-y:auto;animation:up .24s cubic-bezier(.22,1,.36,1)}
 @keyframes up{from{transform:translateY(101%)}}
@@ -243,15 +256,15 @@ h3{font-family:var(--disp);font-weight:400;font-size:25px;margin:9px 0 6px;
 .rsvp{display:grid;gap:7px;margin-top:14px}
 .rsvp button{padding:13px 15px;border-radius:10px;border:1px solid var(--line);
   font-size:13px;text-align:left}
-.rsvp button.sel{background:var(--jade);border-color:var(--jade);color:#08130D;font-weight:700}
-.rsvp button.sel.n{background:var(--rust);border-color:var(--rust);color:#160705}
-.rsvp button.sel.b{background:var(--silver);border-color:var(--silver);color:#0A0B0D}
+.rsvp button.sel{background:var(--jade);border-color:var(--jade);color:var(--onJade);font-weight:700}
+.rsvp button.sel.n{background:var(--rust);border-color:var(--rust);color:var(--onRust)}
+.rsvp button.sel.b{background:var(--silver);border-color:var(--silver);color:var(--onSilver)}
 .rsvp small{display:block;font-family:var(--mono);font-size:7.5px;letter-spacing:.12em;
   text-transform:uppercase;opacity:.62;margin-top:4px}
 .dates{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}
 .dates button{font-family:var(--mono);font-size:9px;padding:7px 10px;border-radius:7px;
   border:1px solid var(--line);color:var(--steel)}
-.dates button.on{background:var(--silver);border-color:var(--silver);color:#0A0B0D;font-weight:700}
+.dates button.on{background:var(--silver);border-color:var(--silver);color:var(--onSilver);font-weight:700}
 
 /* check-in */
 .cirow{display:flex;gap:8px;margin-top:14px;align-items:stretch}
@@ -259,15 +272,17 @@ h3{font-family:var(--disp);font-weight:400;font-size:25px;margin:9px 0 6px;
   padding:14px 13px;color:var(--silver);font-family:var(--mono);font-size:15px;
   letter-spacing:.05em;text-transform:uppercase}
 .entry::placeholder{color:var(--ash);letter-spacing:.14em;font-size:11px}
-.go2{flex:none;padding:0 19px;border-radius:10px;background:var(--jade);color:#08130D;
+.go2{flex:none;padding:0 19px;border-radius:10px;background:var(--jade);color:var(--onJade);
   font-family:var(--body);font-weight:500;font-size:13.5px;display:grid;place-items:center}
 .done{text-align:center;padding:38px 16px}
-.done .ring{width:62px;height:62px;border-radius:50%;background:var(--jade);color:#08130D;
+.done .ring{width:62px;height:62px;border-radius:50%;background:var(--jade);color:var(--onJade);
   display:grid;place-items:center;font-size:27px;margin:0 auto 16px;
   animation:pop .42s cubic-bezier(.22,1.4,.4,1)}
 @keyframes pop{from{transform:scale(.5);opacity:0}}
 
 /* projection */
+.proj.sticky{position:sticky;top:-1px;z-index:15;
+  box-shadow:0 10px 18px -6px var(--bg);backdrop-filter:blur(6px)}
 .proj{background:linear-gradient(168deg,var(--s2),var(--s1) 62%);
   border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:11px}
 .big{font-family:var(--mono);font-weight:700;font-size:40px;line-height:.9;
@@ -299,7 +314,7 @@ h3{font-family:var(--disp);font-weight:400;font-size:25px;margin:9px 0 6px;
   text-transform:uppercase;margin-top:2px}
 .add{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
   padding:7px 10px;border-radius:7px;border:1px solid var(--line);color:var(--steel);flex:none}
-.add.on{background:var(--silver);border-color:var(--silver);color:#0A0B0D;font-weight:700}
+.add.on{background:var(--silver);border-color:var(--silver);color:var(--onSilver);font-weight:700}
 
 /* record */
 .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:14px 0 0}
@@ -327,15 +342,15 @@ h3{font-family:var(--disp);font-weight:400;font-size:25px;margin:9px 0 6px;
 .dact button{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
   padding:6px 9px;border-radius:7px;border:1px solid var(--line);color:var(--steel)}
 .dact button.p1b{color:var(--silver)}
-.dact .ok{width:24px;height:24px;border-radius:50%;background:var(--jade);color:#08130D;
+.dact .ok{width:24px;height:24px;border-radius:50%;background:var(--jade);color:var(--onJade);
   display:grid;place-items:center;font-size:10px;font-weight:700;flex:none}
 .dact .okp{background:var(--s4);color:var(--silver)}
-.chk{width:18px;height:18px;border-radius:50%;background:var(--jade);color:#08130D;
+.chk{width:18px;height:18px;border-radius:50%;background:var(--jade);color:var(--onJade);
   display:grid;place-items:center;font-size:10px;font-weight:700;flex:none}
 .tapin{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
   padding:6px 10px;border-radius:7px;border:1px solid var(--line);color:var(--steel)}
 
-.bigcode{position:fixed;inset:0;z-index:90;background:#000;display:flex;
+.bigcode{position:fixed;inset:0;z-index:90;background:var(--bg);color:var(--silver);display:flex;
   flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
 .bigcode .w{font-family:var(--mono);font-weight:700;color:var(--jade);line-height:1.05;
   font-size:clamp(38px,13vw,96px);letter-spacing:-.02em;word-break:break-word}
@@ -353,7 +368,7 @@ h3{font-family:var(--disp);font-weight:400;font-size:25px;margin:9px 0 6px;
 .rate{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
 .rate button{padding:16px 10px;border-radius:10px;border:1px solid var(--line);
   font-family:var(--body);font-size:13px}
-.rate button.sel{background:var(--jade);border-color:var(--jade);color:#08130D;font-weight:500}
+.rate button.sel{background:var(--jade);border-color:var(--jade);color:var(--onJade);font-weight:500}
 .rate button.sel.n{background:var(--s3);border-color:var(--steel);color:var(--silver)}
 textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;
   padding:12px;color:var(--silver);font-family:var(--body);font-size:13px;min-height:74px;
@@ -387,7 +402,7 @@ input::-webkit-calendar-picker-indicator{filter:invert(.65)}
   color:var(--steel);background:var(--s1);border:1px solid var(--line2);
   display:grid;place-items:center}
 .cg button.pastd{opacity:.25}
-.cg button.sel{background:var(--silver);border-color:var(--silver);color:#0A0B0D;font-weight:700}
+.cg button.sel{background:var(--silver);border-color:var(--silver);color:var(--onSilver);font-weight:700}
 .cg span{aspect-ratio:1}
 .pol{display:grid;gap:6px;margin-top:4px}
 .pol button{padding:12px 13px;border-radius:10px;border:1px solid var(--line);text-align:left;font-size:12.5px}
@@ -401,9 +416,9 @@ input::-webkit-calendar-picker-indicator{filter:invert(.65)}
 .badge.open{color:var(--silver)}
 .badge.none{opacity:.6}
 .fab{position:absolute;right:16px;bottom:calc(72px + var(--safe));z-index:20;
-  background:var(--silver);color:#0A0B0D;border-radius:24px;padding:13px 19px;
+  background:var(--silver);color:var(--onSilver);border-radius:24px;padding:13px 19px;
   font-family:var(--body);font-weight:500;font-size:13.5px;
-  box-shadow:0 8px 26px rgba(0,0,0,.7), 0 0 0 4px rgba(8,9,11,.9)}
+  box-shadow:0 8px 26px rgba(48,40,16,.28), 0 0 0 4px var(--bg)}
 .gate{border:1px solid var(--rust-lo);background:var(--rust-dim);border-radius:11px;
   padding:14px;margin-bottom:12px}
 .gate h4{font-family:var(--disp);font-size:16px;margin:0 0 7px;color:var(--rust);letter-spacing:-.008em}
@@ -447,27 +462,27 @@ input::-webkit-calendar-picker-indicator{filter:invert(.65)}
 .opts{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
 .opts button{font-family:var(--mono);font-size:9.5px;padding:9px 12px;border-radius:8px;
   border:1px solid var(--line);color:var(--steel)}
-.opts button.on{background:var(--silver);border-color:var(--silver);color:#0A0B0D;font-weight:700}
+.opts button.on{background:var(--silver);border-color:var(--silver);color:var(--onSilver);font-weight:700}
 /* ── invitations ── */
 .slot{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid var(--line2)}
 .slot .ic{width:30px;height:30px;border-radius:8px;border:1px dashed var(--ash);flex:none;
   display:grid;place-items:center;font-family:var(--mono);font-size:11px;color:var(--ash)}
 .slot .ic.used{border:1px solid var(--line);background:var(--s2);color:var(--steel)}
-.slot .ic.claimed{border:0;background:var(--jade);color:#08130D;font-weight:700}
+.slot .ic.claimed{border:0;background:var(--jade);color:var(--onJade);font-weight:700}
 .slot .bd{flex:1;min-width:0}
 .slot .bd .t{font-size:12.5px}
 .slot .bd .m{font-family:var(--mono);font-size:8px;color:var(--ash);margin-top:4px;letter-spacing:.1em}
 .slot .bd .m.live{color:var(--jade)}
 .slot .act{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
   padding:7px 10px;border-radius:7px;border:1px solid var(--line);color:var(--steel);flex:none}
-.slot .act.pri{background:var(--silver);border-color:var(--silver);color:#0A0B0D;font-weight:700}
+.slot .act.pri{background:var(--silver);border-color:var(--silver);color:var(--onSilver);font-weight:700}
 
 .linkbox{background:var(--s1);border:1px solid var(--line);border-radius:10px;padding:13px;
   margin-top:12px;display:flex;align-items:center;gap:10px}
 .linkbox code{flex:1;font-family:var(--mono);font-size:11px;color:var(--jade);
   word-break:break-all;line-height:1.5}
 .linkbox button{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
-  padding:8px 11px;border-radius:7px;background:var(--silver);color:#0A0B0D;font-weight:700;flex:none}
+  padding:8px 11px;border-radius:7px;background:var(--silver);color:var(--onSilver);font-weight:700;flex:none}
 .meta{display:flex;gap:14px;margin-top:12px;padding-top:11px;border-top:1px solid var(--line2)}
 .meta div .v{font-family:var(--mono);font-weight:700;font-size:13px}
 .meta div .k{font-family:var(--mono);font-size:7px;letter-spacing:.13em;text-transform:uppercase;
@@ -493,7 +508,7 @@ input::-webkit-calendar-picker-indicator{filter:invert(.65)}
 .qrow .act{display:flex;gap:5px;flex:none}
 .qrow .act button{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
   padding:7px 9px;border-radius:7px;border:1px solid var(--line);color:var(--steel)}
-.qrow .act button.pri{background:var(--jade);border-color:var(--jade);color:#08130D;font-weight:700}
+.qrow .act button.pri{background:var(--jade);border-color:var(--jade);color:var(--onJade);font-weight:700}
 .emptyq{border:1px dashed var(--line);border-radius:10px;padding:20px 16px;text-align:center;
   color:var(--ash);font-size:11.5px;line-height:1.6;margin-top:10px}
 
@@ -505,7 +520,7 @@ input::-webkit-calendar-picker-indicator{filter:invert(.65)}
 .vouch .row{display:flex;gap:7px;margin-top:12px}
 .vouch .row button{flex:1;padding:10px;border-radius:8px;border:1px solid var(--line);
   font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
-.vouch .row button.yes{background:var(--jade);border-color:var(--jade);color:#08130D;font-weight:700}
+.vouch .row button.yes{background:var(--jade);border-color:var(--jade);color:var(--onJade);font-weight:700}
 
 .wl{padding:26px 20px calc(26px + var(--safe));min-height:100%;display:flex;flex-direction:column}
 .pos{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
@@ -598,7 +613,7 @@ textarea.deets-in{min-height:88px}
 /* ── answer-first invitation rows ── */
 .inv.needs{background:var(--s1);border:1px solid var(--line);border-radius:10px;
   padding:12px;margin-bottom:7px;border-bottom:1px solid var(--line)}
-.pill.answer{background:var(--silver);border-color:var(--silver);color:#0A0B0D;
+.pill.answer{background:var(--silver);border-color:var(--silver);color:var(--onSilver);
   font-weight:700;padding:7px 13px;font-size:8.5px}
 .divid{font-family:var(--mono);font-size:8px;letter-spacing:.18em;text-transform:uppercase;
   color:var(--ash);margin:20px 0 8px}
@@ -617,7 +632,7 @@ textarea.deets-in{min-height:88px}
 .turnout .k3{font-family:var(--mono);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--ash)}
 
 /* ── +1 confirm state ── */
-.dact button.p1b.on{background:var(--jade);border-color:var(--jade);color:#08130D;font-weight:700}
+.dact button.p1b.on{background:var(--jade);border-color:var(--jade);color:var(--onJade);font-weight:700}
 .dact button.p1b.off{background:var(--s3);border-color:var(--line);color:var(--ash)}
 
 /* ── deadlines on Today ── */
@@ -631,7 +646,7 @@ textarea.deets-in{min-height:88px}
 .dl-row .bd .m{font-family:var(--mono);font-size:8px;color:var(--ash);margin-top:4px;letter-spacing:.11em}
 .dl-row.urgent .bd .m{color:var(--rust)}
 .dl-row .cta{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
-  padding:7px 11px;border-radius:7px;background:var(--silver);color:#0A0B0D;font-weight:700;flex:none}
+  padding:7px 11px;border-radius:7px;background:var(--silver);color:var(--onSilver);font-weight:700;flex:none}
 .dl-row.lapsed .cta{background:none;border:1px solid var(--line);color:var(--ash);font-weight:400}
 .rtline{display:flex;align-items:center;gap:9px;margin-top:10px;padding:10px 12px;
   border-radius:9px;border:1px solid var(--line2)}
@@ -639,8 +654,9 @@ textarea.deets-in{min-height:88px}
 .rtline .k4{flex:1;font-size:11px;color:var(--ash);line-height:1.5}
 
 /* ── answer cards ── */
-.face.ask{background:linear-gradient(168deg,#2E1714,#170D0B 62%);
+.face.ask{background:var(--rust-dim);
   border-color:rgba(240,97,79,.34)}
+[data-theme='light'] .stack.behind .face.ask{background:#E8D3C2;border-color:var(--rust-lo)}
 .stack.behind .face.ask{background:#170D0B;border-color:rgba(240,97,79,.22)}
 .duepill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:8px;
   letter-spacing:.14em;text-transform:uppercase;color:var(--rust);
@@ -664,11 +680,11 @@ textarea.deets-in{min-height:88px}
 .lapse .bd .m{font-family:var(--mono);font-size:8px;color:var(--ash);margin-top:4px;letter-spacing:.11em}
 .lapse .wl2{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
   padding:8px 11px;border-radius:7px;border:1px solid var(--line);color:var(--silver);flex:none}
-.lapse .wl2.on{background:var(--silver);border-color:var(--silver);color:#0A0B0D;font-weight:700}
+.lapse .wl2.on{background:var(--silver);border-color:var(--silver);color:var(--onSilver);font-weight:700}
 .lapse .wl2.full{opacity:.4}
 
 /* ── gate + orientation ── */
-.gate2{position:fixed;inset:0;z-index:200;background:#000;display:flex;flex-direction:column;
+.gate2{position:fixed;inset:0;z-index:200;background:var(--bg);color:var(--silver);display:flex;flex-direction:column;
   align-items:center;justify-content:center;padding:32px 24px calc(32px + var(--safe));text-align:center}
 .gate2 .mk{font-family:var(--disp);font-size:34px;color:var(--silver);letter-spacing:-.01em}
 .gate2 .mk span{color:var(--jade)}
@@ -682,7 +698,7 @@ textarea.deets-in{min-height:88px}
 .gate2 input.wrong{border-color:var(--rust);animation:shake .3s}
 @keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .gate2 button{width:100%;max-width:290px;margin-top:10px;padding:14px;border-radius:10px;
-  background:var(--silver);color:#0A0B0D;font-family:var(--body);font-weight:500;font-size:14px}
+  background:var(--silver);color:var(--onSilver);font-family:var(--body);font-weight:500;font-size:14px}
 .gate2 .hint2{font-family:var(--mono);font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;
   color:var(--ash);margin-top:24px;line-height:1.9}
 
@@ -723,14 +739,14 @@ textarea.deets-in{min-height:88px}
 .reads b{color:var(--silver);font-weight:500}
 
 /* ── settle-first FAB ── */
-.fab.settle{background:var(--rust);color:#160705}
+.fab.settle{background:var(--rust);color:var(--onRust)}
 /* ── suggestions from history ── */
 .sugg{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .sugg button{font-family:var(--mono);font-size:9.5px;padding:8px 11px;border-radius:8px;
   border:1px dashed rgba(255,255,255,.16);color:var(--steel);display:flex;align-items:center;gap:6px}
 .sugg button:active{border-style:solid}
 .sugg button.on{background:var(--silver);border-color:var(--silver);border-style:solid;
-  color:#0A0B0D;font-weight:700}
+  color:var(--onSilver);font-weight:700}
 .sugg .why{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--ash)}
 .sugg button.on .why{color:rgba(10,11,13,.55)}
 .recall{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
@@ -807,6 +823,106 @@ textarea.deets-in{min-height:88px}
 .slipped .strip i.K{background:var(--tang)}
 .slipped .pips2 i.fill{background:var(--tang)}
 
+/* ── wave two readiness ── */
+.gate3{border:1px solid var(--line);border-radius:13px;padding:16px;margin-top:16px}
+.gate3.ready{border-color:var(--jade);background:var(--jade-dim)}
+.gate3 .hd3{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px}
+.gate3 .hd3 .t7{font-family:var(--disp);font-size:20px;letter-spacing:-.012em}
+.gate3.ready .hd3 .t7{color:var(--jade)}
+.gate3 .hd3 .c7{font-family:var(--mono);font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--ash)}
+.crit{margin-top:15px}
+.crit .row3{display:flex;align-items:baseline;gap:9px;margin-bottom:6px}
+.crit .row3 .lb4{flex:1;font-size:12.5px}
+.crit .row3 .vl{font-family:var(--mono);font-weight:700;font-size:12px;color:var(--steel)}
+.crit .row3 .vl.hit{color:var(--jade)}
+.crit .bar3{height:5px;border-radius:3px;background:var(--s3);overflow:hidden;margin-bottom:14px}
+.crit .bar3 i{display:block;height:100%;background:var(--steel);transition:width .4s}
+.crit .bar3 i.hit{background:var(--jade)}
+.unlock{border:1px solid var(--jade);background:var(--jade-dim);border-radius:13px;
+  padding:18px;margin-top:16px;text-align:center}
+.unlock .big4{font-family:var(--disp);font-size:26px;color:var(--jade);letter-spacing:-.015em;line-height:1.15}
+.unlock p{margin:11px 0 0;font-size:13px;line-height:1.6;color:var(--silver)}
+.unlock .cnt{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--jade);margin-top:14px}
+.freebadge{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--jade);border:1px solid var(--jade-lo);
+  background:var(--jade-dim);border-radius:20px;padding:6px 12px;margin-bottom:16px}
+
+.cohort{display:flex;gap:5px;margin:14px 0 0}
+.cohort button{flex:1;font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;
+  text-transform:uppercase;padding:8px 6px;border-radius:8px;border:1px solid var(--line);color:var(--steel)}
+.cohort button.on{background:var(--silver);border-color:var(--silver);color:var(--onSilver);font-weight:700}
+.wavenote{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ash);margin-top:8px;text-align:center}
+
+.setrow{display:flex;align-items:center;gap:12px;padding:13px 0}
+.setrow .cp2{flex:1;font-size:12.5px}
+.setrow .cp2 small{display:block;font-size:10.5px;color:var(--ash);margin-top:4px;line-height:1.5}
+.seg{display:flex;gap:4px;flex:none;border:1px solid var(--line);border-radius:9px;padding:3px}
+.seg button{font-family:var(--mono);font-size:8px;letter-spacing:.11em;text-transform:uppercase;
+  padding:7px 11px;border-radius:6px;color:var(--ash)}
+.seg button.on{background:var(--silver);color:var(--onSilver);font-weight:700}
+
+.chk2{width:24px;height:24px;border-radius:6px;border:1.5px solid var(--line);flex:none;
+  display:grid;place-items:center;font-size:12px;font-weight:700;color:transparent;
+  transition:background .15s,border-color .15s,color .15s}
+.chk2.on{background:var(--jade);border-color:var(--jade);color:var(--onJade)}
+
+/* ── decline-all durations ── */
+.durs{display:flex;gap:6px;margin-top:12px}
+.durs button{flex:1;font-family:var(--mono);font-size:9px;letter-spacing:.11em;text-transform:uppercase;
+  padding:10px 6px;border-radius:8px;border:1px solid var(--line);color:var(--steel)}
+.durs button.on{background:var(--silver);border-color:var(--silver);color:var(--onSilver);font-weight:700}
+textarea.reason{min-height:64px;margin-top:10px}
+
+/* ── named invitation ── */
+.namelink{background:var(--s1);border:1px solid var(--line);border-radius:11px;padding:14px;margin-top:12px}
+.namelink .fld{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:9px;
+  padding:12px;color:var(--silver);font-family:var(--body);font-size:15px;margin-top:8px}
+.namelink .fld::placeholder{color:var(--ash)}
+.mismatch{border:1px solid var(--rust-lo);background:var(--rust-dim);border-radius:10px;
+  padding:12px;margin-top:12px;font-size:12px;line-height:1.6;color:var(--silver)}
+.mismatch b{color:var(--rust);font-weight:500}
+.matched{border:1px solid var(--jade-lo);background:var(--jade-dim);border-radius:10px;
+  padding:12px;margin-top:12px;font-size:12px;line-height:1.6;color:var(--silver)}
+.matched b{color:var(--jade);font-weight:500}
+
+/* ── loud clash ── */
+.clashbig{border:2px solid var(--rust);background:var(--rust-dim);border-radius:12px;
+  padding:14px;margin-top:12px}
+.clashbig .hd4{display:flex;align-items:center;gap:9px}
+.clashbig .bang{width:26px;height:26px;border-radius:50%;background:var(--rust);color:var(--onRust);
+  display:grid;place-items:center;font-family:var(--mono);font-weight:700;font-size:15px;flex:none;
+  animation:thump 1.6s ease-in-out infinite}
+@keyframes thump{50%{transform:scale(.86)}}
+.clashbig .t8{flex:1;font-family:var(--disp);font-size:19px;color:var(--rust);letter-spacing:-.012em;
+  line-height:1.15}
+.clashbig p{margin:10px 0 0;font-size:12px;line-height:1.55;color:var(--silver)}
+.duepill.clash2{border-color:var(--rust);background:var(--rust);color:var(--onRust)}
+.duepill.clash2 i{background:var(--onRust)}
+.nomore{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ash);border:1px dashed var(--line);border-radius:20px;padding:6px 10px;
+  display:inline-flex;margin-top:11px}
+/* ── richer upcoming cards ── */
+.evmeta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.evtag{font-family:var(--mono);font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;
+  padding:4px 8px;border-radius:20px;border:1px solid var(--line);color:var(--steel)}
+.evtag.warn2{border-color:var(--rust-lo);background:var(--rust-dim);color:var(--rust)}
+.evtag.good2{border-color:var(--jade-lo);background:var(--jade-dim);color:var(--jade)}
+.evnudge{font-size:11px;line-height:1.55;color:var(--rust);margin-top:9px}
+
+/* ── right-now shortcut ── */
+.nowcard{border:1px solid var(--jade-lo);background:var(--jade-dim);border-radius:12px;
+  padding:15px;margin-top:14px}
+.nowcard h4{font-family:var(--disp);font-size:19px;margin:0 0 7px;letter-spacing:-.012em}
+.nowcard p{margin:0;font-size:12px;line-height:1.55;color:var(--steel)}
+.nowcard button{width:100%;margin-top:12px;padding:12px;border-radius:9px;background:var(--jade);
+  color:var(--onJade);font-family:var(--body);font-weight:500;font-size:14px}
+.evrow .dl2{font-family:var(--mono);font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;
+  padding:6px 9px;border-radius:20px;border:1px solid var(--line);color:var(--steel);
+  flex:none;text-align:center;line-height:1.4;max-width:78px}
+.evrow .dl2.soon{border-color:var(--rust-lo);background:var(--rust-dim);color:var(--rust)}
+
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -871,6 +987,11 @@ const visSelf=p=>p.n>=N_SELF, visPub=p=>p.n>=N_PUB;
 const pct=v=>Math.round(v*100)+'%';
 
 function setActor(a){ actor=a; tab=null; render() }
+function setFounder(f){
+  isFounder=f;
+  if(!f && actor==='host') actor='guest';    // a founding guest hasn't hosted yet
+  tab=null; render();
+}
 function setPhase(p){ phase=p; render() }
 function begin(){ seen=true; render() }
 
@@ -924,10 +1045,12 @@ const ROSTER=['Maya Okonkwo','Rafa Ibarra','Dot Chen','June Park','Bo Achebe','T
 /* the unconfirmed event gates everything else */
 let hostTab='future';
 let ARCHIVE=[
-  {title:'Supper Club No. 3', when:'11 July', invited:14, projected:[10,13], came:12,
-   best:'Priya Nair', worst:'Devin Roux', late:1, ghosts:1},
-  {title:'Kitchen sessions',  when:'28 June', invited:22, projected:[14,18], came:15,
-   best:'Rafa Ibarra', worst:'Cass Moreau', late:3, ghosts:2},
+  {title:'Supper Club No. 3', when:'11 July', invited:14, cap:14, projected:[10,13], came:12,
+   best:'Priya Nair', worst:'Devin Roux', surprise:'Ilya Voronin', late:1, ghosts:1,
+   firstTimers:['Sam Ito','Wren Adeyemi'], core:9, p1Brought:2, p1Came:2},
+  {title:'Kitchen sessions',  when:'28 June', invited:22, cap:20, projected:[14,18], came:15,
+   best:'Rafa Ibarra', worst:'Cass Moreau', surprise:'Theo Lindqvist', late:3, ghosts:2,
+   firstTimers:['Nils Bergström'], core:7, p1Brought:3, p1Came:1},
 ];
 let PAST={
   id:0, title:'Rooftop, Potrero', when:'Last night · 27 July', cap:16,
@@ -945,11 +1068,15 @@ let EVENTS=[
    details:"Buzzer is broken — text me and I'll come down. Bring nothing, I've got it covered.",
    guests:['Maya Okonkwo','Rafa Ibarra','Dot Chen','June Park','Bo Achebe','Theo Lindqvist',
            'Devin Roux','Ilya Voronin','Nils Bergström','Sam Ito','Cass Moreau'],
+   going:['Maya Okonkwo','Rafa Ibarra','Dot Chen','June Park','Bo Achebe','Theo Lindqvist',
+          'Devin Roux','Ilya Voronin','Nils Bergström','Sam Ito','Cass Moreau'],
+   cancelled:['Suki Tanaka','Wren Adeyemi'], unanswered:3, deadlineIn:2,
    p1:{'Rafa Ibarra':1,'Bo Achebe':1,'Devin Roux':1},
    door:{'Dot Chen':'in','Sam Ito':'in'}, p1in:{}}
 ];
 let curEv=1;
 const ev=()=>EVENTS.find(e=>e.id===curEv);
+const yesList=e=>e.going||e.guests||[];
 
 const gated=()=>!PAST.confirmed;
 
@@ -1041,13 +1168,13 @@ function attendeeList(going,p1,live,dropped){
     .sort((a,b)=>(here(b)-here(a)) || a.localeCompare(b));
   const row=(n,i)=>{const p=byName(n), k=(p1||{})[n]||0, rated_=visPub(p);
     return `<div class="rank" onclick="event.stopPropagation();openRecord('${n}')">
-      <div class="ix">${here(n)?'':phase===3&&rated_?i+1:'·'}</div>
+      <div class="ix">${here(n)?'':phase>=3&&rated_?i+1:'·'}</div>
       ${av(p,26)}
       <div class="nm">${p.name}</div>
       ${k?`<span class="p1">+${k}</span>`:''}
       ${here(n)?`<span class="there">There</span>`
         :`<div class="sc ${!rated_?'na':p.rel>=.88?'hi':p.rel<.70?'lo':''}">${
-          phase===3&&rated_?pct(p.rel):'—'}</div>`}</div>`};
+          phase>=3&&rated_?pct(p.rel):'—'}</div>`}</div>`};
 
   if(phase<3) return `<div style="margin-top:4px">${going.map((n,i)=>row(n,i)).join('')}</div>
     <div class="note">Reliability appears at week 9.${live?' Arrivals show live.':''}</div>`;
@@ -1066,7 +1193,7 @@ function attendeeList(going,p1,live,dropped){
         <span class="gone">Cancelled</span></div>`}).join('')}
       <p class="newnote" style="margin-top:8px">Shown rather than removed. Someone pulling out on the
         day is worth knowing about, and quietly deleting them would hide it.</p>`:''}
-    ${phase===3?STANDING_KEY:''}
+    ${phase>=3?STANDING_KEY:''}
     ${Object.values(p1||{}).some(Boolean)?`<div class="note">Plus-ones carry no record of their own.
       They're projected off whoever's bringing them.</div>`:''}`;
 }
@@ -1079,7 +1206,7 @@ function miniList(going,p1,live,dropped){
   const rated=going.filter(n=>visPub(byName(n)))
     .sort((a,b)=>(here(b)-here(a)) || byName(b).rel-byName(a).rel);
   const fresh=going.filter(n=>!visPub(byName(n)));
-  const order=phase===3?rated.concat(fresh):[...going].sort((a,b)=>here(b)-here(a));
+  const order=phase>=3?rated.concat(fresh):[...going].sort((a,b)=>here(b)-here(a));
   const show=order.slice(0,4), rest=going.length-show.length;
   const nHere=going.filter(here).length;
   return `<div class="mini2">
@@ -1087,8 +1214,8 @@ function miniList(going,p1,live,dropped){
       onclick="event.stopPropagation();openRecord('${n}')">
       ${av(p,20)}<div class="n2">${p.name}${k?' +'+k:''}</div>
       ${here(n)?`<span class="there">There</span>`
-        :`<div class="s2 ${phase===3&&visPub(p)?(p.rel>=.88?'hi':p.rel<.70?'lo':'mid'):'na'}">${
-          phase===3&&visPub(p)?pct(p.rel):'—'}</div>`}</div>`}).join('')}
+        :`<div class="s2 ${phase>=3&&visPub(p)?(p.rel>=.88?'hi':p.rel<.70?'lo':'mid'):'na'}">${
+          phase>=3&&visPub(p)?pct(p.rel):'—'}</div>`}</div>`}).join('')}
     ${dropped.slice(0,2).map(n=>{const p=byName(n);return `<div class="r" style="opacity:.6">
       ${av(p,20)}<div class="n2">${p.name}</div>
       <span class="gone">Cancelled</span></div>`}).join('')}
@@ -1130,11 +1257,11 @@ function openRecord(name){
       ${av(p,42)}
       <div class="bd3"><div class="n6">${p.name}</div>
         <div class="h6">${p.n} ANSWERED · ${p.ev.length} INVITED</div></div>
-      <div class="big3 ${cls2}">${phase===3&&visPub(p)?pct(p.rel):'—'}</div>
+      <div class="big3 ${cls2}">${phase>=3&&visPub(p)?pct(p.rel):'—'}</div>
     </div>
     <div style="margin-top:16px">${strip(p)}</div>
     ${LEG}
-    ${phase===3&&visPub(p)?`<div class="three">
+    ${phase>=3&&visPub(p)?`<div class="three">
       <div><div class="v ${cls2}">${pct(p.rel)}</div><div class="k">Reliability</div></div>
       <div><div class="v">${fmtRT(p.rt)}</div><div class="k">Usual<br>reply</div></div>
       <div><div class="v">${p.cad}</div><div class="k">Per<br>quarter</div></div>
@@ -1150,6 +1277,7 @@ function openRecord(name){
 /* ═══════════ SIGNUP ═══════════ */
 function disclosure(){return `<div class="disc">
   <div class="eyebrow">Before you sign up</div>
+  <div class="freebadge">Free, forever, for the first 200 real ones</div>
   <h1>Parties that count.</h1>
 
   <div class="dblock">
@@ -1200,6 +1328,12 @@ function disclosure(){return `<div class="disc">
   </div>
 
   <div class="dblock">
+    <h4>Hosting opens at three events</h4>
+    <p>Turn up to three and you can throw your own. Membership will cost money later — everyone in
+       this first group never pays.</p>
+  </div>
+
+  <div class="dblock">
     <h4>This isn't for everyone</h4>
     <p>Roster is built to be smaller and more accurate rather than larger and vaguer. It's meant to
        celebrate the real ones.</p>
@@ -1220,9 +1354,7 @@ const CARD_H=488, PEEK=62;
 
 function p1Control(o, fn, policy, full){
   if(!policy || policy==='none') return '';
-  if(full) return `<div class="p1box" style="opacity:.55">
-    <div class="lb2">Bringing someone?<small>Full — no room for plus-ones</small></div>
-    <div class="ct">—</div></div>`;
+  if(full) return `<span class="nomore">No more +1s</span>`;
   return `<div class="p1box ${o.mine?'on':''}">
     <div class="lb2">Bringing someone?
       <small>${o.mine?'The host will be asked':'The host approves each one'}</small></div>
@@ -1279,7 +1411,7 @@ function vToday(){
             <div class="whenrow">
               <span class="when">${c.when}</span>
               ${ask?`<span class="duepill"><i></i>Answer due</span>`
-                   :clashing?`<span class="duepill"><i></i>Clash</span>`
+                   :clashing?`<span class="duepill clash2"><i></i>Double booked</span>`
                    :c.live?`<span class="livepill"><i></i>Happening now</span>`:''}
             </div>
             <h3>${c.t}</h3>
@@ -1316,10 +1448,13 @@ function vToday(){
 /* You said yes to two things that overlap. Nobody is stopped; the point is
    that this surfaces days early rather than at eleven at night. */
 function clashLine(c){
-  return `<div class="clash">
-    <div class="ic2">⚠</div>
-    <div class="tx2">Aren't you at ${c.clashWith}?
-      <small>You said yes to both · they overlap</small></div>
+  return `<div class="clashbig">
+    <div class="hd4">
+      <div class="bang">!</div>
+      <div class="t8">Aren't you at ${c.clashWith}?</div>
+    </div>
+    <p>You said yes to both and they overlap. One of these is going to be a no-show unless you
+      pick now — and a no-show costs you far more than a decline does.</p>
   </div>`;
 }
 
@@ -1559,7 +1694,7 @@ function close_(){document.getElementById('mount').innerHTML='';render()}
 let ciState='enter', ciVal='', rating=null, rtext='';
 let myCheckin={};            // event title -> time checked in
 let ciEvent='Supper Club No. 4';
-let pauseCancel=false, pauseDecline=false;
+let pauseOn=false, pauseFor='week', pauseWhy='';
 function vCheckin(){
   if(ciState==='done') return `<div class="done">
     <div class="ring">✓</div>
@@ -1613,6 +1748,7 @@ function meSwitch(){
 
 function progressBlock(me){
   const have=Math.min(me.n,N_PUB), left=Math.max(0,N_PUB-me.n), done=left===0;
+  const me3=me.n;
   const perMonth=2.4, rhythm=perMonth>=2;
   return `<div class="prog2 ${done?'done':''}">
     <div class="hd2">
@@ -1625,11 +1761,17 @@ function progressBlock(me){
       ? 'Eight answered invitations is enough for the number to mean something. It updates from here.'
       : `Answer ${left} more invitation${left===1?'':'s'} — yes or no, both count — and your record
          appears. Nobody sees anything before that, including you.`}</div>
+    ${!isFounder?`<div class="rhythm">
+      <div class="dot3" style="background:${me3>=3?'var(--jade)':'var(--tang)'}"></div>
+      <div class="tx3">${me3>=3
+        ? `<b>You can host.</b> Three events attended is the bar, and you're past it. Throwing your
+           own is also what unlocks invitations for everyone.`
+        : `<b>${3-me3} more and you can host.</b> Attend three and you can throw your own.`}</div>
+    </div>`:''}
     <div class="rhythm">
       <div class="dot3" style="background:${rhythm?'var(--jade)':'var(--tang)'}"></div>
       <div class="tx3">${rhythm
-        ? `<b>You're at rhythm.</b> ${perMonth} events a month. Roster needs two to be worth
-           anything to you.`
+        ? `<b>You're at rhythm.</b> ${perMonth} events a month.`
         : `<b>Below rhythm.</b> ${perMonth} events a month, against a floor of two. Under that
            the app can't tell anyone anything about you.`}</div>
     </div>
@@ -1640,7 +1782,9 @@ function vMe(){
   if(meTab==='invites')  return meSwitch()+vInvites();
   if(meTab==='plusones') return meSwitch()+vPlusOnes();
   if(meTab==='global')   return meSwitch()+vGlobal();
-  const me={name:'You',hue:38,ev:[...'KKKKNKKKNKLF'],ini:'YOU',rt:5,lapses:0};
+  const me= isFounder
+    ? {name:'You',hue:38,ev:[...'KKKKNKKKNKLF'],ini:'YOU',rt:5,lapses:0}
+    : {name:'You',hue:38,ev:[...'KKNKKKN'],      ini:'YOU',rt:7,lapses:0};
   me.n=me.ev.filter(c=>c!=='G').length;
   const num=me.ev.filter(c=>c!=='G').reduce((a,c)=>a+CRED[c],0);
   me.rel=(num+K_*M_)/(me.n+K_); me.cad='3.0';
@@ -1676,25 +1820,44 @@ function vMe(){
   ${phase===2?`<div class="lockbox">Only you can see this. At week 9 it becomes visible to other
     members — but only once you've passed <b>eight events</b>.</div>`:''}
 
-  <div class="card ${pauseDecline||pauseCancel?'':'q'}" style="margin-top:20px${
-    pauseDecline||pauseCancel?';border-color:var(--jade-lo);background:var(--jade-dim)':''}">
+  <div class="card ${pauseOn?'':'q'}" style="margin-top:20px${
+    pauseOn?';border-color:var(--line);background:var(--s2)':''}">
     <h2 style="margin:0 0 4px">Step back</h2>
     <div class="note" style="margin:0 0 6px">No reason required.</div>
 
     <div class="sw">
-      <div class="cp"><b>Decline all current</b>
-        <small>${goingCount()} event${goingCount()===1?'':'s'}. Hosts are told now, not at the door.</small></div>
-      <button class="tog ${pauseCancel?'on':''}" onclick="pauseCancel=!pauseCancel;render()"><i></i></button>
+      <div class="cp"><b>Decline all</b>
+        <small>${goingCount()} on your calendar now, plus anything new that arrives.</small></div>
+      <button class="tog ${pauseOn?'on':''}" onclick="pauseOn=!pauseOn;render()"><i></i></button>
     </div>
 
-    <div class="sw">
-      <div class="cp"><b>Automatically decline all new invitations</b></div>
-      <button class="tog ${pauseDecline?'on':''}" onclick="pauseDecline=!pauseDecline;render()"><i></i></button>
-    </div>
+    ${pauseOn?`
+      <div class="durs">
+        ${[['weekend','The weekend'],['week','A week'],['month','A month']].map(([k,l])=>
+          `<button class="${pauseFor===k?'on':''}" onclick="pauseFor='${k}';render()">${l}</button>`).join('')}
+      </div>
+      <textarea class="reason" placeholder="Provide a reason if you want to"
+        oninput="pauseWhy=this.value">${pauseWhy}</textarea>
+      <div class="note">${pauseWhy.trim()
+        ? 'Hosts see this with your decline. Nobody else does.'
+        : 'Hosts see that you\'ve stepped back, not why.'}</div>`:''}
+  </div>
 
-    ${pauseCancel||pauseDecline?`<div class="note" style="margin-top:12px">
-      Hosts see a small marker while this is on — deliberately. It's an opening for someone to check
-      in on you, not a flag.</div>`:''}
+  <div class="card q" style="padding:4px 15px 10px">
+    <h2 style="margin:14px 0 0">Settings</h2>
+    <div class="setrow" style="border-bottom:1px solid var(--line2)">
+      <div class="cp2">Appearance
+        <small>Dark is the default. Light is easier at a bright party.</small></div>
+      <div class="seg">
+        <button class="${theme==='dark'?'on':''}" onclick="setTheme('dark')">Dark</button>
+        <button class="${theme==='light'?'on':''}" onclick="setTheme('light')">Light</button>
+      </div>
+    </div>
+    <div class="setrow">
+      <div class="cp2">Delete account
+        <small>Your profile and your record, gone.</small></div>
+      <div class="seg"><button onclick="alert('Deletes the account and the whole record.')">Delete</button></div>
+    </div>
   </div>`;
 }
 
@@ -1750,8 +1913,7 @@ function vConfirm(){
         ${k?`<button class="p1b off" onclick="confirmP1('${n}')">+${k}</button>`:''}
       </div></div>`}).join('') || '<div class="note" style="margin:0">Everyone accounted for.</div>'}
   </div>
-  ${Object.keys(PAST.p1||{}).length?`<div class="note">Green means their guest came too. Grey means
-    they turned up alone — a different fact from not turning up, and it lands on them either way.</div>`:''}
+
   <button class="btn" onclick="PAST.confirmed=true;hostTab='past';tab='events';render()">
     Confirm ${arrived.length + Object.values(PAST.p1in||{}).reduce((a,b)=>a+b,0)} of ${
       PAST.guests.length + Object.values(PAST.p1||{}).reduce((a,b)=>a+b,0)}</button>
@@ -1777,12 +1939,30 @@ function futureEvents(){
   return `
   <div class="card q" style="padding:2px 12px 8px;margin-top:12px">
     ${EVENTS.map(e=>{
-      const pr=roomStats(e.guests,e.p1||{});
-      return `<button class="evrow" onclick="curEv=${e.id};tab='event';render()">
+      const yes=yesList(e);
+      const pr=roomStats(yes,e.p1||{});
+      const dropped=(e.cancelled||[]).length;
+      const waiting=e.unanswered||0;
+      const short=Math.max(0,e.cap-pr.hi);
+      return `<button class="evrow" style="align-items:flex-start"
+        onclick="curEv=${e.id};tab='event';render()">
         <div class="bd"><div class="t">${e.title}</div>
-          <div class="m">${e.when.toUpperCase()} · ${pr.lo}–${pr.hi} OF ${e.cap} PROJECTED</div>
-          <div style="margin-top:6px">${plusBadge(e.plus)}</div></div>
-        <span class="pill">Open</span></button>`}).join('')}
+          <div class="m">${e.when.toUpperCase()} · ${yes.length
+            ? `${pr.lo}–${pr.hi} OF ${e.cap} PROJECTED`
+            : `AWAITING ANSWERS`}</div>
+          <div class="evmeta">
+            ${yes.length?`<span class="evtag good2">${yes.length} going</span>`:''}
+            ${dropped?`<span class="evtag warn2">${dropped} cancelled</span>`:''}
+            ${waiting?`<span class="evtag${yes.length?'':' warn2'}">${waiting} unanswered</span>`:''}
+          </div>
+          ${dropped&&short?`<div class="evnudge">${(e.cancelled||[]).slice(0,2).join(' and ')}
+            dropped out — you're ${short} short. Invite more.</div>`:''}
+        </div>
+        ${e.sameDay
+          ? `<span class="dl2 soon">Deadline<br>asap</span>`
+          : e.deadlineIn!=null
+            ? `<span class="dl2 ${e.deadlineIn<=2?'soon':''}">Deadline<br>in ${e.deadlineIn}d</span>`
+            : `<span class="pill">Open</span>`}</button>`}).join('')}
   </div>
   <div class="note">The door opens on the night, once the last event is settled.</div>`;
 }
@@ -1817,8 +1997,16 @@ function pastEvents(){
       </div>
       <div class="sumrow"><div class="k2">Most reliable</div>
         <div class="v2">${a.best}<small>SAID YES, TURNED UP, EVERY TIME</small></div></div>
+      <div class="sumrow"><div class="k2">Against the odds</div>
+        <div class="v2">${a.surprise}<small>CAME DESPITE A THIN RECORD</small></div></div>
       <div class="sumrow"><div class="k2">Cost you a seat</div>
         <div class="v2">${a.worst}<small>SAID YES, DIDN'T ARRIVE</small></div></div>
+      <div class="sumrow"><div class="k2">First time here</div>
+        <div class="v2">${a.firstTimers.join(', ')}<small>NEVER BEEN TO ONE OF YOURS</small></div></div>
+      <div class="sumrow"><div class="k2">Your core</div>
+        <div class="v2">${a.core} people<small>NOW AT THREE OR MORE OF YOURS</small></div></div>
+      <div class="sumrow"><div class="k2">Plus-ones</div>
+        <div class="v2">${a.p1Came} of ${a.p1Brought} arrived</div></div>
       <div class="sumrow"><div class="k2">Late cancels</div><div class="v2">${a.late}</div></div>
       <div class="sumrow"><div class="k2">Never answered</div><div class="v2">${a.ghosts}</div></div>
       <div class="note">Projection was ${Math.abs(off)<=1?'within a seat':`off by ${Math.abs(off).toFixed(0)}`}.
@@ -1861,6 +2049,24 @@ function newDraft(){
            cap:14, plus:'ask', guests:new Set(), calMo:d.getMonth(), calYr:d.getFullYear() };
 }
 function startCreate(){ draft=newDraft(); tab='create'; render() }
+
+/* Everything from history, dated tonight, guests pre-filled. One tap from
+   "I want people here" to a sent invitation. */
+function rightNow(){
+  const d=newDraft();
+  const now=new Date(TODAY);
+  d.title  = 'Tonight';
+  d.where  = HISTORY.venues[0].v;
+  d.date   = key(now);
+  d.start  = '20:00';
+  d.end    = HISTORY.ends['20:00'];
+  d.cap    = HISTORY.caps[0].c;
+  d.dlDays = 0;
+  d.plus   = 'ask';
+  d.details= '';
+  HISTORY.regulars.forEach(n=>d.guests.add(n));
+  draft=d; tab='create'; render();
+}
 
 function calendar(d){
   const yr=d.calYr, mo=d.calMo;
@@ -1950,6 +2156,13 @@ function vCreate(){
   <div class="eyebrow">New event</div>
   <h1>${d.title||'Untitled'}</h1>
 
+  ${d.guests.size===0?`<div class="nowcard">
+    <h4>Invite your Roster to hang right now</h4>
+    <p>Tonight at ${HISTORY.venues[0].v}, ${HISTORY.regulars.length} regulars, everything else from
+      the last one you threw. Answers due today, because it's today.</p>
+    <button onclick="rightNow()">Fill it in and show me</button>
+  </div>`:''}
+
   <label class="lab">Name</label>
   <input class="in" placeholder="Supper Club No. 5" value="${d.title}" oninput="draft.title=this.value">
   <div class="sugg">
@@ -2004,7 +2217,7 @@ function vCreate(){
       is no use to you tonight.</div>`:''})()}
   <label class="lab">Invitations</label>
   ${d.guests.size<3?`<div class="usual">
-    <b>Your regulars.</b> Ten people you've invited to most of your last events.
+    <b>Your Roster.</b> Ten people you've invited to most of your last events.
     ${(()=>{const m=roomStats(HISTORY.regulars,{});return `They project ${m.lo}–${m.hi} of
       ${HISTORY.regulars.length}.`})()}
     <div class="row2">
@@ -2026,7 +2239,7 @@ function vCreate(){
   ${d.plus!=='none'?`<div class="note">A plus-one has no record of their own — they're counted off
     whoever brings them, and that person carries their no-show.</div>`:''}
 
-  <div class="proj" style="margin-top:18px">
+  <div class="proj sticky" style="margin-top:18px">
     <div class="eyebrow">Projected turnout</div>
     <div style="display:flex;align-items:flex-end;gap:12px">
       <div class="big">${m.lo}–${m.hi}</div>
@@ -2056,7 +2269,9 @@ function vCreate(){
     ${rec.p80} days to answer and the event is ${rec.lead} days out. Expect lapses rather than
     answers — or invite people who reply faster.</div>`:''}
 
-  <button class="btn" style="margin-top:14px" onclick="sendDraft()">Send ${m.list.length} invitation${m.list.length===1?'':'s'}</button>
+  <button class="btn" style="margin-top:14px" onclick="sendDraft()">${
+    dayDiff(d.date,key(TODAY))===0?`Invite ${m.list.length} now`
+    :`Send ${m.list.length} invitation${m.list.length===1?'':'s'}`}</button>
   <button class="btn g sm" onclick="tab='events';render()">Cancel</button>`;
 }
 
@@ -2068,7 +2283,9 @@ function sendDraft(){
     when:`${fmtDay(d.date)} · ${t12(d.start)}`, where:d.where||'TBC',
     ends:t12(d.end), cap:d.cap, plus:d.plus,
     dl:fmtDay(key(addDays(parseKey(d.date),-d.dlDays))),
-    guests:[...d.guests], p1:{}, door:{} });
+    deadlineIn:d.dlDays, sameDay:dayDiff(d.date,key(TODAY))===0,
+    guests:[...d.guests], going:[], cancelled:[], unanswered:d.guests.size,
+    p1:{}, door:{} });
   curEv=id; draft=null; tab='event'; render();
 }
 
@@ -2080,17 +2297,19 @@ function guestRow(n,on,fn,urgent){
       <div class="b">${!pub?`${p.n} OF 8 EVENTS`
         :urgent?`ANSWERS IN ${fmtRT(p.rt).toUpperCase()}`
         :`WORTH ${p.pYes.toFixed(2)} OF A SEAT`}</div></div>
-    ${phase===3&&pub?`<div class="snap">
+    ${phase>=3&&pub?`<div class="snap">
       <div><div class="v ${p.rel>=.88?'hi':p.rel<.70?'lo':''}">${pct(p.rel)}</div><div class="k">Rel</div></div>
       <div><div class="v rt">${fmtRT(p.rt)}</div><div class="k">Reply</div></div>
     </div>`:`<div class="snap"><div><div class="v na">—</div><div class="k">Rel</div></div></div>`}
-    <button class="add ${on?'on':''}" onclick="${fn}">${on?'In':'Add'}</button></div>`;
+    <button class="chk2 ${on?'on':''}" onclick="${fn}" aria-label="${on?'Remove':'Invite'} ${p.name}"
+      >${on?'✓':''}</button></div>`;
 }
 
 /* ═══════════ HOST · EVENT ═══════════ */
 function vEvent(){
   const e=ev(); if(!e){tab='events';return vEvents()}
-  const pr=roomStats(e.guests, e.p1||{});
+  const yes=yesList(e);
+  const pr=roomStats(yes, e.p1||{});
   const L=pr.lo/e.cap*100, W=Math.max(2,(pr.hi-pr.lo)/e.cap*100);
   return `
   <div class="eyebrow">${e.when}</div>
@@ -2098,14 +2317,15 @@ function vEvent(){
   <div class="note" style="margin:5px 0 10px">${e.where} · max ${e.cap} · answers due ${e.dl}</div>
   <div style="margin-bottom:${e.details?'10px':'14px'}">${plusBadge(e.plus)}</div>
   ${e.details?`<div class="deets full" style="margin-bottom:14px">${e.details}</div>`:''}
-  <div class="proj">
+  <div class="proj sticky">
     <div class="eyebrow">Projected turnout</div>
     <div style="display:flex;align-items:flex-end;gap:12px">
-      <div class="big">${pr.lo}–${pr.hi}</div>
+      <div class="big">${yes.length?`${pr.lo}–${pr.hi}`:'—'}</div>
       <div style="padding-bottom:5px">
-        <div class="num" style="font-size:15px;color:var(--ash);text-decoration:line-through">${
-          e.guests.length}${pr.nPlus?` + ${pr.nPlus}`:''}</div>
-        <div class="eyebrow" style="margin:3px 0 0">Said going${pr.nPlus?' + plus-ones':''}</div></div></div>
+        <div class="num" style="font-size:15px;color:var(--ash)${yes.length?';text-decoration:line-through':''}">${
+          yes.length||e.unanswered||0}${pr.nPlus?` + ${pr.nPlus}`:''}</div>
+        <div class="eyebrow" style="margin:3px 0 0">${yes.length
+          ?`Said going${pr.nPlus?' + plus-ones':''}`:'Waiting to hear'}</div></div></div>
     <div class="band"><div class="tr"></div>
       <div class="fl" style="left:${L}%;width:${W}%"></div>
       <div class="tk" style="left:${L}%"></div><div class="tk" style="left:${L+W}%"></div>
@@ -2113,19 +2333,23 @@ function vEvent(){
     ${pr.nPlus?`<div class="ceil">
       <div><div class="k">Declared plus-ones</div></div>
       <div class="n">${pr.nPlus}</div></div>`:''}
-    ${pr.hi<e.cap?`<div class="note"><b>You're short.</b> Invite ${e.cap-pr.hi} more to fill the table.</div>`
+    ${!yes.length
+      ? `<div class="note"><b>Nobody has answered yet.</b> Invitations went out ${
+          e.sameDay?'just now — for tonight, so expect fast answers or none':'today'}.
+          The projection appears as replies come in.</div>`
+      : pr.hi<e.cap?`<div class="note"><b>You're short.</b> Invite ${e.cap-pr.hi} more to fill the table.</div>`
       :`<div class="note">Enough to fill the table.</div>`}
 
   </div>
 
   <div class="card q" style="padding:2px 12px 8px">
-    <div class="wk" style="margin:12px 0 2px">Guest list · ${e.guests.length}</div>
+    <div class="wk" style="margin:12px 0 2px">Guest list · ${e.guests.length}${
+      yes.length?` · ${yes.length} in`:' · none answered yet'}</div>
     ${ROSTER.map(n=>guestRow(n,e.guests.includes(n),`toggleEv('${n}')`)).join('')}
   </div>
-  <div class="note">${phase===3
+  <div class="note">${phase>=3
     ? 'Reliability and usual reply time are visible to every member from week 9. Seat-worth is derived from them.'
-    : 'Scores are hidden until week 9, but projection still runs — computed from history nobody can see yet.'}</div>
-  ${fab()}`;
+    : 'Scores are hidden until week 9, but projection still runs — computed from history nobody can see yet.'}</div>`;
 }
 function fab(){
   return gated()
@@ -2145,7 +2369,7 @@ const code=()=>W1[codeIdx%W1.length]+' '+W2[(codeIdx*3+2)%W2.length];
 
 function vDoor(){
   const e=ev(); if(!e){tab='events';return vEvents()}
-  const inN=e.guests.filter(n=>e.door[n]==='in').length
+  const inN=yesList(e).filter(n=>e.door[n]==='in').length
     + Object.values(e.p1in||{}).reduce((a,b)=>a+b,0);
   const pr=projection(e.guests);
   return `
@@ -2162,8 +2386,8 @@ function vDoor(){
       <div class="eyebrow" style="margin:5px 0 0">In the room</div></div>
     <div style="flex:1;border-left:1px solid var(--line);padding-left:14px">
       <div class="num" style="font-size:14px;color:var(--steel)">${pr.lo}–${pr.hi} projected</div>
-      <div class="note" style="margin-top:4px">${e.guests.length} said going</div></div></div>
-  ${e.guests.map(n=>{
+      <div class="note" style="margin-top:4px">${yesList(e).length} said going</div></div></div>
+  ${yesList(e).map(n=>{
     const p=byName(n), inn=e.door[n]==='in', k=(e.p1||{})[n]||0;
     const pin=(e.p1in||{})[n]||0, full=inn&&pin>=k;
     return `
@@ -2237,6 +2461,11 @@ const HOLD_DAYS=14;
    returned: someone ignoring an invitation for a fortnight is itself a signal about
    who you chose. */
 const CYCLE_DAYS=30;
+/* Wave one: founding hosts earn a batch every time they host. Batch size flexes
+   with how the people they've already brought turned out — hosting gets you the
+   chance to invite, judgment gets you more of it. */
+const BASE_BATCH=2;
+const HOSTED=5, BATCHES_SPENT=7;
 const TIERS=[
   {min:.90, n:3, lbl:'90% and up'},
   {min:.80, n:2, lbl:'80–89%'},
@@ -2258,7 +2487,7 @@ function contribution(sp){
   return {d:+1, st:'earning', why:'reliable'};
 }
 
-const isFounder=true;
+let isFounder=true;
 const FOUNDING_SEED=5;              // the original thirty, first cycle only
 const myRel=.92, myN=12;
 let cycleDay=19;                    // 19 of 30
@@ -2270,41 +2499,69 @@ let SPONSORED=[
   {name:'Sam Ito',      days:12},    // too new to have a record
 ];
 
-function allowance(){
-  if(phase<3 && !isFounder) return {base:0,inv:0,seed:0,total:0};
-  const seed = isFounder && phase>=1 ? FOUNDING_SEED : 0;
-  const base = phase>=3 && myN>=8 ? tierFor(myRel) : 0;
-  const inv  = SPONSORED.reduce((a,sp)=>a+contribution(sp).d,0);
-  return {seed, base, inv, total:Math.max(0, seed+base+inv)};
+/* hit rate on people already brought — the thing that sizes your next batch */
+function hitRate(){
+  const rated=SPONSORED.filter(sp=>{const p=byName(sp.name); return p&&visPub(p)});
+  if(!rated.length) return null;
+  const good=rated.filter(sp=>byName(sp.name).rel>=.85).length;
+  return good/rated.length;
 }
-const remaining = () => Math.max(0, allowance().total - usedThisCycle - LINKS.length);
+function batchSize(){
+  const h=hitRate();
+  if(h===null) return BASE_BATCH;
+  if(h>=.80) return BASE_BATCH+1;
+  if(h<.50)  return Math.max(1,BASE_BATCH-1);
+  return BASE_BATCH;
+}
+
+function allowance(){
+  if(!isFounder && phase<4) return {base:0,inv:0,seed:0,total:0,waveOne:false};
+  if(isFounder && phase<4){
+    const earned = HOSTED*batchSize();
+    return {waveOne:true, hosted:HOSTED, batch:batchSize(),
+            seed:0, base:0, inv:0, total:Math.max(0, earned)};
+  }
+  const base = myN>=8 ? tierFor(myRel) : 0;
+  const inv  = SPONSORED.reduce((a,sp)=>a+contribution(sp).d,0);
+  return {waveOne:false, seed:0, base, inv, total:Math.max(0, base+inv)};
+}
+const remaining = () => Math.max(0,
+  allowance().total - (allowance().waveOne ? BATCHES_SPENT : usedThisCycle) - LINKS.length);
 const nextCycle = () => Math.max(0, (phase>=3&&myN>=8?tierFor(myRel):0)
   + SPONSORED.reduce((a,sp)=>a+contribution(sp).d,0));
 
-let LINKS=[ {id:1, token:'rstr.to/k7-mq2', days:9} ];
+let LINKS=[ {id:1, token:'rstr.to/k7-mq2', days:9, forName:'Marco Villa'} ];
+let newName='';
 let claimStep=0;
 
 function vInvites(){
   const al=allowance(), rem=remaining();
-  if(phase<3 && !isFounder) return `
-    <div class="locked" style="margin-top:16px"><b>Not yet.</b> Nobody can bring anyone until they have a record —
-      only the original hosts started with any. Yours opens at week 9, and what you get then
-      depends on how reliably you've been answering.</div>`;
+  if(phase<4 && !isFounder) return `
+    <div class="locked" style="margin-top:16px"><b>Wave one.</b> Only the founding hosts can bring
+      people in right now, and they earn a batch each time they host. Invitations open to everyone
+      once the network clears its three thresholds — see the Network tab.<br><br>
+      The fastest way to help get there: <b>attend three events and start hosting your own.</b></div>`;
 
+  const wo=al.waveOne;
   return `
-  <div class="note" style="margin:14px 0 0">Recomputed every ${CYCLE_DAYS} days from your record and
-    the records of everyone you brought. What you don't use, you lose.</div>
+  <div class="note" style="margin:14px 0 0">${wo
+    ? `Wave one. You earn a batch every time you host — and how big the batch is depends on how the
+       people you've already brought turned out.`
+    : `Recomputed every ${CYCLE_DAYS} days from your record and the records of everyone you brought.
+       What you don't use, you lose.`}</div>
 
   ${slotsView()}`;
 }
 
 function slotsView(){
-  const al=allowance(), rem=remaining(), used=usedThisCycle+LINKS.length;
-  const nxt=nextCycle(), delta=nxt-al.total;
+  const al=allowance(), rem=remaining();
+  const wo=al.waveOne;
+  const used=(wo?BATCHES_SPENT:usedThisCycle)+LINKS.length;
+  const nxt=wo?al.batch:nextCycle(), delta=wo?0:nxt-al.total;
   return `
   <div class="cyc">
-    <div class="hd"><span class="k">This cycle</span>
-      <span class="k">${CYCLE_DAYS-cycleDay} days left</span></div>
+    <div class="hd"><span class="k">${wo?'Earned so far':'This cycle'}</span>
+      <span class="k">${wo?`${al.hosted} events hosted`:`${CYCLE_DAYS-cycleDay} days left`}</span></div>
     <div style="display:flex;align-items:flex-end;gap:12px">
       <div class="big2">${rem}</div>
       <div class="sub2">of ${al.total}<br>still yours</div>
@@ -2312,20 +2569,37 @@ function slotsView(){
     <div class="pips">${Array.from({length:Math.max(al.total,1)},(_,i)=>
       `<i class="${i<rem?'left':'gone'}"></i>`).join('')}</div>
     <div class="nxt">
-      <span class="k">Next cycle, on today's records</span>
-      <span class="v ${delta>0?'up':delta<0?'dn':''}">${nxt}${delta?` (${delta>0?'+':''}${delta})`:''}</span>
+      <span class="k">${wo?'Next event you host':'Next cycle, on today\'s records'}</span>
+      <span class="v ${wo?(al.batch>BASE_BATCH?'up':al.batch<BASE_BATCH?'dn':''):(delta>0?'up':delta<0?'dn':'')}">${
+        wo?`+${al.batch}`:nxt}${!wo&&delta?` (${delta>0?'+':''}${delta})`:''}</span>
     </div>
   </div>
-  <div class="note">Anything left when the cycle turns is gone.</div>
+  ${wo?`<div class="note">${(()=>{const h=hitRate();
+    return h===null ? `Batches are ${BASE_BATCH} for now. Once the people you've brought have records,
+      the batch grows or shrinks with how they turned out.`
+    : h>=.80 ? `<b>${Math.round(h*100)}% of the people you've brought are reliable</b>, so your
+      batches are ${al.batch} rather than ${BASE_BATCH}. Judgment earns more than frequency does.`
+    : h<.50 ? `<b>Only ${Math.round(h*100)}% of the people you've brought are reliable</b>, so your
+      batches are down to ${al.batch}. Hosting more won't fix that — bringing better people will.`
+    : `${Math.round(h*100)}% of the people you've brought are reliable, which holds your batch at
+      ${BASE_BATCH}.`})()}</div>`
+  :`<div class="note">Anything left when the cycle turns is gone.</div>`}
 
-  ${rem?`<button class="btn" style="margin-top:14px" onclick="mintLink()">Create an invitation link</button>`
-   :`<div class="emptyq" style="margin-top:14px">Nothing left this cycle.<br>
-     ${nxt?`${nxt} arrive${nxt===1?'s':''} in ${CYCLE_DAYS-cycleDay} days.`:'Your record has to recover first.'}</div>`}
+  ${rem?`<div class="namelink">
+     <div class="note" style="margin:0">Who is this for?</div>
+     <input class="fld" placeholder="Their full name" value="${newName}" oninput="newName=this.value">
+     <div class="note">The link only works for this name. Whoever claims it has to enter the same
+       thing — an invitation isn't transferable, and if it gets forwarded it simply won't open.</div>
+     <button class="btn sm" style="margin-top:12px" onclick="mintLink()">Create the link</button>
+   </div>`
+   :`<div class="emptyq" style="margin-top:14px">${wo
+     ? `All spent.<br>${al.batch} more the next time you host.`
+     : `Nothing left this cycle.<br>${nxt?`${nxt} arrive${nxt===1?'s':''} in ${CYCLE_DAYS-cycleDay} days.`:'Your record has to recover first.'}`}</div>`}
 
   ${LINKS.length?`<div class="wk" style="margin-top:20px">Out, unclaimed · ${LINKS.length}</div>
     ${LINKS.map(l=>`<div class="slot">
       <div class="ic used">↗</div>
-      <div class="bd"><div class="t">${l.sentTo||'Link sent'}</div>
+      <div class="bd"><div class="t">${l.forName||l.sentTo||'Link sent'}</div>
         <div class="m ${HOLD_DAYS-l.days<=4?'bad':'live'}">${HOLD_DAYS-l.days} DAYS TO CLAIM · THEN IT'S GONE</div></div>
       <button class="act" onclick="revokeLink(${l.id})">Revoke</button></div>`).join('')}
     <div class="linkbox">
@@ -2338,15 +2612,15 @@ function slotsView(){
 
   <div class="wk" style="margin-top:22px">What sets the number</div>
   <div class="card q" style="padding:4px 13px 13px">
-    <div class="contrib">
+    ${!wo?`<div class="contrib">
       <div class="bd"><div class="t">Your own record</div>
         <div class="m">${phase>=3?pct(myRel).toUpperCase()+' RELIABILITY':'NOT VISIBLE UNTIL WEEK 9'}</div></div>
       <div class="d ${al.base>0?'plus':'zero'}">${al.base>0?'+'+al.base:'0'}</div>
-    </div>
-    ${al.seed?`<div class="contrib">
-      <div class="bd"><div class="t">Founding host</div>
-        <div class="m">FIRST CYCLE ONLY · NOT REPEATED</div></div>
-      <div class="d plus">+${al.seed}</div></div>`:''}
+    </div>`:''}
+    ${wo?`<div class="contrib">
+      <div class="bd"><div class="t">Events you've hosted</div>
+        <div class="m">${al.batch} INVITATIONS EACH</div></div>
+      <div class="d plus">+${al.hosted*al.batch}</div></div>`:''}
     <div class="contrib">
       <div class="bd" onclick="meTab='plusones';render()"><div class="t">People you've vouched for</div>
         <div class="m">${SPONSORED.length} · SEE YOUR +1S</div></div>
@@ -2355,7 +2629,7 @@ function slotsView(){
     </div>
   </div>
 
-  ${phase>=3?`<div class="wk" style="margin-top:18px">What your own record is worth</div>
+  ${phase>=4?`<div class="wk" style="margin-top:18px">What your own record is worth</div>
   <div class="tiers">
     ${TIERS.map(t=>`<div class="t2 ${myN>=8&&myRel>=t.min&&tierFor(myRel)===t.n?'you':''}">
       <span class="rg">${t.lbl}</span>
@@ -2365,9 +2639,11 @@ function slotsView(){
 
 function mintLink(){
   if(!remaining()) return;
-  LINKS.push({id:Date.now(), days:0,
+  const n=(newName||'').trim();
+  if(n.split(/\s+/).length<2){ alert('Both names. The person claiming has to match exactly.'); return }
+  LINKS.push({id:Date.now(), days:0, forName:n,
     token:'rstr.to/'+Math.random().toString(36).slice(2,4)+'-'+Math.random().toString(36).slice(2,5)});
-  render();
+  newName=''; render();
 }
 function revokeLink(id){ LINKS=LINKS.filter(l=>l.id!==id); render() }
 
@@ -2375,37 +2651,75 @@ function revokeLink(id){ LINKS=LINKS.filter(l=>l.id!==id); render() }
 
 
 function vPlusOnes(){
+  const active =SPONSORED.filter(sp=>contribution(sp).st!=='settled');
+  const settled=SPONSORED.filter(sp=>contribution(sp).st==='settled');
+  const row=sp=>{const c=contribution(sp), p=byName(sp.name);
+    return `<div class="contrib" ${c.st==='settled'?'style="opacity:.6"':''}>
+      ${p?av(p,30):''}
+      <div class="bd" onclick="openRecord('${sp.name}')"><div class="t">${sp.name}</div>
+        <div class="m">${p&&visPub(p)?pct(p.rel).toUpperCase()+' · '+c.why.toUpperCase()
+          :'NO RECORD YET · '+sp.days+' DAYS IN'}</div></div>
+      <div class="d ${c.d>0?'plus':c.d<0?'minus':'zero'}">${c.d>0?'+1':c.d<0?'−1':'0'}</div>
+    </div>`};
+
   return `
-  <div class="note" style="margin:14px 0 0">People you've vouched for. How they behave feeds back
-    into how many invitations you get.</div>
-  <div class="card q" style="padding:4px 13px 13px;margin-top:12px">
-    ${SPONSORED.map(sp=>{const c=contribution(sp), p=byName(sp.name);
-      return `<div class="contrib" ${c.st==='settled'?'style="opacity:.55"':''}>
-        ${p?av(p,30):''}
-        <div class="bd" onclick="openRecord('${sp.name}')"><div class="t">${sp.name}</div>
-          <div class="m">${p&&visPub(p)?pct(p.rel).toUpperCase()+' · '+c.why.toUpperCase()
-            :'NO RECORD YET · '+sp.days+' DAYS IN'}</div></div>
-        <div class="d ${c.d>0?'plus':c.d<0?'minus':'zero'}">${c.d>0?'+1':c.d<0?'−1':'0'}</div>
-      </div>`}).join('')}
-  </div>
-  <div class="note">Someone you brought counts most in their first months. Once they've held a good
-    record long enough they settle and stop counting — they're on their own record by then.</div>
-  <div class="note">Tap a name to see what their number is made of.</div>`;
+  <div class="note" style="margin:14px 0 0">Someone you brought counts most in their first months.
+    Once they've held a good record long enough they settle and stop counting — they're on their own
+    record by then.</div>
+  <div class="note" style="margin-top:8px">Tap a name to see what their number is made of.</div>
+
+  ${active.length?`<div class="wk" style="margin-top:20px">Still counting · ${active.length}</div>
+    <div class="card q" style="padding:4px 13px 13px">${active.map(row).join('')}</div>`:''}
+
+  ${settled.length?`<div class="wk" style="margin-top:20px">On their own record · ${settled.length}</div>
+    <div class="card q" style="padding:4px 13px 13px">${settled.map(row).join('')}</div>
+    <div class="note">These no longer affect what you're granted. They held a good record long enough
+      to be judged on it alone.</div>`:''}`;
 }
 
 /* ── how are we doing ── */
 const NET={
-  rel:[78,80,82,84,86,87],
-  inBand:[0.58,0.63,0.68,0.72,0.76,0.79],
-  cancels:[0.31,0.34,0.29,0.40,0.44,0.47,0.52,0.55,0.58,0.61,0.63,0.66],
-  leftOnTheirOwn:{n:14, rel:58}
+  rel:      {1:[null],  2:[74,76],  3:[78,80,82,84,86,87], 4:[78,80,82,84,86,87,88,89]},
+  inBand:   {1:[0.41],  2:[0.48,0.52], 3:[0.58,0.63,0.68,0.72,0.76,0.79],
+             4:[0.58,0.63,0.68,0.72,0.76,0.79,0.82,0.84]},
+  cancels:  {1:[0.29],  2:[0.29,0.33,0.36],
+             3:[0.29,0.33,0.36,0.40,0.44,0.47,0.52,0.55,0.58,0.61,0.63,0.66],
+             4:[0.29,0.33,0.36,0.40,0.44,0.47,0.52,0.55,0.58,0.61,0.63,0.66,0.69,0.71]},
+  leftOnTheirOwn:{1:0, 2:3, 3:14, 4:19},
+  leftRel:{1:0, 2:54, 3:58, 4:57},
+  gates:{
+    1:{invited:180, reliable:0,   newHosts:0,  rel:null},
+    2:{invited:186, reliable:38,  newHosts:1,  rel:76},
+    3:{invited:194, reliable:118, newHosts:11, rel:87},
+    4:{invited:203, reliable:152, newHosts:21, rel:89},
+  },
+  target:{reliable:150, newHosts:20, rel:85},
+  cohorts:{
+    all:{rel:87, band:82, cancels:69, n:341, label:'Everyone'},
+    w1: {rel:91, band:86, cancels:74, n:161, label:'Wave one'},
+    w2: {rel:83, band:77, cancels:63, n:180, label:'Wave two'},
+  }
 };
 
+let cohort='all';
+
 function vGlobal(){
-  const r=NET.rel, b=NET.inBand, c=NET.cancels;
+  const ph=phase;
+  if(ph===4) return vGlobalWaves();
+  const r=NET.rel[ph], b=NET.inBand[ph], c=NET.cancels[ph], g=NET.gates[ph], t=NET.target;
+
+  if(ph===1) return `
+    <div class="eyebrow">Everyone on Roster</div>
+    <h1>How are we doing?</h1>
+    <div class="cold" style="margin-top:16px">Week one. <b>Nobody has enough history for any of this
+      to mean anything yet</b> — including the network as a whole. Come back in a month and there
+      will be something here.</div>
+    ${waveGate(g,t,ph)}`;
+
   const relNow=r[r.length-1], relUp=relNow-r[0];
-  const bandNow=Math.round(b[b.length-1]*100), bandUp=bandNow-Math.round(b[0]*100);
+  const bandNow=Math.round(b[b.length-1]*100), bandWas=Math.round(b[0]*100);
   const cNow=Math.round(c[c.length-1]*100), cWas=Math.round(c[0]*100);
+
   return `
   <div class="eyebrow">Everyone on Roster</div>
   <h1>How are we doing?</h1>
@@ -2413,9 +2727,10 @@ function vGlobal(){
   <div class="hero2">
     <div class="k7">Our reliability</div>
     <div class="v8">${relNow}%</div>
-    <div class="d8">↑ ${relUp} points since records went live</div>
+    ${relUp>0?`<div class="d8">↑ ${relUp} points since records went live</div>`
+      :`<div class="d8" style="color:var(--ash)">First numbers just landed</div>`}
     <div class="spark" style="height:26px;margin-top:12px">${r.map((v,i)=>
-      `<i class="${i===r.length-1?'last':''}" style="height:${(v-70)/20*100}%"></i>`).join('')}</div>
+      `<i class="${i===r.length-1?'last':''}" style="height:${Math.max(8,(v-70)/20*100)}%"></i>`).join('')}</div>
     <div class="sub8"><b>When one of us answers honestly, everyone's number goes up.</b>
       This is the one score we all own.</div>
   </div>
@@ -2423,34 +2738,131 @@ function vGlobal(){
   <div class="twoup">
     <div><div class="v9 hi">${bandNow}%</div>
       <div class="k9">Events that hit<br>their projection</div>
-      <div class="t9">↑ ${bandUp} points</div></div>
+      <div class="t9">${bandNow>bandWas?`↑ ${bandNow-bandWas} points`:'starting out'}</div></div>
     <div><div class="v9 hi">${cNow}%</div>
       <div class="k9">Misses that came<br>with notice</div>
-      <div class="t9">was ${cWas}%</div></div>
+      <div class="t9">${cNow>cWas?`was ${cWas}%`:'tracking'}</div></div>
   </div>
 
   <div class="wk" style="margin-top:22px">Cancelling instead of ghosting</div>
   <div class="card q" style="padding:14px 13px">
     <div class="spark" style="height:38px">${c.map((v,i)=>
       `<i class="${i===c.length-1?'last':''}" style="height:${v*100}%"></i>`).join('')}</div>
-    <div class="note" style="margin-top:11px"><b>${cNow}% of missed events now come with notice</b>,
-      up from ${cWas}%. This is the one that moved first and moved most — telling a host early costs
-      you almost nothing and it's the thing they feel soonest.</div>
+    <div class="note" style="margin-top:11px"><b>${cNow}% of missed events now come with notice</b>${
+      cNow>cWas?`, up from ${cWas}%`:''}. This is the one that moves first and moves most — telling a
+      host early costs you almost nothing and it's the thing they feel soonest.</div>
   </div>
 
-  <div class="wk" style="margin-top:20px">Who's left</div>
+  ${NET.leftOnTheirOwn[ph]?`<div class="wk" style="margin-top:20px">People who left</div>
   <div class="card q" style="padding:14px 13px">
-    <div style="display:flex;align-items:baseline;gap:12px">
-      <div class="v9" style="font-family:var(--mono);font-weight:700;font-size:26px">${NET.leftOnTheirOwn.n}</div>
-      <div class="note" style="margin:0;flex:1">left on their own, averaging
-        <b>${NET.leftOnTheirOwn.rel}%</b>. Roster is a poor fit if you say yes to everything and turn
-        up to a third of it, and that sorting itself out is the system working.</div>
+    <div class="note" style="margin:0"><b>${NET.leftOnTheirOwn[ph]} people with an average
+      ${NET.leftRel[ph]}% reliability and response rate deleted the app.</b> That's ok! Roster is
+      only for reliable and social people.</div>
+  </div>`:''}
+
+  ${waveGate(g,t,ph)}`;
+}
+
+function vGlobalWaves(){
+  const c=NET.cohorts[cohort], w1=NET.cohorts.w1, w2=NET.cohorts.w2;
+  return `
+  <div class="eyebrow">Everyone on Roster</div>
+  <h1>How are we doing?</h1>
+
+  <div class="cohort">
+    ${[['all','Everyone'],['w1','Wave one'],['w2','Wave two']].map(([k,l])=>
+      `<button class="${cohort===k?'on':''}" onclick="cohort='${k}';render()">${l}</button>`).join('')}
+  </div>
+  <div class="wavenote">${c.n} people</div>
+
+  <div class="hero2" style="margin-top:12px">
+    <div class="k7">${c.label}'s reliability</div>
+    <div class="v8">${c.rel}%</div>
+    ${cohort==='w2'?`<div class="d8" style="color:var(--tang)">${w1.rel-w2.rel} points behind wave one</div>`
+      :cohort==='w1'?`<div class="d8">↑ ${w1.rel-NET.rel[3][0]} points since records went live</div>`
+      :`<div class="d8">Both waves together</div>`}
+    <div class="sub8">${cohort==='w2'
+      ? `<b>New people start lower and climb.</b> Wave one looked like this at week five. The gap
+         closing is the thing to watch.`
+      : cohort==='w1'
+      ? `<b>The founding group after six months.</b> This is what a settled cohort looks like.`
+      : `<b>When one of us answers honestly, everyone's number goes up.</b> This is the one score we
+         all own.`}</div>
+  </div>
+
+  <div class="twoup">
+    <div><div class="v9 hi">${c.band}%</div>
+      <div class="k9">Events that hit<br>their projection</div>
+      <div class="t9">${cohort==='w2'?`vs ${w1.band}% wave one`:'across all events'}</div></div>
+    <div><div class="v9 hi">${c.cancels}%</div>
+      <div class="k9">Misses that came<br>with notice</div>
+      <div class="t9">${cohort==='w2'?`vs ${w1.cancels}% wave one`:'and climbing'}</div></div>
+  </div>
+
+  ${cohort==='all'?`<div class="gline" style="margin-top:12px">
+    <b>Wave one sits at ${w1.rel}%, wave two at ${w2.rel}%.</b> A gap is expected — new people
+    haven't had time to build a record and haven't learned yet that declining is free. Watch whether
+    it closes.</div>`:''}
+
+  ${waveGate(NET.gates[4],NET.target,4)}`;
+}
+
+/* Three gates, all of which have to hold before anyone can bring the next wave in. */
+function waveGate(g,t,ph){
+  const p1=Math.min(1,g.reliable/t.reliable);
+  const p2=Math.min(1,g.newHosts/t.newHosts);
+  const p3=g.rel===null?0:Math.min(1,g.rel/t.rel);
+  const ready = p1>=1 && p2>=1 && p3>=1;
+
+  if(ready) return `<div class="unlock">
+    <div class="big4">Wave two is in progress.</div>
+    <p>The network cleared its three thresholds — ${g.reliable} reliable people out of ${g.invited}
+      ever invited, ${g.newHosts} guests who became hosts, and reliability holding at ${g.rel}%.</p>
+    <p>Every member can now invite. What you're granted depends on your own record and on the
+      records of whoever you bring.</p>
+    <div class="cnt">180 joined so far</div>
+  </div>`;
+
+  return `<div class="gate3">
+    <div class="hd3">
+      <div class="t7">Before wave two</div>
+      <div class="c7">${[p1,p2,p3].filter(x=>x>=1).length} of 3</div>
     </div>
+    <div class="note" style="margin:0">Nobody can bring anyone in until the network is stable enough
+      to absorb them. Three things have to hold.</div>
+    <div class="crit">
+      <div class="row3"><div class="lb4">Reliable members</div>
+        <div class="vl ${p1>=1?'hit':''}">${g.reliable} / ${t.reliable}</div></div>
+      <div class="bar3"><i class="${p1>=1?'hit':''}" style="width:${p1*100}%"></i></div>
+      <div class="note" style="margin:-8px 0 12px">${g.reliable} of the ${g.invited} people on
+        Roster hold a reliable record.</div>
+
+      <div class="row3"><div class="lb4">Guests who became hosts</div>
+        <div class="vl ${p2>=1?'hit':''}">${g.newHosts} / ${t.newHosts}</div></div>
+      <div class="bar3"><i class="${p2>=1?'hit':''}" style="width:${p2*100}%"></i></div>
+
+      <div class="row3"><div class="lb4">Network reliability</div>
+        <div class="vl ${p3>=1?'hit':''}">${g.rel===null?'—':g.rel+'%'} / ${t.rel}%</div></div>
+      <div class="bar3"><i class="${p3>=1?'hit':''}" style="width:${p3*100}%"></i></div>
+      <div class="note" style="margin:-8px 0 4px">The average reliability of everyone on Roster is
+        ${g.rel===null?'not measurable yet':g.rel+'%'}. Yours is ${phase>=2?pct(myRel):'not visible yet'}.</div>
+    </div>
+    <div class="note">Turn up to three events and you can host your own. Two events thrown is what
+      counts here — once proves you tried, twice proves it stuck. This is the line that decides
+      whether Roster grows or just persists.</div>
   </div>`;
 }
 
 /* ── claim page ── */
+const CLAIM_FOR='Marco Villa';
+let claimName='';
+const nameMatch=(a,b)=>a.toLowerCase().replace(/[^a-z ]/g,'').replace(/\s+/g,' ').trim()
+                     ===b.toLowerCase().replace(/[^a-z ]/g,'').replace(/\s+/g,' ').trim();
+
 function vClaim(){
+  const typed=(claimName||'').trim();
+  const ok=typed && nameMatch(typed,CLAIM_FOR);
+  const wrong=typed.split(/\s+/).length>=2 && !ok;
   return `<div class="claim">
     <div class="crest">R</div>
     <div style="flex:1"></div>
@@ -2460,8 +2872,17 @@ function vClaim(){
       <div class="bd"><div class="t">Maya Okonkwo</div>
         <div class="m">MEMBER SINCE JUNE</div></div>
     </div>
+    <div class="note" style="margin-top:18px">This invitation was issued to one person by name.
+      Enter yours to open it.</div>
+    <input class="field" placeholder="Your full name" value="${claimName}"
+      oninput="claimName=this.value" style="margin-top:10px">
+    ${ok?`<div class="matched"><b>That's you.</b> Maya put her name on yours — for your first few
+      events, whether you turn up decides how many invitations she gets to give.</div>`:''}
+    ${wrong?`<div class="mismatch"><b>That isn't the name on this invitation.</b> Invitations aren't
+      transferable. If someone forwarded you this, ask them to have Maya issue one to you.</div>`:''}
     <div style="flex:1"></div>
-    <button class="btn" onclick="tab=null;seen=false;render()">Continue</button>
+    <button class="btn" style="${ok?'':'opacity:.4'}"
+      onclick="${ok?"claimName='';tab=null;seen=false;render()":"alert('Enter the name this invitation was issued to.')"}">Continue</button>
   </div>`;
 }
 
@@ -2529,6 +2950,8 @@ function vOrient(){
 /* ═══════════ SHELL ═══════════ */
 const GUEST_TABS=[['today','Today'],['fortnight','Fortnight'],['checkin','Check in'],['me','You']];
 let meTab='record';
+let theme='dark';
+function setTheme(t){ theme=t; render() }
 const HOST_TABS_ALL =[['events','Events'],['door','Door'],['confirm','Confirm']];
 const hostTabs = () => gated()
   ? HOST_TABS_ALL.filter(t=>t[0]!=='door')
@@ -2562,7 +2985,7 @@ function render(){
     demoBar(); return;
   }
   scr.style.padding = tab==='today' ? '10px 16px calc(22px + var(--safe))' : '';
-  const host = actor==='host';
+  const host = actor==='host' && isFounder;
   const tabs = host?hostTabs():GUEST_TABS;
 
   /* an unsettled event removes the door entirely rather than showing it locked */
@@ -2576,6 +2999,9 @@ function render(){
   scr.innerHTML=views[tab]();
   document.getElementById('ctx').textContent=CTX[tab]||'';
   const dot=document.getElementById('dot'); if(dot) dot.className = phase>=2 ? 'on' : '';
+  const root=document.documentElement;
+  if(root){ if(theme==='light') root.setAttribute('data-theme','light');
+            else root.removeAttribute('data-theme'); }
 
   nav.style.gridTemplateColumns=`repeat(${tabs.length},1fr)`;
   nav.innerHTML=tabs.map(([k,l])=>{
@@ -2595,13 +3021,15 @@ function lockedTap(){ tab='confirm'; render();
 
 function demoBar(){
   document.getElementById('demo').innerHTML=`
-    <span class="lbl">Demo</span>
-    <button class="${actor==='guest'?'on':''}" onclick="setActor('guest')">Guest</button>
-    <button class="${actor==='host'?'on':''}" onclick="setActor('host')">Host</button>
-    <button class="${tab==='claim'?'on':''}" onclick="tab='claim';claimStep=0;render()">Claim</button>
-    <span class="sp"></span>
-    <span class="lbl">Phase</span>
-    ${[1,2,3].map(p=>`<button class="${phase===p?'on':''}" onclick="setPhase(${p})">${p}</button>`).join('')}`;
+    <span class="lbl">As</span>
+    ${isFounder?`<button class="${actor==='host'?'on':''}" onclick="setActor('host')">Host</button>
+      <button class="${actor!=='host'?'on':''}" onclick="setActor('guest')">Guest</button>`
+      :`<button class="on">Guest</button>`}
+    <button class="${isFounder?'on':''}" onclick="setFounder(!isFounder)">${
+      isFounder?'Founder':'Newer'}</button>
+    <span class="lbl" style="margin-left:6px">Wk</span>
+    ${[[1,'1'],[2,'5'],[3,'9'],[4,'12']].map(([p,l])=>
+      `<button class="${phase===p?'on':''}" onclick="setPhase(${p})">${l}</button>`).join('')}`;
 }
 
 const ROT=6;
