@@ -2,6 +2,8 @@
 // it's what makes "site is canonical" true in practice. Buttondown and
 // Ghost can both send from it directly.
 
+import { writingPages } from '../writing-pages.js';
+
 const modules = import.meta.glob('./writing/*.mdx', { eager: true });
 
 const escape = (s = '') =>
@@ -10,8 +12,10 @@ const escape = (s = '') =>
 export function GET(context) {
   const site = context.site?.href.replace(/\/$/, '') ?? '';
 
-  const items = Object.values(modules)
-    .map((m) => ({ ...m.frontmatter, url: m.url }))
+  const items = [
+    ...Object.values(modules).map((m) => ({ ...m.frontmatter, url: m.url })),
+    ...writingPages,
+  ]
     .sort((a, b) => new Date(b.date) - new Date(a.date))
     .map(
       (p) => `    <item>

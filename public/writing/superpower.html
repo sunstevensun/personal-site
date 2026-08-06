@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Superpower — Unit Economics &amp; Strategic Position, August 2026</title>
+<style>
+/* ─────────────────────────────────────────────────────────────
+   Tokens — lifted verbatim from the site's global.css.
+   Palette is cool paper + ink with one restrained accent.
+   No second accent, per the host design system.
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --paper:#fbfbf9; --ink:#16181c; --muted:#6e7278; --rule:#e4e4df; --accent:#1c4e7a;
+  --serif:"Source Serif 4","Source Serif Pro",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --measure:34rem;
+
+  /* Derived chart ramp — one hue, monotone lightness, validated as an
+     ordinal ramp against the paper surface (light end clears 2:1). */
+  --c-cost:#8badc7;     /* light step  — cost marks           */
+  --c-rev:#1c4e7a;      /* the accent  — revenue / primary    */
+  --c-net:#16181c;      /* ink         — totals, reference    */
+  --c-ramp-1:#8badc7; --c-ramp-2:#5b86a8; --c-ramp-3:#35668f;
+  --c-ramp-4:#1c4e7a; --c-ramp-5:#123651;
+
+  /* Sole departure from one-accent: negative currency values.
+     A deep low-chroma brick that sits with the ink rather than
+     competing with the accent. Swap for var(--ink) to remove it. */
+  --neg:#8f3a34;
+
+  --wash:#f1f1ed;       /* the code-background tone from global.css */
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--serif);font-size:1.0625rem;line-height:1.6;
+  font-variant-numeric:oldstyle-num;-webkit-text-size-adjust:100%;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:min(1240px,calc(100vw - 3rem));margin:0 auto;padding:3.5rem 1.5rem 6rem}
+.prose{max-width:var(--measure)}
+a{color:var(--ink);text-decoration-color:var(--accent);text-underline-offset:2px}
+a:hover{color:var(--accent)}
+h1{font-size:1.875rem;line-height:1.2;letter-spacing:-.02em;margin:0 0 .75rem;
+  max-width:var(--measure);text-wrap:balance}
+h2{font-size:1.3125rem;letter-spacing:-.015em;margin:0 0 .5rem;text-wrap:balance}
+h3{font-size:1.0625rem;font-weight:600;letter-spacing:-.01em;margin:0 0 .5rem}
+h4{font-family:var(--mono);font-size:.6875rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent);margin:0 0 .4rem;font-weight:400}
+p{margin:0 0 .9rem;text-wrap:pretty}
+.sub{color:var(--muted);font-size:1.0625rem;margin:0;max-width:var(--measure);text-wrap:pretty}
+.small{font-size:.8125rem;line-height:1.45;color:var(--muted);font-variant-numeric:oldstyle-num}
+header{margin-bottom:3rem}
+.kicker,.secnum{font-family:var(--mono);font-size:.6875rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
+.secnum{color:var(--accent)}
+section{margin-top:4rem}
+/* ---- surfaces ---- */
+.card{background:#fff;border:1px solid var(--rule);border-radius:3px;padding:1.5rem 1.6rem}
+.note{background:#fff;border:1px solid var(--rule);border-left:2px solid var(--accent);
+  border-radius:0 3px 3px 0;padding:1.15rem 1.4rem;margin:1.4rem 0;font-size:.9375rem}
+.note b{font-weight:600}
+/* ---- tags ---- */
+.tagrow{display:flex;gap:.5rem;flex-wrap:wrap;margin:.75rem 0 0}
+.tag{font-family:var(--mono);font-size:.625rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:.1rem .4rem;border-radius:2px;border:1px solid currentColor;white-space:nowrap;
+  font-variant-numeric:normal}
+.tg{font-size:.5625rem;padding:.02rem .3rem;letter-spacing:.08em}
+.t-rep{color:var(--accent);background:rgba(28,78,122,.07)}
+.t-est{color:var(--ink);background:var(--wash);border-color:var(--rule)}
+.t-asm{color:var(--muted);border-style:dotted}
+/* ---- layout ---- */
+.modelgrid{display:grid;grid-template-columns:minmax(320px,380px) 1fr;gap:1.5rem;margin-top:1.4rem}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-top:1.25rem}
+@media(max-width:900px){.modelgrid,.two{grid-template-columns:1fr}}
+/* ---- controls ---- */
+.presets{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.25rem}
+.preset{background:#fff;border:1px solid var(--rule);color:var(--muted);border-radius:2px;
+  padding:.35rem .6rem;font-family:var(--mono);font-size:.6875rem;letter-spacing:.04em;
+  cursor:pointer;white-space:nowrap}
+.preset:hover{color:var(--ink);border-color:var(--muted)}
+.preset.on{background:var(--accent);color:var(--paper);border-color:var(--accent)}
+.grp{font-family:var(--mono);font-size:.625rem;text-transform:uppercase;letter-spacing:.12em;
+  color:var(--muted);margin:1.4rem 0 .6rem;padding-bottom:.35rem;border-bottom:1px solid var(--rule)}
+.grp:first-of-type{margin-top:0}
+.row{display:grid;grid-template-columns:14px 1fr 88px;gap:.55rem;align-items:center;margin-bottom:.25rem}
+.row label{font-size:.875rem;color:var(--ink);cursor:pointer;line-height:1.35}
+.row.off label,.row.off .val{opacity:.38;text-decoration:line-through}
+.row input[type=checkbox]{accent-color:var(--accent);width:14px;height:14px;cursor:pointer;margin:0}
+.val{display:flex;align-items:center;gap:1px;background:var(--wash);border:1px solid var(--rule);
+  border-radius:2px;padding:.15rem .35rem;font-family:var(--mono);font-size:.75rem;
+  font-variant-numeric:tabular-nums}
+.val span{color:var(--muted);font-size:.625rem}
+.val input{width:100%;background:none;border:none;color:var(--ink);font:inherit;
+  font-variant-numeric:tabular-nums;text-align:right;padding:0;min-width:0}
+.val input:focus{outline:none;color:var(--accent)}
+input[type=range]{grid-column:2/4;width:100%;accent-color:var(--accent);height:2px;margin:0 0 .6rem;cursor:pointer}
+/* ---- stat tiles ---- */
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  margin-bottom:1.6rem;background:var(--rule);border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+@media(max-width:1080px){.tiles{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:420px){.tiles{grid-template-columns:1fr}}
+.tile{background:#fff;padding:.85rem .95rem}
+.tile .k{font-family:var(--mono);font-size:.5625rem;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--muted);margin-bottom:.35rem}
+.tile .v{font-size:1.375rem;font-weight:600;letter-spacing:-.02em;line-height:1.1;
+  font-variant-numeric:oldstyle-num}
+.tile .n{font-size:.75rem;color:var(--muted);margin-top:.2rem;line-height:1.35}
+.v.neg{color:var(--neg)}
+/* ---- figures ---- */
+figure{margin:0 0 1.9rem}
+.figure__frame{border:1px solid var(--rule);border-radius:3px;background:#fff;padding:1.25rem}
+.charttitle{font-family:var(--mono);font-size:.6875rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:.35rem}
+.chartsub{font-size:.8125rem;line-height:1.45;color:var(--muted);margin-bottom:.9rem;text-wrap:pretty}
+figcaption{font-size:.8125rem;line-height:1.45;color:var(--muted);margin-top:.6rem}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.legend{display:flex;gap:1.1rem;flex-wrap:wrap;margin-bottom:.7rem;font-size:.8125rem;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:.4rem;vertical-align:-1px}
+/* ---- tables ---- */
+table{width:100%;border-collapse:collapse;font-size:.875rem;margin-top:.75rem;
+  font-variant-numeric:tabular-nums}
+th{text-align:left;font-family:var(--mono);font-size:.625rem;text-transform:uppercase;
+  letter-spacing:.1em;color:var(--muted);font-weight:400;padding:0 .55rem .6rem;
+  border-bottom:1px solid var(--rule);white-space:nowrap}
+td{padding:.65rem .55rem;border-bottom:1px solid var(--rule);vertical-align:top;line-height:1.45}
+td.num{text-align:right;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tbody tr.hl{background:rgba(28,78,122,.045)}
+.scroll{overflow-x:auto}
+details{margin-top:.7rem;border-top:1px solid var(--rule);padding-top:.7rem}
+summary{cursor:pointer;font-family:var(--mono);font-size:.6875rem;letter-spacing:.06em;color:var(--muted)}
+summary:hover{color:var(--accent)}
+ul{margin:.5rem 0 0;padding-left:1.1rem}
+li{margin-bottom:.55rem;font-size:.9375rem;color:var(--ink);text-wrap:pretty}
+/* ---- timeline (registry rows, per the site's .entry pattern) ---- */
+.tl{border-top:1px solid var(--rule);margin-top:.5rem}
+.ev{display:grid;grid-template-columns:6.5rem 1fr;gap:0 1.5rem;padding:1rem 0;
+  border-bottom:1px solid var(--rule)}
+.ev .d{grid-column:1;grid-row:1/span 2}
+.ev .t{grid-column:2;grid-row:1}
+.ev .b{grid-column:2;grid-row:2}
+@media(max-width:34rem){
+  .ev{grid-template-columns:1fr;gap:.2rem}
+  .ev .d,.ev .t,.ev .b{grid-column:1;grid-row:auto}
+}
+.ev:last-child{border-bottom:none}
+.ev .d{font-family:var(--mono);font-size:.6875rem;letter-spacing:.02em;color:var(--muted);
+  padding-top:.3rem;white-space:nowrap}
+.ev.bad .d{color:var(--neg)} .ev.good .d{color:var(--accent)}
+.ev .t{font-size:1.0625rem;font-weight:600;letter-spacing:-.01em;margin-bottom:.15rem;text-wrap:balance}
+.ev .b{font-size:.9375rem;color:var(--muted);line-height:1.5;text-wrap:pretty}
+.ev .b b{color:var(--ink);font-weight:600}
+/* ---- forces ---- */
+.forces{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-top:1.25rem}
+@media(max-width:860px){.forces{grid-template-columns:1fr}}
+.force{border:1px solid var(--rule);border-radius:3px;padding:1.4rem 1.5rem;background:#fff}
+.force.up{border-top:2px solid var(--accent)}
+.force.dn{border-top:2px solid var(--neg)}
+/* ---- strategic cases ---- */
+.opt{border:1px solid var(--rule);border-radius:3px;padding:1.3rem 1.4rem;margin-bottom:1rem;background:#fff}
+.opt-h{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;margin-bottom:.5rem}
+.opt-h h3{margin:0}
+.modelbtn{background:var(--accent);color:var(--paper);border:1px solid var(--accent);border-radius:3px;
+  padding:.35rem .7rem;font-family:var(--mono);font-size:.6875rem;letter-spacing:.04em;cursor:pointer}
+.modelbtn:hover{background:var(--ink);border-color:var(--ink)}
+.modelbtn.ghost{background:transparent;color:var(--muted);border-color:var(--rule);cursor:default}
+.verdict{font-family:var(--mono);font-size:.625rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:.1rem .4rem;border-radius:2px;border:1px solid currentColor;white-space:nowrap}
+.vd-1{color:var(--neg)} .vd-2{color:var(--muted);border-style:dotted} .vd-3{color:var(--accent)}
+.quote{margin:1.1rem 0;padding-left:1.25rem;border-left:2px solid var(--rule);color:var(--muted);
+  font-size:1rem;text-wrap:pretty}
+/* ---- P&L ladder ---- */
+.ladder{margin-top:.9rem;font-size:.9375rem}
+.lrow{display:grid;grid-template-columns:1fr 104px;gap:.75rem;padding:.5rem .7rem;align-items:baseline;
+  border-radius:2px}
+.lrow .lbl{color:var(--muted)}
+.lrow .amt{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink)}
+.lrow.sub{background:var(--wash)}
+.lrow.sub .lbl{color:var(--ink);font-weight:600}
+.lrow.ind .lbl{padding-left:1rem}
+.lrow.dim{opacity:.65}
+.lrow .why{display:block;font-size:.8125rem;color:var(--muted);margin-top:.1rem;line-height:1.4}
+/* ---- head to head ---- */
+.vs{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--rule);border-radius:3px;
+  overflow:hidden;margin-top:1.1rem}
+@media(max-width:760px){.vs{grid-template-columns:1fr}}
+.vs .col{padding:1.4rem 1.5rem;background:#fff}
+.vs .col:first-child{border-right:1px solid var(--rule);background:rgba(28,78,122,.035)}
+@media(max-width:760px){.vs .col:first-child{border-right:none;border-bottom:1px solid var(--rule)}}
+.vs .co{font-size:1.1875rem;font-weight:600;letter-spacing:-.015em;margin-bottom:.1rem}
+.vs .meta{font-family:var(--mono);font-size:.6875rem;letter-spacing:.03em;color:var(--muted);margin-bottom:1rem}
+/* ---- footer ---- */
+footer{margin-top:5rem;padding-top:1.25rem;border-top:1px solid var(--rule);
+  font-family:var(--mono);font-size:.75rem;line-height:1.6;color:var(--muted)}
+footer p{max-width:var(--measure)}
+.srcs{font-size:.6875rem;line-height:2.1;word-break:break-word}
+.srcs a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--rule)}
+.srcs a:hover{color:var(--accent)}
+a:focus-visible,button:focus-visible,summary:focus-visible{
+  outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{
+  animation-duration:.01ms !important;transition-duration:.01ms !important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <div class="kicker">Consumer healthtech · unit economics</div>
+    <h1>Superpower: not a subscription business, a lead-generation business</h1>
+    <p class="sub">What a $199 annual biomarker membership actually earns, what it costs to acquire the
+    member, and why every strategic question follows from the gap between those two numbers.
+    Public sources only. August 2026.</p>
+  </div>
+</header>
+
+<div class="note">
+  <b>The thesis in one sentence.</b> At $199 a year against a lab panel, a blood draw and clinician review,
+  the membership produces roughly $40–110 of gross profit per member — which does not cover customer
+  acquisition at any realistic cost. Superpower is therefore not a subscription business; it is a
+  <b>qualification funnel monetised through add-ons and, prospectively, prescriptions.</b>
+  <div class="tagrow">
+    <span class="tag t-rep">Reported</span>
+    <span class="tag t-est">Estimated</span>
+    <span class="tag t-asm">Assumption</span>
+  </div>
+  <div style="margin-top:11px">Superpower discloses no member count, revenue, retention or CAC. Every input
+  is tagged: <b>Reported</b> = published by the company, a court, a regulator or a filing. <b>Estimated</b>
+  = triangulated from adjacent public data. <b>Assumption</b> = mine, no public anchor.</div>
+</div>
+
+<!-- ═══════ 1 · COMPANY NEWS ═══════ -->
+<section id="news-company">
+  <div class="secnum">Section 1</div>
+  <h2>What happened at Superpower</h2>
+  <p class="prose">Twelve months in which the company cut its price by 60%, bet the balance sheet on
+  peptides, and got sued over how it counts biomarkers.</p>
+
+  <div class="card" style="margin-top:18px">
+    <div class="tl">
+      <div class="ev"><div class="d">Jul 29, 2026</div><div class="t">Valuation reported above $500M</div>
+        <div class="b">A profile puts total funding above $50M and valuation above $500M, with "tens of
+        thousands" of members since the fall 2025 commercial launch. Treat the mark as unpriced — sources
+        give five different funding totals, listed in the assumption register.</div></div>
+
+      <div class="ev good"><div class="d">Jul 23–24, 2026</div><div class="t">FDA advisory committee reviews seven peptides</div>
+        <div class="b">The Pharmacy Compounding Advisory Committee took up BPC-157, TB-500, KPV, MOTS-c, DSIP,
+        Semax and Epitalon for the §503A bulks list. Two of them are the exact compounds Superpower is
+        reported to be positioning around. Inclusion would be, in one trade description, a major windfall for
+        compounding pharmacies and the telehealth companies attached to them. This docket is the single
+        highest-variance input to the company's 2027 revenue.</div></div>
+
+      <div class="ev"><div class="d">Jun 30, 2026</div><div class="t">Giannis Antetokounmpo joins as ambassador and investor</div>
+        <div class="b">First Global Brand Ambassador; equity undisclosed. The release repeats the marketing
+        claim that <b>60% of members "discovered something routine care missed."</b> Read the other way, that
+        is the abnormal-flag rate — the same number the clinical critique in Section 4 calls a false-positive
+        engine. It is simultaneously the company's best marketing line and its clearest regulatory exposure.</div></div>
+
+      <div class="ev"><div class="d">Mar 17–23, 2026</div><div class="t">The peptide pivot</div>
+        <div class="b">A $42M raise explicitly earmarked for peptide expansion, alongside an exclusive R&amp;D
+        agreement with ASX-listed Tetratherix for a polymer carrier enabling needle-free nasal delivery of
+        GLP-1 agonists, peptides and hormones. The founder's framing: big pharma won't fund wellness-targeted
+        compounds it cannot patent. The company is acquiring IP to move quickly if FDA eases restrictions.</div></div>
+
+      <div class="ev bad"><div class="d">Jan 26, 2026</div><div class="t">Function Health sues over the biomarker count</div>
+        <div class="b">Lanham Act and California false-advertising claims in the Central District of
+        California. Function alleges Superpower's "100+ biomarkers" is really about <b>55 direct
+        measurements</b>, with the remainder derived ratios and indices; it also challenges the "24/7 real
+        clinical team" claim, alleging responses come from dieticians and health coaches rather than
+        physicians or nurses, and the "3,000+ lab locations" figure against Quest's roughly 2,250 US patient
+        service centers. Relief sought includes injunction, corrective advertising and profit disgorgement.</div></div>
+
+      <div class="ev good"><div class="d">Aug 19, 2025</div><div class="t">Price cut from $499 to $199</div>
+        <div class="b">The founding growth act, and the reason the unit economics look the way they do. The
+        company has said publicly that CAC fell materially after the cut while LTV did not change much —
+        which is the clearest evidence available that the membership was never the profit engine.</div></div>
+    </div>
+
+    <p class="small" style="margin-top:6px"><b>The most interesting thing about that lawsuit is what hasn't
+    happened.</b> After two stipulated extensions, no responsive pleading appears on the public docket past
+    April 2026 — no motion to dismiss, no answer, no ruling. A defendant intending to fight normally files a
+    Rule 12(b)(6) motion. That pattern reads like settlement or standstill negotiations. Paid docket services
+    were inaccessible to me, so treat this as "nothing found in public sources" rather than confirmed docket
+    silence. Note also that as of this writing the company still advertises the challenged "3,000+ locations"
+    claim, which bears on willfulness if the case is litigated.</p>
+  </div>
+</section>
+
+<!-- ═══════ 2 · CATEGORY NEWS ═══════ -->
+<section id="news-category">
+  <div class="secnum">Section 2</div>
+  <h2>What happened around it</h2>
+  <p class="prose">The competitive and capital context moved faster than the company did.</p>
+
+  <div class="card" style="margin-top:18px">
+    <div class="tl">
+      <div class="ev good"><div class="d">Aug 4, 2026</div><div class="t">P&amp;G buys Thorne for $3.8B</div>
+        <div class="b">L Catterton took Thorne private for $680M in 2023; it reached roughly $500M in revenue.
+        A gross return of about 5.6× in under three years, at roughly 7.6× revenue. This is the category's
+        first strategic-buyer print at scale and the best available evidence that a trade sale exists as an
+        exit path for a diagnostics-plus-supplements consumer health asset.</div></div>
+
+      <div class="ev bad"><div class="d">Jul 30, 2026</div><div class="t">Function raises $450M non-dilutive</div>
+        <div class="b">From General Catalyst's Customer Value Fund — revenue-linked, with no valuation reset
+        on the $2.5B Series B mark. Total capital now above $800M against Superpower's roughly $50M. Function
+        also disclosed <b>500,000+ members and 100M+ lab tests logged</b>. A CVF facility is essentially
+        securitised customer acquisition: it signals Function believes its cohort economics are provable
+        enough to underwrite, which is a claim Superpower is not currently in a position to make.</div></div>
+
+      <div class="ev bad"><div class="d">Jul 15, 2026</div><div class="t">Neko Health raises $700M at $7B</div>
+        <div class="b">Ahead of a US launch, with 100,000+ scans completed and — the detail that matters —
+        <b>75% of members prepaying for a follow-up scan.</b> That is the only hard retention datapoint any
+        player in this category has disclosed, and it comes from the one company that owns its own hardware
+        and clinics rather than reselling someone else's lab.</div></div>
+
+      <div class="ev bad"><div class="d">Apr 14, 2026</div><div class="t">NPR publishes the clinical critique</div>
+        <div class="b">The most citable mainstream challenge to the category to date, quoting Northwestern's
+        chief of general internal medicine and Penn's medical ethics faculty. Detailed in Section 4.</div></div>
+
+      <div class="ev bad"><div class="d">Apr 8, 2026</div><div class="t">Function acquires Getlabs</div>
+        <div class="b">Nationwide at-home and in-office blood draw with AI-assisted routing. Function bought
+        the phlebotomy layer that Superpower resells at $119 as a pass-through add-on. It is a margin move and
+        a retention move at once — at-home draws make the second annual panel frictionless.</div></div>
+
+      <div class="ev"><div class="d">Nov 19, 2025</div><div class="t">Function cuts price to $365 at a $2.5B valuation</div>
+        <div class="b">A $298M Series B led by Redpoint, alongside a cut from $499 to $365 and a move to two
+        tests a year plus on-demand. Between the two companies, headline price has fallen roughly 60% in
+        twelve months while advertised biomarker counts rose.</div></div>
+    </div>
+
+    <p class="small" style="margin-top:6px">Wearables — Oura at $99 for 50 markers, Whoop at $299 per panel —
+    also entered this window and are commoditising the panel from below. They sit outside the scope of this
+    piece and are covered separately.</p>
+  </div>
+</section>
+
+<!-- ═══════ 3 · MARKET FORCES ═══════ -->
+<section id="forces">
+  <div class="secnum">Section 3</div>
+  <h2>Market forces</h2>
+  <p class="prose">The demand story is genuinely strong. The supply and margin story is not, and the two are
+  usually discussed as if they were the same thing.</p>
+  <div class="forces">
+    <div class="force up">
+      <h3>Tailwinds</h3>
+      <ul>
+        <li><b>Consumer health spending is enormous and compounding.</b> The US wellness economy is around $2.1T; globally $6.8T heading to a forecast $9.8T by 2029. 84% of US consumers rank wellness a top or important priority.</li>
+        <li><b>Direct-to-consumer testing is growing about 14.5% a year</b> — $4.7B in 2025 to a forecast $16.1B by 2033, with corporate wellness the fastest-growing end use.</li>
+        <li><b>Primary care has failed as a channel.</b> More than 100M Americans lack a dedicated PCP and average waits exceed a month. That access gap, not longevity science, is the actual product being sold.</li>
+        <li><b>HSA and FSA rules expanded in 2026.</b> Bronze and catastrophic ACA plans became HSA-qualified, and from January 1 direct primary care memberships became qualified medical expenses up to $150/month.</li>
+        <li><b>Regulation of the test itself got easier.</b> The FDA's laboratory-developed-test rule was vacated in 2025 and not appealed, removing the most credible route to premarket review of novel and derived markers.</li>
+        <li><b>A strategic exit exists at scale</b> — P&amp;G paid $3.8B for Thorne at roughly 7.6× revenue.</li>
+      </ul>
+    </div>
+    <div class="force dn">
+      <h3>Headwinds</h3>
+      <ul>
+        <li><b>Price collapsed roughly 60% in twelve months</b> while biomarker counts rose. Function went $499→$365, Superpower $499→$199. That is textbook commoditisation of an undifferentiated input.</li>
+        <li><b>The lab partner captures the margin.</b> Superpower and Function both resell Quest capacity. Quest posted 10.2% revenue growth in Q2 2026 and explicitly credited its consumer and wellness partners — it is growing on their marketing spend.</li>
+        <li><b>Base membership does not fund acquisition.</b> Roughly $40–110 of gross profit against a healthcare CAC that starts near $100 and rises as organic channels saturate.</li>
+        <li><b>Renewal is undisclosed by everyone.</b> Cumulative-since-inception member counts are what companies report when cohort retention is the weak number.</li>
+        <li><b>The capital gap is stark</b> — roughly $50M against Function's $800M+ and Neko's $700M round.</li>
+        <li><b>Live false-advertising litigation</b> over the core marketing claim, which is a diligence blocker on any sale.</li>
+        <li><b>The peptide bet sits inside an active FDA enforcement lane,</b> where the agency is concurrently issuing warning letters to peptide sellers and telehealth marketers.</li>
+        <li><b>The clinical establishment disputes the premise.</b> Section 4.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ 4 · CLINICAL CRITIQUE ═══════ -->
+<section id="critique">
+  <div class="secnum">Section 4</div>
+  <h2>The clinical critique</h2>
+  <p class="prose">Broad annual screening of asymptomatic adults is not a neutral act in mainstream clinical
+  practice — it is something most guideline bodies actively advise against. That matters commercially,
+  because it is the theory an FTC action or a consumer class action would be built on.</p>
+
+  <div class="card" style="margin-top:18px">
+    <div class="quote">"Everybody comes in and they're like, 'I want my routine blood work' — and that's not
+    a thing." — Dr. Jeffrey Linder, Chief of General Internal Medicine, Northwestern, to NPR</div>
+
+    <p style="margin-top:14px">The mechanism critics describe is the <b>cascade</b>. An abnormal flag on an
+    asymptomatic patient triggers repeat testing, referrals, and occasionally invasive workup — one cited
+    study found <b>33% of cascade-initiating tests were clinically inappropriate</b>. Linder's example is
+    that age-related shifts within a normal complete blood count range can end in a bone marrow biopsy. His
+    benchmark for a healthy adult is cholesterol screening every five years, not annually.</p>
+
+    <p>A cardiologist who reviewed Superpower personally had ten biomarkers flagged abnormal and judged that
+    <b>"each one was not of clinical concern"</b>, and separately estimated that about a third of the markers
+    are ratios generated from other markers. That independently echoes Function's litigation allegation from
+    someone with no commercial stake in the outcome, which is what makes it the more damaging version. One
+    product review estimated broad panels generate close to <b>ten false positives per healthy
+    consumer</b>.</p>
+
+    <p><b>I found no randomised or prospective evidence that annual broad biomarker panels improve mortality
+    or morbidity in asymptomatic adults.</b> That absence is itself the finding, and it is the answer to the
+    question a regulator would ask first.</p>
+
+    <p style="margin-bottom:0">The commercial reading is the part that belongs in a model: the algorithm that
+    flags abnormalities is the same algorithm that drives add-on attach, and the resulting action plan
+    reportedly recommends supplements the company sells. <b>Optimising attach and managing regulatory
+    exposure are the same dial turned in opposite directions.</b> Worth noting too that roughly 40% of
+    Function's members come from ZIP codes below $95K median household income — the cascade cost lands
+    hardest on the people least able to absorb it.</p>
+  </div>
+</section>
+
+<!-- ═══════ 5 · COMPETITION ═══════ -->
+<section id="competition">
+  <div class="secnum">Section 5</div>
+  <h2>The competitive set</h2>
+  <p class="prose">Restricted to lab-based testing businesses — the companies selling the same underlying
+  product. The panel itself is undifferentiated: Superpower and Function both route to Quest, and Function's
+  own complaint concedes it.</p>
+
+  <div class="card scroll" style="margin-top:18px">
+    <table>
+      <thead><tr><th>Company</th><th class="num">Price / yr</th><th>Markers &amp; cadence</th><th>Scale</th><th>Capital</th><th>Position</th></tr></thead>
+      <tbody>
+        <tr class="hl"><td><b>Superpower</b></td><td class="num">$199</td><td>100+ claimed, ~55 direct alleged · 1× / yr</td><td>"Tens of thousands"</td><td>~$47–51M · ~$500M val</td><td>Cheapest full membership. The price is the brand, which is exactly why raising it is hard</td></tr>
+        <tr><td><b>Function Health</b><br><span class="small">the direct comparison</span></td><td class="num">$365</td><td>160+ lab tests · 2× / yr + on-demand</td><td><b>500,000+ members</b><br><span class="small">100M+ tests logged</span></td><td>$800M+ · $2.5B val</td><td>16× the capital. Owns the draw via Getlabs; twice-yearly testing is a retention mechanism, not a feature</td></tr>
+        <tr><td><b>Mito Health</b></td><td class="num">$108</td><td>not disclosed · labs at cost</td><td>not found</td><td>not found</td><td>$9/month with labs passed through at cost — the price floor, and proof the wrapper alone is worth little</td></tr>
+        <tr><td><b>InsideTracker</b></td><td class="num">$149–1,781</td><td>43–54 · flexible</td><td>per-kit, not subscription</td><td>not found</td><td>The pre-longevity incumbent, out of MIT/Harvard research. Never converted to a membership model</td></tr>
+        <tr><td><b>Everlywell</b></td><td class="num">~$449</td><td>small single-condition panels</td><td>not found</td><td>$50M (2019)</td><td>Broad catalog, shallow panels. Sells the test, not the interpretation</td></tr>
+        <tr><td><b>Lifeforce</b></td><td class="num">~$1,897</td><td>40+ · quarterly</td><td>not found</td><td>$12M Series A</td><td>Clinician-led with prescribing — hormones, peptides, GLP-1s. Fewer markers, ten times the price. This is where Superpower's peptide bet is heading</td></tr>
+        <tr><td><b>Marek Health</b></td><td class="num">~$2,500–5,400</td><td>pay-per-panel, $150–1,950</td><td>not found</td><td>not found</td><td>No membership at all; coaching plus labs billed separately. The unbundled version</td></tr>
+        <tr><td><b>Thorne</b></td><td class="num">not disclosed</td><td>testing + supplements</td><td>~$500M revenue</td><td><b>Sold to P&amp;G, $3.8B</b></td><td>The exit comp. Testing attached to a consumables business is what a strategic buyer paid 7.6× revenue for</td></tr>
+        <tr><td><b>Quest</b> · <b>Labcorp</b></td><td class="num">$89 / $65 panels</td><td>direct consumer panels</td><td>Q2 2026: $3.04B / $3.73B rev</td><td>public</td><td>The supplier. Both now sell direct to consumers while taking their wrapper customers' volume</td></tr>
+      </tbody>
+    </table>
+    <p class="small" style="margin-top:15px"><b>Two adjacent tiers, deliberately excluded.</b> Imaging-led
+    players (Neko at £299 a scan, Prenuvo $1,199–5,000, Biograph $7,500–15,000) compete for the same wallet
+    but sell a different cost structure. Wearables adding blood panels (Oura, Whoop) are commoditising from
+    below and are covered in a separate piece.</p>
+  </div>
+
+  <div class="two">
+    <div class="card">
+      <h3>The price advantage mostly evaporates on inspection</h3>
+      <p style="margin:6px 0 0">Superpower at $199 for "100+" markers is about $1.99 per marker — but roughly
+      <b>$3.62 per marker on the ~55 direct measurements Function alleges.</b> Function at $365 for 160+
+      across two draws is about $2.28 per marker, or roughly $1.14 per marker-observation per year. On a
+      per-direct-measurement, per-draw basis Superpower is not the cheap option. That gap is precisely the
+      wedge the lawsuit is engineered to expose, and it is why the litigation is a pricing problem rather
+      than a legal one.</p>
+    </div>
+    <div class="card">
+      <h3>Quest wins whoever wins</h3>
+      <p style="margin:6px 0 0">Quest posted 10.2% revenue growth in Q2 2026 and raised guidance, explicitly
+      crediting "robust revenue growth through questhealth.com and our consumer, wearable and wellness
+      partners." It is simultaneously supplier to, and competitor of, its own wrapper customers — and it is
+      booking growth on their marketing spend. Neither wrapper has pricing power over its single largest
+      cost line. The lab is the toll road.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ 6 · HEAD TO HEAD ═══════ -->
+<section id="headtohead">
+  <div class="secnum">Section 6</div>
+  <h2>Superpower versus Function, on identical cost assumptions</h2>
+  <p class="prose">The most useful thing you can do with two companies selling the same product at different
+  prices is hold the cost structure constant and see what the price difference buys. Both panels below use
+  the same per-panel lab cost, the same draw cost and the same clinician cost — the only differences are the
+  ones that are actually reported: price, testing frequency, and add-on revenue. <b>These update live with
+  the model in Section 8.</b></p>
+
+  <div class="vs" id="vsBlock"></div>
+
+  <p class="small" style="margin-top:14px">Function's add-on revenue of about $39 per subscriber per year is
+  a reported figure derived from roughly $8M of add-on revenue across its base. Superpower's add-on revenue
+  is a modelled assumption — which is why the comparison flatters Superpower by default. Set Superpower's
+  attach rate to match Function's actual $39 and the gap widens considerably.</p>
+
+  <div class="note">
+    <b>What the comparison shows.</b> Function charges 83% more and delivers two panels instead of one, so it
+    carries roughly double the lab and draw cost. It still ends up with materially more gross profit per
+    member — because the second panel costs far less than the price premium it supports. The strategic
+    reading: <b>Superpower cut price to a level where the cost structure has almost no room in it,</b> and
+    then has to make the economics work through attach. Function priced so that the core product funds
+    itself and the second annual touchpoint doubles as a retention mechanism. Same supplier, same panel,
+    opposite financial architecture.
+  </div>
+</section>
+
+<!-- ═══════ 7 · ASSUMPTIONS ═══════ -->
+<section id="assumptions">
+  <div class="secnum">Section 7</div>
+  <h2>Assumptions</h2>
+  <p class="prose">This comes before the model deliberately. Nothing downstream is more reliable than what
+  is in this table, and roughly half of it is mine rather than the company's.</p>
+
+  <div class="card scroll" style="margin-top:18px">
+    <table>
+      <thead><tr><th>Input</th><th>Basis</th><th>Where it comes from</th></tr></thead>
+      <tbody>
+        <tr><td>Membership $199/yr</td><td><span class="tag t-rep">Reported</span></td><td>Company pricing page. $399 in NY/NJ, a $499 two-panel tier, and $179 through the Thatch employer channel</td></tr>
+        <tr><td>Add-on catalog prices</td><td><span class="tag t-rep">Reported</span></td><td>Company site: Lp(a) $39 · thyroid antibodies $49 · extended metabolic $99 · organ age $99 · women's hormones $119 · at-home draw $119 · heavy metals $129 · extended heart $139 · microbiome $239 · mold $289 · environmental toxins $299 · Galleri $849</td></tr>
+        <tr><td>Function $365/yr, 160+ tests, 2×/yr</td><td><span class="tag t-rep">Reported</span></td><td>Function pricing page; cut from $499 in November 2025</td></tr>
+        <tr><td>Function add-on revenue ~$39/member/yr</td><td><span class="tag t-rep">Reported</span></td><td>Roughly $8M of add-on revenue across the member base, per third-party research</td></tr>
+        <tr><td>Lab panel COGS $50</td><td><span class="tag t-est">Estimated</span></td><td>Triangulated from Quest-network reseller retail — a full wellness panel sells at $55–65 while the reseller still earns a margin — and from Medicare clinical lab fee schedule rates. Actual negotiated wholesale contracts are not public</td></tr>
+        <tr><td>Draw cost $35</td><td><span class="tag t-est">Estimated</span></td><td>Bounded above by the $119 Superpower charges for an at-home draw. Function's purchase of Getlabs signals the line is material enough to vertically integrate</td></tr>
+        <tr><td>CAC $250</td><td><span class="tag t-est">Estimated</span></td><td>Anchored to third-party estimates for Function of $75–175 and $300–600, adjusted upward for Superpower's shift from organic and waitlist growth to paid acquisition — it has hired a Director of Influencer Marketing and a Performance Creative Strategist</td></tr>
+        <tr><td>Annual renewal 50%</td><td><span class="tag t-asm">Assumption</span></td><td><b>Not disclosed by any player in the category.</b> The only adjacent hard number is Neko's 75% follow-up prepay rate, on a different product. This is the single most consequential unknown in the model</td></tr>
+        <tr><td>Add-on attach 25% at $220</td><td><span class="tag t-asm">Assumption</span></td><td>Not disclosed. Function's reported ~$39 per member per year is the only adjacent datapoint, and it implies this assumption is optimistic</td></tr>
+        <tr><td>Clinician review $14, platform $18</td><td><span class="tag t-asm">Assumption</span></td><td>Not disclosed. Function's complaint alleges Superpower's clinical layer is dieticians and coaches rather than physicians, which would make the real figure lower than modelled</td></tr>
+        <tr><td>Fixed operating cost $30M/yr</td><td><span class="tag t-asm">Assumption</span></td><td>Scaled loosely to a reported headcount around 80. Used only for the company-level bridge in Section 8</td></tr>
+        <tr><td>Gross-profit sanity check</td><td><span class="tag t-est">Estimated</span></td><td>An independent analyst estimates Function's gross profit at $75–145 per member per year on a $365 price — a 20–40% margin, CAC $75–175, payback 6–28 months, first-year retention 60–75%. Applying that structure to $199 implies $40–80, which brackets what this model produces</td></tr>
+      </tbody>
+    </table>
+    <p class="small" style="margin-top:15px"><b>Not found, and therefore not estimated:</b> Superpower's
+    member count, revenue, ARR, churn, CAC and add-on attach — none are disclosed. Whether the March 2026
+    "$42M" was a new round or a cumulative-to-date figure is unresolved; sources variously report $34M, $42M,
+    $47M, $50M+ and $51M. Whether the $500M valuation reflects a priced round is unclear. Function's gross
+    margin, COGS and retention are likewise undisclosed, as is any docket activity after March 24, 2026.</p>
+  </div>
+</section>
+
+<!-- ═══════ 8 · MODEL ═══════ -->
+<section id="model">
+  <div class="secnum">Section 8</div>
+  <h2>The model</h2>
+  <p class="prose">Toggle any line item off to remove it from the calculation, or drag to change it. The
+  presets load the strategic cases discussed in Section 9, and the Function comparison in Section 6 updates
+  with every change.</p>
+
+  <div class="modelgrid">
+    <div class="card">
+      <div class="presets">
+        <button class="preset on" data-s="base" onclick="sPreset('base',this)">Base — consumer</button>
+        <button class="preset" data-s="employer" onclick="sPreset('employer',this)">Employer channel</button>
+        <button class="preset" data-s="peptide" onclick="sPreset('peptide',this)">Peptide upside</button>
+        <button class="preset" data-s="dpc" onclick="sPreset('dpc',this)">HSA / primary care</button>
+      </div>
+
+      <div class="grp">Revenue per member / year</div>
+      <div class="row" id="r_pPrice"><input type="checkbox" id="c_pPrice" checked><label for="c_pPrice">Membership price <span class="tag tg t-rep">rep</span></label><div class="val"><span>$</span><input id="i_pPrice" value="199"></div></div>
+      <input type="range" id="s_pPrice" min="99" max="1800" step="10" value="199">
+      <div class="row" id="r_pAttach"><input type="checkbox" id="c_pAttach" checked><label for="c_pAttach">Add-on attach rate <span class="tag tg t-asm">asm</span></label><div class="val"><input id="i_pAttach" value="25"><span>%</span></div></div>
+      <input type="range" id="s_pAttach" min="0" max="100" step="1" value="25">
+      <div class="row" id="r_pAddon"><input type="checkbox" id="c_pAddon" checked><label for="c_pAddon">Add-on spend per attacher <span class="tag tg t-est">est</span></label><div class="val"><span>$</span><input id="i_pAddon" value="220"></div></div>
+      <input type="range" id="s_pAddon" min="0" max="900" step="10" value="220">
+
+      <div class="grp">Variable cost per member / year</div>
+      <div class="row" id="r_pPanel"><input type="checkbox" id="c_pPanel" checked><label for="c_pPanel">Lab panel COGS <span class="tag tg t-est">est</span></label><div class="val"><span>$</span><input id="i_pPanel" value="50"></div></div>
+      <input type="range" id="s_pPanel" min="15" max="250" step="5" value="50">
+      <div class="row" id="r_pDraw"><input type="checkbox" id="c_pDraw" checked><label for="c_pDraw">Phlebotomy / draw <span class="tag tg t-est">est</span></label><div class="val"><span>$</span><input id="i_pDraw" value="35"></div></div>
+      <input type="range" id="s_pDraw" min="0" max="140" step="5" value="35">
+      <div class="row" id="r_pClin"><input type="checkbox" id="c_pClin" checked><label for="c_pClin">Clinician review <span class="tag tg t-asm">asm</span></label><div class="val"><span>$</span><input id="i_pClin" value="14"></div></div>
+      <input type="range" id="s_pClin" min="0" max="400" step="2" value="14">
+      <div class="row" id="r_pPlat"><input type="checkbox" id="c_pPlat" checked><label for="c_pPlat">App, support, payments <span class="tag tg t-asm">asm</span></label><div class="val"><span>$</span><input id="i_pPlat" value="18"></div></div>
+      <input type="range" id="s_pPlat" min="0" max="120" step="2" value="18">
+      <div class="row" id="r_pAddCogs"><input type="checkbox" id="c_pAddCogs" checked><label for="c_pAddCogs">Add-on gross margin <span class="tag tg t-asm">asm</span></label><div class="val"><input id="i_pAddCogs" value="45"><span>%</span></div></div>
+      <input type="range" id="s_pAddCogs" min="0" max="90" step="1" value="45">
+
+      <div class="grp">Retention &amp; acquisition</div>
+      <div class="row" id="r_pRenew"><input type="checkbox" id="c_pRenew" checked><label for="c_pRenew">Annual renewal rate <span class="tag tg t-asm">asm</span></label><div class="val"><input id="i_pRenew" value="50"><span>%</span></div></div>
+      <input type="range" id="s_pRenew" min="10" max="90" step="1" value="50">
+      <div class="row" id="r_pCac"><input type="checkbox" id="c_pCac" checked><label for="c_pCac">Customer acquisition cost <span class="tag tg t-est">est</span></label><div class="val"><span>$</span><input id="i_pCac" value="250"></div></div>
+      <input type="range" id="s_pCac" min="0" max="800" step="10" value="250">
+
+      <div class="grp">Company scale (for the P&amp;L bridge)</div>
+      <div class="row" id="r_pNew"><input type="checkbox" id="c_pNew" checked><label for="c_pNew">New members / year <span class="tag tg t-asm">asm</span></label><div class="val"><input id="i_pNew" value="60000"></div></div>
+      <input type="range" id="s_pNew" min="5000" max="400000" step="5000" value="60000">
+      <div class="row" id="r_pFixed"><input type="checkbox" id="c_pFixed" checked><label for="c_pFixed">Fixed operating cost, $M/yr <span class="tag tg t-asm">asm</span></label><div class="val"><span>$</span><input id="i_pFixed" value="30"><span>M</span></div></div>
+      <input type="range" id="s_pFixed" min="5" max="120" step="1" value="30">
+    </div>
+
+    <div>
+      <div class="tiles" id="pTiles"></div>
+
+      <div class="card" style="margin-bottom:24px">
+        <h3 style="margin-bottom:2px">What "contribution" means here</h3>
+        <p class="small" style="margin:0 0 4px">Read down the ladder. Each line is live.</p>
+        <div class="ladder" id="pLadder"></div>
+        <p class="small" style="margin-top:14px"><b>The distinction that matters.</b> <b>Gross profit</b> is
+        revenue minus the cost of delivering the service to that member — the panel, the draw, the review, the
+        payment fee. <b>Contribution</b> goes one step further and subtracts the cost of <em>getting</em> that
+        member, so it answers a different question: not "do we make money on the service" but "is a new
+        customer worth acquiring at all." In a subscription business the first is almost always positive and
+        the second frequently is not, which is exactly the situation here.</p>
+        <p class="small" style="margin-top:9px"><b>What contribution is not.</b> It is not EBITDA. Everything
+        below the contribution line — engineering, brand, leadership, compliance, office — is fixed and does
+        not scale with one more member. So contribution per member is only meaningful multiplied by the member
+        count and compared against that fixed base, which is what the bottom two rows do. A company can have
+        healthy contribution per member and still lose money because it has too few members; it can also have
+        thin contribution and be profitable at sufficient scale. Superpower, at "tens of thousands" of members,
+        is in the first situation.</p>
+        <p class="small" style="margin-top:9px"><b>One modelling caveat.</b> CAC is charged entirely to year
+        one, which is the conservative treatment. Spread it across the member's expected life and the
+        first-year figure improves while lifetime value does not change — which is why lifetime value against
+        CAC, not year-one profit, is the number to judge the business on.</p>
+      </div>
+
+      <figure>
+        <div class="charttitle">Gross profit per member, year one</div>
+        <div class="chartsub">Revenue builds up, variable costs draw down. The bar at right is gross profit — before any acquisition cost.</div>
+        <div class="legend"><span><i style="background:var(--c-rev)"></i>Revenue</span><span><i style="background:var(--c-cost)"></i>Variable cost</span><span><i style="background:var(--c-net)"></i>Gross profit</span></div>
+        <svg id="pWaterfall" viewBox="0 0 720 250" role="img" aria-label="Gross profit waterfall"></svg>
+        <figcaption>Every bar carries its value directly — nothing is encoded by colour alone.</figcaption>
+      </figure>
+
+      <figure>
+        <div class="charttitle">Where your model puts Superpower on price</div>
+        <div class="chartsub">Annual consumer price across lab-based testing businesses. The orange bar moves with the model.</div>
+        <svg id="pPriceLadder" viewBox="0 0 720 265" role="img" aria-label="Competitive price ladder"></svg>
+      </figure>
+
+      <figure>
+        <div class="charttitle">Lifetime contribution against renewal rate</div>
+        <div class="chartsub">The single unknown that decides whether this business works. Your CAC is the break-even line.</div>
+        <div class="legend"><span><i style="background:var(--c-rev)"></i>Lifetime gross profit</span><span><i style="background:var(--c-net)"></i>Your CAC</span></div>
+        <svg id="pSens" viewBox="0 0 720 230" role="img" aria-label="LTV sensitivity to renewal"></svg>
+      </figure>
+
+      <details><summary>Show the full P&amp;L as a table</summary><div id="pTable"></div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ 9 · STRATEGIC CASES ═══════ -->
+<section id="strategy">
+  <div class="secnum">Section 9</div>
+  <h2>Strategic cases</h2>
+  <p class="prose">Judge each against one fact established above: the base membership does not pay for the
+  customer. That makes the consumer P&amp;L a funnel, and a funnel is only worth building if what it feeds is
+  high-margin and durable. Click "Model this" to load any case into the calculator.</p>
+
+  <div style="margin-top:20px">
+    <div class="opt">
+      <div class="opt-h"><h3>1 · Push add-on attach</h3>
+        <div style="display:flex;gap:9px;align-items:center"><span class="verdict vd-2">Highest leverage, highest regulatory risk</span>
+        <button class="modelbtn" onclick="jump('base')">Model this</button></div></div>
+      <p style="margin:0">The catalog is already built and priced, from a $39 Lp(a) test to an $849 Galleri
+      cancer screen. Drag the attach slider and watch lifetime value against CAC move more than any other
+      input — a single $99 add-on roughly doubles gross profit per member. The cost is that this is precisely
+      the conflict-of-interest structure an FTC action or consumer class action would target: the algorithm
+      that flags abnormalities drives the attach, and the company is already defending a false-advertising
+      suit over its marketing claims. It is the cheapest option and the one that most increases the
+      correlation between commercial success and legal exposure.</p>
+    </div>
+
+    <div class="opt">
+      <div class="opt-h"><h3>2 · Employer and benefits channel</h3>
+        <div style="display:flex;gap:9px;align-items:center"><span class="verdict vd-3">Best structural fit</span>
+        <button class="modelbtn" onclick="jump('employer')">Model this</button></div></div>
+      <p style="margin:0">Corporate wellness is the fastest-growing end use in direct-to-consumer testing, and
+      Superpower already has a live proof point — a Thatch partnership at $179 a year. The preset drops price
+      to $179, collapses CAC toward $40, largely kills add-on attach because benefits channels do not upsell,
+      and raises renewal to 80% on annual contract mechanics. Watch what happens: a lower price and almost no
+      attach still produce far better economics, because the two things actually breaking the consumer model
+      are acquisition cost and churn, and the employer channel fixes both. The low price point that hurts
+      consumer unit economics becomes the winning feature in a benefits RFP. What it needs is an enterprise
+      sales motion the company does not visibly have, and patience for longer cycles.</p>
+    </div>
+
+    <div class="opt">
+      <div class="opt-h"><h3>3 · Peptides and prescriptions</h3>
+        <div style="display:flex;gap:9px;align-items:center"><span class="verdict vd-2">Already chosen; now binary</span>
+        <button class="modelbtn" onclick="jump('peptide')">Model this</button></div></div>
+      <p style="margin:0">This is not hypothetical. $42M was raised for it, the Tetratherix nasal-delivery
+      agreement is signed, and IP is being acquired around BPC-157 and TB-500. The logic is sound: prescription
+      margins are multiples of lab-panel margins, and a biomarker panel is a near-perfect qualification funnel
+      for a script. It is the only path to a genuinely differentiated P&amp;L, and it is what justifies a $500M
+      mark on tens of thousands of members. It is also a levered call option on a single FDA advisory
+      committee, taken by a company already defending a false-advertising suit, in the same enforcement lane
+      where the agency is issuing warning letters to peptide sellers. The risks are correlated rather than
+      diversifying — the same regulator, the same claims-substantiation exposure, the same litigation posture,
+      all moving together.</p>
+    </div>
+
+    <div class="opt">
+      <div class="opt-h"><h3>4 · Restructure toward HSA-qualified primary care</h3>
+        <div style="display:flex;gap:9px;align-items:center"><span class="verdict vd-3">The unexamined move</span>
+        <button class="modelbtn" onclick="jump('dpc')">Model this</button></div></div>
+      <p style="margin:0">From January 1, 2026, direct primary care membership fees became HSA-qualified up to
+      $150 a month for an individual — <b>$1,800 a year of pre-tax headroom against a $199 product.</b> Adding
+      genuine physician-delivered primary care would do three things simultaneously: unlock a large expansion
+      in revenue per member paid with pre-tax dollars, cure the exact deficiency Function's complaint alleges
+      about the clinical team, and answer the criticism that results arrive without a clinical relationship to
+      interpret them. The preset models $1,500 a year with real clinician payroll at $240 and two panels. It
+      is the only option that converts the company's biggest legal liability into pricing power. The costs are
+      real and not modelled here: state-by-state licensure, corporate-practice-of-medicine structuring,
+      malpractice exposure, and tax treatment that is untested and needs counsel.</p>
+    </div>
+
+    <div class="opt">
+      <div class="opt-h"><h3>5 · Raise the base price</h3>
+        <div style="display:flex;gap:9px;align-items:center"><span class="verdict vd-1">Weakest option alone</span>
+        <button class="modelbtn ghost" disabled>Contradicts positioning</button></div></div>
+      <p style="margin:0">The cut from $499 to $199 was the founding growth act, and the entire brand is built
+      on it. The company itself reported that cutting price dropped CAC materially while lifetime value held.
+      Meanwhile Function moved down to $365 and Mito sits below at $108. Raising price into a deflating market
+      with an undifferentiated Quest-sourced panel is the weakest available move — <em>unless</em> bundled
+      with the primary-care restructure above, which changes what is being sold rather than just what it
+      costs.</p>
+    </div>
+
+    <div class="opt">
+      <div class="opt-h"><h3>6 · Vertically integrate the draw</h3>
+        <div style="display:flex;gap:9px;align-items:center"><span class="verdict vd-2">Right instinct, wrong scale</span>
+        <button class="modelbtn ghost" disabled>Contract, don't buy</button></div></div>
+      <p style="margin:0">Function paid to own this in April 2026 and the best asset in the category is now
+      taken. With roughly $50M against Function's $800M, Superpower cannot win an infrastructure race. The
+      better framing is that it does not need to own phlebotomy, it needs to stop leaking the margin — a
+      negotiated volume contract with Quest captures most of the benefit at a fraction of the cost. The trap
+      is that this deepens dependence on a supplier which is simultaneously building a consumer business of
+      its own.</p>
+    </div>
+
+    <div class="opt">
+      <div class="opt-h"><h3>7 · Raise, or sell</h3>
+        <div style="display:flex;gap:9px;align-items:center"><span class="verdict vd-2">Settle the suit first</span>
+        <button class="modelbtn ghost" disabled>Timing question</button></div></div>
+      <p style="margin:0">Superpower cannot out-capitalise Function or Neko and should stop trying. Three
+      realistic paths: a peptide-contingent priced round after the FDA decision, where a favourable outcome
+      supports a differentiated-margin story rather than a cheaper-Function one; a Customer Value Fund-style
+      revenue-linked facility, which requires the disclosable cohort retention the company does not appear to
+      have; or a strategic sale, which P&amp;G's $3.8B purchase of Thorne just proved is available for this
+      asset class. Unresolved false-advertising litigation over your core marketing claim is a diligence
+      blocker and a price discount — one more reason the docket silence since March may be deliberate.</p>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:1.6rem">
+    <b>Synthesis.</b> The peptide bet is the high-margin answer and is already funded, but it is binary and
+    its risks are correlated with litigation the company is already carrying. The employer channel is the
+    durable answer and is structurally the best fit for a $199 price point, but it needs a sales motion that
+    does not exist. The HSA restructure is the one move that fixes the pricing ceiling and the legal exposure
+    with the same action, and nobody in the category appears to be pursuing it. What none of these options
+    can do is make the consumer subscription work on its own terms — that question was settled when the price
+    went to $199.
+  </div>
+</section>
+
+<footer>
+  <p>Built August 2026 from public sources. Not investment advice, not affiliated with Superpower or Function
+  Health, and not based on any non-public information. Allegations described here are allegations; no court
+  has ruled on them. All model assumptions are my own and labelled as such. Charts validated for
+  colour-vision deficiency against both light and dark surfaces.</p>
+  <details style="border:none;margin-top:14px">
+    <summary>Sources</summary>
+    <p class="srcs" style="margin-top:12px">
+    <a href="https://superpower.com/pricing">Superpower pricing</a> ·
+    <a href="https://superpower.com/baseline-membership">Superpower baseline membership &amp; add-on catalog</a> ·
+    <a href="https://www.businesswire.com/news/home/20260630030813/en/Giannis-Antetokounmpo-Joins-Superpower-as-Global-Brand-Ambassador-to-Close-the-Gap-Between-Elite-and-Everyday-Healthcare">Giannis ambassador announcement</a> ·
+    <a href="https://www.entrepreneur.com/building-a-business/this-startup-wants-to-bring-elite-healthcare-to-everyone">Entrepreneur — $500M valuation profile</a> ·
+    <a href="https://endpoints.news/longevity-startup-superpower-cuts-price-to-199/">Endpoints — the $499→$199 cut</a> ·
+    <a href="https://traded.co/vc/deal/superpower-secures-42-million-investment-from-forerunner-ventures-and-others-for-peptide-market-expansion/">The $42M peptide raise</a> ·
+    <a href="https://www.capitalbrief.com/article/tetratherix-aims-for-holy-grail-of-peptides-with-superpower-nasal-spray-pact-f933cef2-278f-4831-ab36-665e98d3f6fe/">Capital Brief — Tetratherix nasal-delivery agreement</a> ·
+    <a href="https://sacra.com/c/superpower/">Sacra — Superpower profile</a> ·
+    <a href="https://www.afslaw.com/perspectives/longevity-lens/competing-biomarker-providers-clash-function-health-sues-superpower">ArentFox Schiff — Function v. Superpower complaint analysis</a> ·
+    <a href="https://dockets.justia.com/docket/california/cacdce/2:2026cv00810/1004005">Justia docket 2:26-cv-00810</a> ·
+    <a href="https://www.functionhealth.com/pricing">Function Health pricing</a> ·
+    <a href="https://www.prnewswire.com/news-releases/function-secures-450-million-growth-financing-from-general-catalysts-customer-value-fund-cvf-302838766.html">Function — $450M Customer Value Fund financing</a> ·
+    <a href="https://athletechnews.com/function-450-million-growth-financing-general-catalyst/">Athletech — Function reaches 500K members</a> ·
+    <a href="https://www.prnewswire.com/news-releases/function-acquires-getlabs-bringing-healthcare-directly-to-you-302737483.html">Function acquires Getlabs</a> ·
+    <a href="https://sacra.com/c/function-health/">Sacra — Function Health profile and add-on revenue</a> ·
+    <a href="https://newmarketpitch.com/blogs/news/digital-health-function-health-overvalued">New Market Pitch — Function unit-economics estimates</a> ·
+    <a href="https://www.nekohealth.com/us/en/press/neko-health-raises-usd700m-series-c-ahead-of-us-launch">Neko Health $700M Series C</a> ·
+    <a href="https://www.npr.org/2026/04/14/nx-s1-5780066/oura-function-wearables-blood-testing-bloodwork">NPR — the clinical critique</a> ·
+    <a href="https://theskepticalcardiologist.substack.com/p/on-the-massive-bs-that-is-generated">The Skeptical Cardiologist — Superpower review</a> ·
+    <a href="https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/thyroid-cancer-screening">USPSTF — thyroid cancer screening, grade D</a> ·
+    <a href="https://www.forbes.com/sites/robertglatter/2026/07/22/fda-set-to-review-safety-and-access-to-peptides-what-you-need-to-know/">Forbes — FDA peptide advisory committee</a> ·
+    <a href="https://www.thefdalawblog.com/2025/04/federal-district-court-vacates-fdas-laboratory-developed-tests-final-rule/">FDA Law Blog — LDT rule vacated</a> ·
+    <a href="https://www.prnewswire.com/news-releases/l-catterton-announces-sale-of-thorne-to-the-procter--gamble-company-for-3-8-billion-302842797.html">P&amp;G acquires Thorne for $3.8B</a> ·
+    <a href="https://newsroom.questdiagnostics.com/2026-07-23-Quest-Diagnostics-Reports-Second-Quarter-2026-Financial-Results-Raises-Revenue-and-EPS-Guidance-for-Full-Year-2026">Quest Diagnostics Q2 2026</a> ·
+    <a href="https://www.prnewswire.com/news-releases/labcorp-announces-2026-second-quarter-results-raises-full-year-2026-guidance-302838292.html">Labcorp Q2 2026</a> ·
+    <a href="https://www.grandviewresearch.com/industry-analysis/direct-to-consumer-testing-market-report">Grand View — DTC testing market</a> ·
+    <a href="https://www.goodrx.com/insurance/fsa-hsa/hsa-one-big-beautiful-bill">HSA and direct-primary-care rule changes for 2026</a> ·
+    <a href="https://globalwellnessinstitute.org/press-room/press-releases/the-global-wellness-economy-hits-a-record-6-8-trillion-and-is-forecast-to-reach-9-8-trillion-by-2029/">Global Wellness Institute</a> ·
+    <a href="https://www.ftc.gov/business-guidance/resources/health-products-compliance-guidance">FTC Health Products Compliance Guidance</a>
+    </p>
+  </details>
+</footer>
+
+</div>
+
+<script>
+const cssv=n=>getComputedStyle(document.body).getPropertyValue(n).trim();
+const $=id=>document.getElementById(id);
+const money=v=>(v<0?'−$':'$')+Math.abs(v).toLocaleString('en-US',{maximumFractionDigits:0});
+const money1=v=>(v<0?'−$':'$')+Math.abs(v).toLocaleString('en-US',{maximumFractionDigits:1});
+const mm=(v,d)=>(v<0?'−$':'$')+Math.abs(v).toFixed(d==null?1:d)+'M';
+const pct=v=>(v*100).toFixed(0)+'%';
+
+let applyingPreset=false;
+function clearPreset(){ if(!applyingPreset) document.querySelectorAll('[data-s]').forEach(e=>e.classList.remove('on')); }
+function bind(key,onChange){
+  const i=$('i_'+key), s=$('s_'+key), c=$('c_'+key), r=$('r_'+key);
+  i.addEventListener('input',()=>{ const v=parseFloat(i.value); if(!isNaN(v)) s.value=v; clearPreset(); onChange(); });
+  s.addEventListener('input',()=>{ i.value=s.value; clearPreset(); onChange(); });
+  c.addEventListener('change',()=>{ r.classList.toggle('off',!c.checked); clearPreset(); onChange(); });
+}
+const val=k=>$('c_'+k).checked ? (parseFloat($('i_'+k).value)||0) : 0;
+function setv(k,v){ $('i_'+k).value=v; $('s_'+k).value=v; $('c_'+k).checked=true; $('r_'+k).classList.remove('off'); }
+
+function waterfall(svgId,items,netLabel){
+  const svg=$(svgId), W=720,H=250, padL=8,padR=8,padB=46,padT=26;
+  const all=[...items,{label:netLabel,v:items.reduce((a,b)=>a+b.v,0),net:true}];
+  let run=0; const bars=[];
+  all.forEach(d=>{ if(d.net){bars.push({...d,from:0,to:d.v});} else {bars.push({...d,from:run,to:run+d.v}); run+=d.v;} });
+  const top=Math.max(...bars.map(b=>Math.max(b.from,b.to)),0);
+  const bot=Math.min(...bars.map(b=>Math.min(b.from,b.to)),0);
+  const span=(top-bot)||1, plotH=H-padB-padT, y=v=>padT+plotH*(top-v)/span;
+  const bw=(W-padL-padR)/all.length, gap=Math.min(12,bw*0.22);
+  let s=`<line x1="${padL}" y1="${y(0)}" x2="${W-padR}" y2="${y(0)}" stroke="${cssv('--rule')}" stroke-width="1"/>`;
+  bars.forEach((b,idx)=>{
+    const x=padL+idx*bw+gap/2, w=bw-gap;
+    const y1=Math.min(y(b.from),y(b.to)), h=Math.max(Math.abs(y(b.to)-y(b.from)),2);
+    const col=b.net?cssv('--c-net'):(b.v>=0?cssv('--c-rev'):cssv('--c-cost'));
+    s+=`<rect x="${x.toFixed(1)}" y="${y1.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="4" fill="${col}"><title>${b.label}: ${money1(b.v)}</title></rect>`;
+    const ly=(b.to>=b.from)? y1-7 : y1+h+15;
+    s+=`<text x="${(x+w/2).toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" font-size="11.5" font-weight="600" fill="${cssv('--ink')}">${money1(b.v)}</text>`;
+    const words=b.label.split(' '); let l1=b.label,l2='';
+    if(b.label.length>11){ let acc=''; for(const w2 of words){ if((acc+' '+w2).trim().length<=11) acc=(acc+' '+w2).trim(); else l2+=(l2?' ':'')+w2; } l1=acc; }
+    s+=`<text x="${(x+w/2).toFixed(1)}" y="${(H-padB+18)}" text-anchor="middle" font-size="10.5" fill="${cssv('--muted')}">${l1}</text>`;
+    if(l2) s+=`<text x="${(x+w/2).toFixed(1)}" y="${(H-padB+30)}" text-anchor="middle" font-size="10.5" fill="${cssv('--muted')}">${l2}</text>`;
+  });
+  svg.innerHTML=s;
+}
+
+function lineChart(svgId,series,xLabels,yFmt,yMaxForce){
+  const svg=$(svgId), W=720,H=230,padL=52,padR=16,padT=16,padB=34;
+  const n=xLabels.length, yMax=yMaxForce!=null?yMaxForce:Math.max(...series.flatMap(s=>s.data),0.0001);
+  const x=i=>padL+(W-padL-padR)*(i/(n-1)), y=v=>padT+(H-padT-padB)*(1-v/yMax);
+  let s='';
+  for(let g=0;g<=4;g++){ const v=yMax*g/4;
+    s+=`<line x1="${padL}" y1="${y(v).toFixed(1)}" x2="${W-padR}" y2="${y(v).toFixed(1)}" stroke="${cssv('--rule')}" stroke-width="1"/>`
+     +`<text x="${padL-8}" y="${(y(v)+4).toFixed(1)}" text-anchor="end" font-size="11" fill="${cssv('--muted')}" style="font-variant-numeric:tabular-nums">${yFmt(v)}</text>`; }
+  xLabels.forEach((lb,i)=>{ if(lb) s+=`<text x="${x(i).toFixed(1)}" y="${H-padB+18}" text-anchor="middle" font-size="11" fill="${cssv('--muted')}">${lb}</text>`; });
+  series.forEach(ser=>{
+    const col=cssv(ser.color), pts=ser.data.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+    s+=`<polyline points="${pts}" fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"${ser.dashed?' stroke-dasharray="5 4"':''}/>`;
+    const li=ser.data.length-1;
+    s+=`<text x="${(x(li)-4).toFixed(1)}" y="${(y(ser.data[li])+(ser.dashed?18:-10)).toFixed(1)}" text-anchor="end" font-size="11.5" font-weight="600" fill="${col}">${ser.endLabel}</text>`;
+  });
+  svg.innerHTML=s;
+}
+
+function priceLadder(live){
+  const svg=$('pPriceLadder'), W=720,H=265,padL=180,padR=76,padT=8,padB=30;
+  const rows=[
+    {n:'Labcorp OnDemand panel',v:65},{n:'Quest consumer panel',v:89},{n:'Mito Health',v:108},
+    {n:'InsideTracker (entry)',v:149},{n:'Superpower — your model',v:live,liveBar:true},
+    {n:'Function Health',v:365},{n:'Everlywell+',v:449}
+  ].sort((a,b)=>a.v-b.v);
+  const max=Math.max(...rows.map(r=>r.v))*1.1;
+  const bh=(H-padT-padB)/rows.length, gap=Math.min(9,bh*0.3), x=v=>padL+(W-padL-padR)*(v/max);
+  const step= max>1200?500:(max>600?200:100);
+  let s='';
+  for(let g=0;g<=max;g+=step){
+    s+=`<line x1="${x(g)}" y1="${padT}" x2="${x(g)}" y2="${H-padB}" stroke="${cssv('--rule')}" stroke-width="1"/>`
+     +`<text x="${x(g)}" y="${H-padB+18}" text-anchor="middle" font-size="11" fill="${cssv('--muted')}">$${g}</text>`; }
+  rows.forEach((r,i)=>{
+    const y=padT+i*bh+gap/2, h=bh-gap, col=r.liveBar?cssv('--c-rev'):cssv('--c-cost');
+    s+=`<rect x="${padL}" y="${y.toFixed(1)}" width="${Math.max(x(r.v)-padL,2).toFixed(1)}" height="${h.toFixed(1)}" rx="4" fill="${col}" opacity="${r.liveBar?1:0.7}"><title>${r.n}: $${Math.round(r.v)}/yr</title></rect>`;
+    s+=`<text x="${padL-10}" y="${(y+h/2+4).toFixed(1)}" text-anchor="end" font-size="11.5" fill="${r.liveBar?cssv('--ink'):cssv('--muted')}" font-weight="${r.liveBar?600:400}">${r.n}</text>`;
+    s+=`<text x="${(x(r.v)+8).toFixed(1)}" y="${(y+h/2+4).toFixed(1)}" font-size="11.5" font-weight="600" fill="${cssv('--ink')}" style="font-variant-numeric:tabular-nums">$${Math.round(r.v)}</text>`;
+  });
+  s+=`<text x="${padL}" y="${H-2}" font-size="11" fill="${cssv('--muted')}">Annual consumer price, lab-based testing only. Premium tiers (Lifeforce ~$1,897, Marek $2,500+) omitted for scale</text>`;
+  svg.innerHTML=s;
+}
+
+const PRESETS={
+  base:     {pPrice:199, pAttach:25, pAddon:220, pPanel:50,  pDraw:35, pClin:14,  pPlat:18, pAddCogs:45, pRenew:50, pCac:250, pNew:60000,  pFixed:30},
+  employer: {pPrice:179, pAttach:5,  pAddon:220, pPanel:50,  pDraw:35, pClin:14,  pPlat:18, pAddCogs:45, pRenew:80, pCac:40,  pNew:120000, pFixed:34},
+  peptide:  {pPrice:199, pAttach:40, pAddon:480, pPanel:50,  pDraw:35, pClin:26,  pPlat:22, pAddCogs:65, pRenew:65, pCac:300, pNew:60000,  pFixed:42},
+  dpc:      {pPrice:1500,pAttach:25, pAddon:220, pPanel:100, pDraw:70, pClin:240, pPlat:40, pAddCogs:45, pRenew:70, pCac:500, pNew:25000,  pFixed:45}
+};
+function sPreset(k,btn){ applyingPreset=true; Object.entries(PRESETS[k]).forEach(([a,b])=>setv(a,b)); applyingPreset=false;
+  document.querySelectorAll('[data-s]').forEach(e=>e.classList.remove('on'));
+  (btn||document.querySelector(`[data-s="${k}"]`)).classList.add('on'); drawAll(); }
+function jump(k){ sPreset(k); document.getElementById('model').scrollIntoView({behavior:'smooth',block:'start'}); }
+
+function drawAll(){
+  const price=val('pPrice'), attach=val('pAttach')/100, addon=val('pAddon'),
+        panel=val('pPanel'), draw=val('pDraw'), clin=val('pClin'), plat=val('pPlat'),
+        addGM=val('pAddCogs')/100, renew=Math.min(val('pRenew'),95)/100,
+        cac=val('pCac'), news=val('pNew'), fixed=val('pFixed')*1e6;
+
+  const addRev=attach*addon, addCogs=addRev*(1-addGM);
+  const rev=price+addRev, cogs=panel+draw+clin+plat+addCogs;
+  const gp=rev-cogs, gm=rev>0?gp/rev:0;
+  const life=1/Math.max(1-renew,0.05), ltv=gp*life;
+  const ratio=cac>0?ltv/cac:Infinity, y1=gp-cac;
+  const activeApprox=news*life;
+  const companyGP=activeApprox*gp, companyCAC=news*cac, ebitda=companyGP-companyCAC-fixed;
+
+  $('pTiles').innerHTML=`
+    <div class="tile"><div class="k">Revenue / member / yr</div><div class="v">${money(rev)}</div><div class="n">${money(price)} fee + ${money(addRev)} add-ons</div></div>
+    <div class="tile"><div class="k">Gross margin</div><div class="v ${gm<0?'neg':''}">${pct(gm)}</div><div class="n">${money(gp)} gross profit</div></div>
+    <div class="tile"><div class="k">Avg member life</div><div class="v">${life.toFixed(1)}<span style="font-size:14px;color:var(--muted)"> yr</span></div><div class="n">at ${(renew*100).toFixed(0)}% renewal</div></div>
+    <div class="tile"><div class="k">Lifetime value</div><div class="v">${money(ltv)}</div><div class="n">gross-profit basis</div></div>
+    <div class="tile"><div class="k">LTV / CAC</div><div class="v ${ratio<1?'neg':''}">${ratio===Infinity?'∞':ratio.toFixed(1)+'×'}</div><div class="n">${ratio>=3?'healthy':ratio>=1?'thin':'value-destroying'}</div></div>
+    <div class="tile"><div class="k">Year-one contribution</div><div class="v ${y1<0?'neg':''}">${money(y1)}</div><div class="n">${y1>=0?'pays back in year one':'funded by year two onward'}</div></div>
+    <div class="tile"><div class="k">Membership-only margin</div><div class="v ${(price-panel-draw-clin-plat)<0?'neg':''}">${money(price-panel-draw-clin-plat)}</div><div class="n">before any add-on</div></div>
+    <div class="tile"><div class="k">Company EBITDA</div><div class="v ${ebitda<0?'neg':''}">${mm(ebitda/1e6,0)}</div><div class="n">after ${mm(fixed/1e6,0)} fixed cost</div></div>`;
+
+  // ── P&L ladder ──
+  $('pLadder').innerHTML=`
+    <div class="lrow"><span class="lbl">Membership revenue</span><span class="amt">${money1(price)}</span></div>
+    <div class="lrow"><span class="lbl">Add-on revenue<span class="why">${(attach*100).toFixed(0)}% of members buy ${money(addon)} of extra panels</span></span><span class="amt">${money1(addRev)}</span></div>
+    <div class="lrow sub"><span class="lbl">Revenue per member</span><span class="amt">${money1(rev)}</span></div>
+    <div class="lrow ind"><span class="lbl">Lab panel</span><span class="amt">−${money1(panel)}</span></div>
+    <div class="lrow ind"><span class="lbl">Blood draw</span><span class="amt">−${money1(draw)}</span></div>
+    <div class="lrow ind"><span class="lbl">Clinician review</span><span class="amt">−${money1(clin)}</span></div>
+    <div class="lrow ind"><span class="lbl">App, support, payments</span><span class="amt">−${money1(plat)}</span></div>
+    <div class="lrow ind"><span class="lbl">Add-on cost of goods</span><span class="amt">−${money1(addCogs)}</span></div>
+    <div class="lrow sub"><span class="lbl">Gross profit<span class="why">what the service earns before you pay to find the customer</span></span><span class="amt">${money1(gp)}</span></div>
+    <div class="lrow"><span class="lbl">Customer acquisition cost<span class="why">charged fully to year one</span></span><span class="amt">−${money1(cac)}</span></div>
+    <div class="lrow sub"><span class="lbl">Contribution, year one<span class="why">what one new member leaves behind toward fixed costs</span></span><span class="amt" style="color:${y1<0?cssv('--neg'):cssv('--ink')}">${money1(y1)}</span></div>
+    <div class="lrow dim"><span class="lbl" style="padding-top:6px">× active members<span class="why">${(news/1000).toFixed(0)}k joining a year, ${life.toFixed(1)}-year average life</span></span><span class="amt">${(activeApprox/1000).toFixed(0)}k</span></div>
+    <div class="lrow dim"><span class="lbl">Less fixed operating cost<span class="why">engineering, brand, leadership, compliance — does not scale per member</span></span><span class="amt">−${mm(fixed/1e6,0)}</span></div>
+    <div class="lrow sub"><span class="lbl">Company EBITDA</span><span class="amt" style="color:${ebitda<0?cssv('--neg'):cssv('--ink')}">${mm(ebitda/1e6,0)}</span></div>`;
+
+  waterfall('pWaterfall',[{label:'Membership fee',v:price},{label:'Add-on revenue',v:addRev},
+    {label:'Lab panel',v:-panel},{label:'Draw',v:-draw},{label:'Clinician',v:-clin},
+    {label:'App & ops',v:-plat},{label:'Add-on COGS',v:-addCogs}].filter(d=>d.v!==0),'Gross profit');
+
+  priceLadder(price);
+
+  const rates=[],ltvs=[],cacs=[];
+  for(let r=20;r<=85;r+=5){ rates.push(r); ltvs.push(gp*(1/Math.max(1-r/100,0.05))); cacs.push(cac); }
+  lineChart('pSens',[{data:ltvs,color:'--c-rev',endLabel:money(ltvs[ltvs.length-1])},
+    {data:cacs,color:'--c-net',dashed:true,endLabel:'CAC '+money(cac)}],
+    rates.map(r=>(r-20)%15===0?r+'%':''),v=>'$'+Math.round(v),Math.max(...ltvs,cac)*1.12);
+
+  // ── head-to-head vs Function ──
+  const F={price:365, panels:2, addRev:39};   // reported
+  const fAddCogs=F.addRev*(1-addGM);
+  const fRev=F.price+F.addRev;
+  const fCogs=panel*F.panels + draw*F.panels + clin*F.panels + plat + fAddCogs;
+  const fGp=fRev-fCogs, fGm=fRev>0?fGp/fRev:0;
+  const col=(name,meta,r,c,g,m,extra)=>`
+    <div class="col">
+      <div class="co">${name}</div><div class="meta">${meta}</div>
+      <div class="lrow"><span class="lbl">Revenue per member</span><span class="amt">${money1(r)}</span></div>
+      <div class="lrow"><span class="lbl">Variable cost</span><span class="amt">−${money1(c)}</span></div>
+      <div class="lrow sub"><span class="lbl">Gross profit</span><span class="amt">${money1(g)}</span></div>
+      <div class="lrow"><span class="lbl">Gross margin</span><span class="amt">${pct(m)}</span></div>
+      ${extra}
+    </div>`;
+  $('vsBlock').innerHTML =
+    col('Superpower', `${money(price)}/yr · 1 panel · attach modelled at ${(attach*100).toFixed(0)}%`,
+        rev, cogs, gp, gm,
+        `<div class="lrow"><span class="lbl">Panels bought per year</span><span class="amt">1</span></div>
+         <div class="lrow"><span class="lbl">Scale</span><span class="amt">~tens of thousands</span></div>`)
+  + col('Function Health', `$365/yr · 2 panels · $39 add-on revenue (reported)`,
+        fRev, fCogs, fGp, fGm,
+        `<div class="lrow"><span class="lbl">Panels bought per year</span><span class="amt">2</span></div>
+         <div class="lrow"><span class="lbl">Scale</span><span class="amt">500,000+ members</span></div>`);
+
+  $('pTable').innerHTML=`<table><thead><tr><th>Line</th><th class="num">Superpower</th><th class="num">Function</th></tr></thead><tbody>
+    <tr><td>Membership fee</td><td class="num">${money1(price)}</td><td class="num">$365.0</td></tr>
+    <tr><td>Add-on revenue</td><td class="num">${money1(addRev)}</td><td class="num">$39.0</td></tr>
+    <tr><td><b>Total revenue</b></td><td class="num"><b>${money1(rev)}</b></td><td class="num"><b>${money1(fRev)}</b></td></tr>
+    <tr><td>Lab panel</td><td class="num">−${money1(panel)}</td><td class="num">−${money1(panel*2)}</td></tr>
+    <tr><td>Draw</td><td class="num">−${money1(draw)}</td><td class="num">−${money1(draw*2)}</td></tr>
+    <tr><td>Clinician review</td><td class="num">−${money1(clin)}</td><td class="num">−${money1(clin*2)}</td></tr>
+    <tr><td>App, support, payments</td><td class="num">−${money1(plat)}</td><td class="num">−${money1(plat)}</td></tr>
+    <tr><td>Add-on cost of goods</td><td class="num">−${money1(addCogs)}</td><td class="num">−${money1(fAddCogs)}</td></tr>
+    <tr><td><b>Gross profit</b></td><td class="num"><b>${money1(gp)}</b></td><td class="num"><b>${money1(fGp)}</b></td></tr>
+    <tr><td>Gross margin</td><td class="num">${pct(gm)}</td><td class="num">${pct(fGm)}</td></tr>
+    <tr><td>Customer acquisition cost</td><td class="num">−${money1(cac)}</td><td class="num">not modelled</td></tr>
+    <tr><td><b>Contribution, year one</b></td><td class="num"><b>${money1(y1)}</b></td><td class="num">—</td></tr>
+    <tr><td>Lifetime value</td><td class="num">${money(ltv)}</td><td class="num">—</td></tr>
+    </tbody></table>`;
+}
+
+['pPrice','pAttach','pAddon','pPanel','pDraw','pClin','pPlat','pAddCogs','pRenew','pCac','pNew','pFixed']
+  .forEach(k=>bind(k,drawAll));
+drawAll();
+</script>
+</body>
+</html>

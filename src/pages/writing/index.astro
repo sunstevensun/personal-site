@@ -1,9 +1,13 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Log from '../../components/Log.astro';
+import { writingPages } from '../../writing-pages.js';
 
 const modules = import.meta.glob('./*.mdx', { eager: true });
-const entries = Object.values(modules).map((m) => ({ ...m.frontmatter, url: m.url }));
+const entries = [
+  ...Object.values(modules).map((m) => ({ ...m.frontmatter, url: m.url })),
+  ...writingPages,
+];
 ---
 
 <Base title="Writing — Your Name">

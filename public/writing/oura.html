@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ōura — Unit Economics &amp; Strategic Position, August 2026</title>
+<style>
+/* ─────────────────────────────────────────────────────────────
+   Tokens — lifted verbatim from the site's global.css.
+   Palette is cool paper + ink with one restrained accent.
+   No second accent, per the host design system.
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --paper:#fbfbf9; --ink:#16181c; --muted:#6e7278; --rule:#e4e4df; --accent:#1c4e7a;
+  --serif:"Source Serif 4","Source Serif Pro",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --measure:34rem;
+
+  /* Derived chart ramp — one hue, monotone lightness, validated as an
+     ordinal ramp against the paper surface (light end clears 2:1). */
+  --c-cost:#8badc7;     /* light step  — cost marks           */
+  --c-rev:#1c4e7a;      /* the accent  — revenue / primary    */
+  --c-net:#16181c;      /* ink         — totals, reference    */
+  --c-ramp-1:#8badc7; --c-ramp-2:#5b86a8; --c-ramp-3:#35668f;
+  --c-ramp-4:#1c4e7a; --c-ramp-5:#123651;
+
+  /* Sole departure from one-accent: negative currency values.
+     A deep low-chroma brick that sits with the ink rather than
+     competing with the accent. Swap for var(--ink) to remove it. */
+  --neg:#8f3a34;
+
+  --wash:#f1f1ed;       /* the code-background tone from global.css */
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--serif);font-size:1.0625rem;line-height:1.6;
+  font-variant-numeric:oldstyle-num;-webkit-text-size-adjust:100%;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:min(1240px,calc(100vw - 3rem));margin:0 auto;padding:3.5rem 1.5rem 6rem}
+.prose{max-width:var(--measure)}
+a{color:var(--ink);text-decoration-color:var(--accent);text-underline-offset:2px}
+a:hover{color:var(--accent)}
+h1{font-size:1.875rem;line-height:1.2;letter-spacing:-.02em;margin:0 0 .75rem;
+  max-width:var(--measure);text-wrap:balance}
+h2{font-size:1.3125rem;letter-spacing:-.015em;margin:0 0 .5rem;text-wrap:balance}
+h3{font-size:1.0625rem;font-weight:600;letter-spacing:-.01em;margin:0 0 .5rem}
+h4{font-family:var(--mono);font-size:.6875rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent);margin:0 0 .4rem;font-weight:400}
+p{margin:0 0 .9rem;text-wrap:pretty}
+.sub{color:var(--muted);font-size:1.0625rem;margin:0;max-width:var(--measure);text-wrap:pretty}
+.small{font-size:.8125rem;line-height:1.45;color:var(--muted);font-variant-numeric:oldstyle-num}
+header{margin-bottom:3rem}
+.kicker,.secnum{font-family:var(--mono);font-size:.6875rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
+.secnum{color:var(--accent)}
+section{margin-top:4rem}
+/* ---- surfaces ---- */
+.card{background:#fff;border:1px solid var(--rule);border-radius:3px;padding:1.5rem 1.6rem}
+.note{background:#fff;border:1px solid var(--rule);border-left:2px solid var(--accent);
+  border-radius:0 3px 3px 0;padding:1.15rem 1.4rem;margin:1.4rem 0;font-size:.9375rem}
+.note b{font-weight:600}
+/* ---- tags ---- */
+.tagrow{display:flex;gap:.5rem;flex-wrap:wrap;margin:.75rem 0 0}
+.tag{font-family:var(--mono);font-size:.625rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:.1rem .4rem;border-radius:2px;border:1px solid currentColor;white-space:nowrap;
+  font-variant-numeric:normal}
+.tg{font-size:.5625rem;padding:.02rem .3rem;letter-spacing:.08em}
+.t-rep{color:var(--accent);background:rgba(28,78,122,.07)}
+.t-est{color:var(--ink);background:var(--wash);border-color:var(--rule)}
+.t-asm{color:var(--muted);border-style:dotted}
+/* ---- layout ---- */
+.modelgrid{display:grid;grid-template-columns:minmax(320px,380px) 1fr;gap:1.5rem;margin-top:1.4rem}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-top:1.25rem}
+@media(max-width:900px){.modelgrid,.two{grid-template-columns:1fr}}
+/* ---- controls ---- */
+.presets{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.25rem}
+.preset{background:#fff;border:1px solid var(--rule);color:var(--muted);border-radius:2px;
+  padding:.35rem .6rem;font-family:var(--mono);font-size:.6875rem;letter-spacing:.04em;
+  cursor:pointer;white-space:nowrap}
+.preset:hover{color:var(--ink);border-color:var(--muted)}
+.preset.on{background:var(--accent);color:var(--paper);border-color:var(--accent)}
+.grp{font-family:var(--mono);font-size:.625rem;text-transform:uppercase;letter-spacing:.12em;
+  color:var(--muted);margin:1.4rem 0 .6rem;padding-bottom:.35rem;border-bottom:1px solid var(--rule)}
+.grp:first-of-type{margin-top:0}
+.row{display:grid;grid-template-columns:14px 1fr 88px;gap:.55rem;align-items:center;margin-bottom:.25rem}
+.row label{font-size:.875rem;color:var(--ink);cursor:pointer;line-height:1.35}
+.row.off label,.row.off .val{opacity:.38;text-decoration:line-through}
+.row input[type=checkbox]{accent-color:var(--accent);width:14px;height:14px;cursor:pointer;margin:0}
+.val{display:flex;align-items:center;gap:1px;background:var(--wash);border:1px solid var(--rule);
+  border-radius:2px;padding:.15rem .35rem;font-family:var(--mono);font-size:.75rem;
+  font-variant-numeric:tabular-nums}
+.val span{color:var(--muted);font-size:.625rem}
+.val input{width:100%;background:none;border:none;color:var(--ink);font:inherit;
+  font-variant-numeric:tabular-nums;text-align:right;padding:0;min-width:0}
+.val input:focus{outline:none;color:var(--accent)}
+input[type=range]{grid-column:2/4;width:100%;accent-color:var(--accent);height:2px;margin:0 0 .6rem;cursor:pointer}
+/* ---- stat tiles ---- */
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  margin-bottom:1.6rem;background:var(--rule);border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+@media(max-width:1080px){.tiles{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:420px){.tiles{grid-template-columns:1fr}}
+.tile{background:#fff;padding:.85rem .95rem}
+.tile .k{font-family:var(--mono);font-size:.5625rem;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--muted);margin-bottom:.35rem}
+.tile .v{font-size:1.375rem;font-weight:600;letter-spacing:-.02em;line-height:1.1;
+  font-variant-numeric:oldstyle-num}
+.tile .n{font-size:.75rem;color:var(--muted);margin-top:.2rem;line-height:1.35}
+.v.neg{color:var(--neg)}
+/* ---- figures ---- */
+figure{margin:0 0 1.9rem}
+.figure__frame{border:1px solid var(--rule);border-radius:3px;background:#fff;padding:1.25rem}
+.charttitle{font-family:var(--mono);font-size:.6875rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:.35rem}
+.chartsub{font-size:.8125rem;line-height:1.45;color:var(--muted);margin-bottom:.9rem;text-wrap:pretty}
+figcaption{font-size:.8125rem;line-height:1.45;color:var(--muted);margin-top:.6rem}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.legend{display:flex;gap:1.1rem;flex-wrap:wrap;margin-bottom:.7rem;font-size:.8125rem;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:.4rem;vertical-align:-1px}
+/* ---- tables ---- */
+table{width:100%;border-collapse:collapse;font-size:.875rem;margin-top:.75rem;
+  font-variant-numeric:tabular-nums}
+th{text-align:left;font-family:var(--mono);font-size:.625rem;text-transform:uppercase;
+  letter-spacing:.1em;color:var(--muted);font-weight:400;padding:0 .55rem .6rem;
+  border-bottom:1px solid var(--rule);white-space:nowrap}
+td{padding:.65rem .55rem;border-bottom:1px solid var(--rule);vertical-align:top;line-height:1.45}
+td.num{text-align:right;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tbody tr.hl{background:rgba(28,78,122,.045)}
+.scroll{overflow-x:auto}
+details{margin-top:.7rem;border-top:1px solid var(--rule);padding-top:.7rem}
+summary{cursor:pointer;font-family:var(--mono);font-size:.6875rem;letter-spacing:.06em;color:var(--muted)}
+summary:hover{color:var(--accent)}
+ul{margin:.5rem 0 0;padding-left:1.1rem}
+li{margin-bottom:.55rem;font-size:.9375rem;color:var(--ink);text-wrap:pretty}
+/* ---- timeline (registry rows, per the site's .entry pattern) ---- */
+.tl{border-top:1px solid var(--rule);margin-top:.5rem}
+.ev{display:grid;grid-template-columns:6.5rem 1fr;gap:0 1.5rem;padding:1rem 0;
+  border-bottom:1px solid var(--rule)}
+.ev .d{grid-column:1;grid-row:1/span 2}
+.ev .t{grid-column:2;grid-row:1}
+.ev .b{grid-column:2;grid-row:2}
+@media(max-width:34rem){
+  .ev{grid-template-columns:1fr;gap:.2rem}
+  .ev .d,.ev .t,.ev .b{grid-column:1;grid-row:auto}
+}
+.ev:last-child{border-bottom:none}
+.ev .d{font-family:var(--mono);font-size:.6875rem;letter-spacing:.02em;color:var(--muted);
+  padding-top:.3rem;white-space:nowrap}
+.ev.bad .d{color:var(--neg)} .ev.good .d{color:var(--accent)}
+.ev .t{font-size:1.0625rem;font-weight:600;letter-spacing:-.01em;margin-bottom:.15rem;text-wrap:balance}
+.ev .b{font-size:.9375rem;color:var(--muted);line-height:1.5;text-wrap:pretty}
+.ev .b b{color:var(--ink);font-weight:600}
+/* ---- forces ---- */
+.forces{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-top:1.25rem}
+@media(max-width:860px){.forces{grid-template-columns:1fr}}
+.force{border:1px solid var(--rule);border-radius:3px;padding:1.4rem 1.5rem;background:#fff}
+.force.up{border-top:2px solid var(--accent)}
+.force.dn{border-top:2px solid var(--neg)}
+/* ---- strategic cases ---- */
+.opt{border:1px solid var(--rule);border-radius:3px;padding:1.3rem 1.4rem;margin-bottom:1rem;background:#fff}
+.opt-h{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;margin-bottom:.5rem}
+.opt-h h3{margin:0}
+.modelbtn{background:var(--accent);color:var(--paper);border:1px solid var(--accent);border-radius:3px;
+  padding:.35rem .7rem;font-family:var(--mono);font-size:.6875rem;letter-spacing:.04em;cursor:pointer}
+.modelbtn:hover{background:var(--ink);border-color:var(--ink)}
+.modelbtn.ghost{background:transparent;color:var(--muted);border-color:var(--rule);cursor:default}
+.verdict{font-family:var(--mono);font-size:.625rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:.1rem .4rem;border-radius:2px;border:1px solid currentColor;white-space:nowrap}
+.vd-1{color:var(--neg)} .vd-2{color:var(--muted);border-style:dotted} .vd-3{color:var(--accent)}
+.quote{margin:1.1rem 0;padding-left:1.25rem;border-left:2px solid var(--rule);color:var(--muted);
+  font-size:1rem;text-wrap:pretty}
+/* ---- P&L ladder ---- */
+.ladder{margin-top:.9rem;font-size:.9375rem}
+.lrow{display:grid;grid-template-columns:1fr 104px;gap:.75rem;padding:.5rem .7rem;align-items:baseline;
+  border-radius:2px}
+.lrow .lbl{color:var(--muted)}
+.lrow .amt{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink)}
+.lrow.sub{background:var(--wash)}
+.lrow.sub .lbl{color:var(--ink);font-weight:600}
+.lrow.ind .lbl{padding-left:1rem}
+.lrow.dim{opacity:.65}
+.lrow .why{display:block;font-size:.8125rem;color:var(--muted);margin-top:.1rem;line-height:1.4}
+/* ---- head to head ---- */
+.vs{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--rule);border-radius:3px;
+  overflow:hidden;margin-top:1.1rem}
+@media(max-width:760px){.vs{grid-template-columns:1fr}}
+.vs .col{padding:1.4rem 1.5rem;background:#fff}
+.vs .col:first-child{border-right:1px solid var(--rule);background:rgba(28,78,122,.035)}
+@media(max-width:760px){.vs .col:first-child{border-right:none;border-bottom:1px solid var(--rule)}}
+.vs .co{font-size:1.1875rem;font-weight:600;letter-spacing:-.015em;margin-bottom:.1rem}
+.vs .meta{font-family:var(--mono);font-size:.6875rem;letter-spacing:.03em;color:var(--muted);margin-bottom:1rem}
+/* ---- footer ---- */
+footer{margin-top:5rem;padding-top:1.25rem;border-top:1px solid var(--rule);
+  font-family:var(--mono);font-size:.75rem;line-height:1.6;color:var(--muted)}
+footer p{max-width:var(--measure)}
+.srcs{font-size:.6875rem;line-height:2.1;word-break:break-word}
+.srcs a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--rule)}
+.srcs a:hover{color:var(--accent)}
+a:focus-visible,button:focus-visible,summary:focus-visible{
+  outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{
+  animation-duration:.01ms !important;transition-duration:.01ms !important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <div class="kicker">Consumer healthtech · unit economics</div>
+    <h1>Ōura: the customer pays for their own acquisition</h1>
+    <p class="sub">A hardware-plus-subscription model that works precisely where a service-only model
+    doesn't — and the two structural attacks now aimed at it, four months after a confidential IPO filing.
+    Public sources only. August 2026.</p>
+  </div>
+</header>
+
+<div class="note">
+  <b>The thesis in one sentence.</b> Ōura sells a ring at roughly $273 realised against about $131 of
+  manufacturing cost, so <b>every customer arrives having already paid a gross profit that covers the cost
+  of acquiring them</b> — and the $71.88-a-year membership that follows is a high-margin annuity on top.
+  That inversion is why Ōura is profitable at scale while service-only wellness businesses are not. The
+  risk is inverted too: <b>both revenue lines are now under attack at once</b>, hardware from
+  subscription-free rings at $99–349, and the subscription from competitors who have made "no
+  subscription" their primary marketing claim.
+  <div class="tagrow">
+    <span class="tag t-rep">Reported</span>
+    <span class="tag t-est">Estimated</span>
+    <span class="tag t-asm">Assumption</span>
+  </div>
+  <div style="margin-top:11px">Ōura has never published audited financials, a gross margin, an attach rate
+  or a CAC. Every input is tagged: <b>Reported</b> = published by the company, a regulator, a court or a
+  filing. <b>Estimated</b> = triangulated from adjacent public data. <b>Assumption</b> = mine, no public
+  anchor. A public S-1 will convert most of this into hard numbers.</div>
+</div>
+
+<!-- ═══════ 1 ═══════ -->
+<section id="news-company">
+  <div class="secnum">Section 1</div>
+  <h2>What happened at Ōura</h2>
+  <p class="prose">Twelve months in which the company quadrupled revenue, won a patent case, lost the
+  exclusivity it bought with it, and filed to go public.</p>
+
+  <div class="card" style="margin-top:18px">
+    <div class="tl">
+      <div class="ev"><div class="d">Aug 6, 2026</div><div class="t">Buys its San Francisco headquarters</div>
+        <div class="b">Closing on the roughly 50,000 sq ft building at 500 Pine Street, occupied since
+        January, up from under 10,000 sq ft. Headcount is now above 1,200 across six offices. The building
+        last traded at $73M in 2018; Ōura's price is undisclosed.</div></div>
+
+      <div class="ev bad"><div class="d">Jun 20, 2026</div><div class="t">Ultrahuman returns to the US market</div>
+        <div class="b">The Ring Pro ships in the United States at an early-bird $349, with a heart-rate
+        sensing architecture explicitly engineered around Ōura's patents, a 15-day battery, and
+        <b>no subscription</b> for core insights. Ōura's exclusion order bought roughly eight months of
+        exclusivity against its closest competitor, not a permanent exclusion.</div></div>
+
+      <div class="ev"><div class="d">Jun 4–16, 2026</div><div class="t">Health Radar and the clinical layer</div>
+        <div class="b">Ring 5 ships alongside Health Radar — blood-pressure signal detection from nighttime
+        dipping patterns, nighttime breathing trends, symptom detection — built with 40+ in-house MDs and
+        PhDs. Counsel Health integration adds in-app messaging with licensed physicians in 43 states, and
+        Lab Uploads lets members import outside lab results.</div></div>
+
+      <div class="ev bad"><div class="d">May 28, 2026</div><div class="t">Ring 5 launches — and raises prices</div>
+        <div class="b">40% smaller, titanium, at $399 for base finishes and $499 for premium. That is a $50
+        increase on the base and $100 on several finishes. The cadence is notable: 18 months after Ring 4,
+        an acceleration trade press tied directly to pressure from subscription-free rivals.</div></div>
+
+      <div class="ev good"><div class="d">May 21, 2026</div><div class="t">Confidential S-1 submitted</div>
+        <div class="b">Ōura confirms it has filed a draft registration statement with the SEC. Share count,
+        price range, underwriters and venue are all undisclosed. European coverage framed the listing above
+        €9 billion.</div></div>
+
+      <div class="ev good"><div class="d">May 20, 2026</div><div class="t">Five million paid members</div>
+        <div class="b">On pace to pass 5M paid members in Q2, membership up more than 4× in two years, and
+        the only retention figure the company has ever released: <b>above 80% renewal after the first
+        year.</b> Also disclosed: 11% of members are healthcare providers and 51% manage at least one
+        chronic condition.</div></div>
+
+      <div class="ev good"><div class="d">Jan 6, 2026</div><div class="t">FDA opens the door Ring 5 walks through</div>
+        <div class="b">Updated general-wellness guidance clarifies that non-invasive estimation of blood
+        pressure, oxygen saturation and glucose does not automatically make a product a regulated device.
+        Ōura ships nighttime blood pressure five months later with no clearance, no clearance cost and no
+        clearance timeline — while running a separate IRB-approved study for the version it will submit.</div></div>
+
+      <div class="ev good"><div class="d">Oct 14–21, 2025</div><div class="t">$900M Series E at $11B, and the ITC win lands</div>
+        <div class="b">Fidelity leads, with Iconiq joining. Days later the exclusion order against Ultrahuman
+        and RingConn becomes enforceable — and RingConn settles into a multi-year royalty-bearing licence
+        rather than exiting. Ōura converted its patent into a revenue stream and a legitimised competitor
+        rather than an exclusion.</div></div>
+    </div>
+    <p class="small" style="margin-top:6px"><b>Not found:</b> audited financials of any kind, gross margin,
+    EBITDA, attach rate, CAC, marketing spend, multi-year retention, current contract manufacturers,
+    enterprise revenue share, the RingConn royalty rate, and the outcome of Ultrahuman's Federal Circuit
+    appeal or the USPTO challenge to the underlying patent.</p>
+  </div>
+</section>
+
+<!-- ═══════ 2 ═══════ -->
+<section id="news-category">
+  <div class="secnum">Section 2</div>
+  <h2>What happened around it</h2>
+  <p class="prose">The category reorganised itself around a single competitive claim: no subscription.</p>
+
+  <div class="card" style="margin-top:18px">
+    <div class="tl">
+      <div class="ev bad"><div class="d">Aug 3, 2026</div><div class="t">The subscription critique goes mainstream</div>
+        <div class="b">The Verge publishes "The Screenless Wearable Boom Has a Subscription Problem,"
+        arguing that Whoop and Ōura invented the screenless category to escape data overload and then
+        recreated it, and that subscription-first models erode as hardware commoditises. Its framing —
+        "everything useful is paywalled" — is the argument every competitor is now running.</div></div>
+
+      <div class="ev bad"><div class="d">Jul 21, 2026</div><div class="t">Garmin enters at $199 with no subscription</div>
+        <div class="b">CIRQA, a screenless band with sleep staging, HRV, body battery and 80+ activities,
+        explicitly subscription-free. Reported to have sold out immediately. Garmin has distribution and a
+        brand Ōura cannot dismiss.</div></div>
+
+      <div class="ev bad"><div class="d">May 26, 2026</div><div class="t">Fitbit Air lands at $99</div>
+        <div class="b">Google's screenless tracker with skin temperature, 24/7 heart rate and
+        irregular-rhythm notifications, positioned explicitly against Whoop. The AI coaching layer sits
+        behind a $10/month Google Health Premium tier — the same architecture as Ōura, at a quarter of the
+        hardware price.</div></div>
+
+      <div class="ev good"><div class="d">Jun 23, 2026</div><div class="t">FDA closes the Whoop warning letter</div>
+        <div class="b">Whoop had been cited in July 2025 for its Blood Pressure Insights feature as an
+        unapproved medical device. The letter closed after modification — but it had already produced a
+        putative class action in the Northern District of California, which is the risk the FDA's blessing
+        does not cover.</div></div>
+
+      <div class="ev good"><div class="d">Feb 5, 2026</div><div class="t">Apple retreats — reportedly because of Ōura and Whoop</div>
+        <div class="b">Apple scales back its AI health coach, and the reported reason is that the planned
+        service was judged not competitive against Ōura and Whoop, which "offer more compelling and useful
+        features." Apple's smart ring has separately been reported as abandoned entirely. The most dangerous
+        potential entrant has stepped back — though nothing makes that permanent.</div></div>
+
+      <div class="ev"><div class="d">Mar 2026</div><div class="t">Whoop raises $575M at $10.1B</div>
+        <div class="b">The closest business-model comparison, at roughly 2.5M members and $1.1B run-rate. On
+        those figures Whoop trades near 9× revenue while Ōura's last private mark is closer to 5.5× forward
+        revenue — the larger business carries the cheaper multiple.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ 3 ═══════ -->
+<section id="forces">
+  <div class="secnum">Section 3</div>
+  <h2>Market forces</h2>
+  <p class="prose">The demand signal is real but the category is small, and the two research houses that
+  track it disagree about whether it is still accelerating.</p>
+  <div class="forces">
+    <div class="force up">
+      <h3>Tailwinds</h3>
+      <ul>
+        <li><b>The category is growing off a small base.</b> IDC puts 2026 smart ring shipments at 4.9M units, up 12.8%. CCS Insight puts it at 6M and up 53%, with a 32% CAGR to 2030.</li>
+        <li><b>Ōura is the category.</b> It held roughly 80% share as recently as 2023 and remains the revenue majority, which is why category ASPs rose 9% in 2026 — Ōura raised prices.</li>
+        <li><b>The FDA loosened the wellness boundary in January 2026,</b> letting Ōura ship blood-pressure estimation with no clearance cost and no submission timeline.</li>
+        <li><b>HSA and FSA eligibility</b> covers the ring, the membership, Health Panels and the Stelo integration — converting discretionary spend into pre-tax spend, worth an effective 25–40% depending on bracket.</li>
+        <li><b>Enterprise and insurer channels are the real moat.</b> 1,200+ organisational partnerships, 4,600+ retail locations, and a Medicare Advantage deal with Essence Healthcare that now feeds nighttime breathing data into physician workflow for sleep apnoea screening. A $199 ring cannot replicate procurement relationships and clinical integration.</li>
+        <li><b>Apple has stepped back</b> from both the ring and the subscription health-coaching layer.</li>
+        <li><b>Consumers do pay for wearable services</b> — 32% of wearable owners have an attached subscription.</li>
+      </ul>
+    </div>
+    <div class="force dn">
+      <h3>Headwinds</h3>
+      <ul>
+        <li><b>Ōura is the most expensive hardware in the category and one of only two products requiring a subscription.</b> Every other vendor undercuts on at least one axis; most undercut on both.</li>
+        <li><b>The patent moat monetises but does not exclude.</b> Ultrahuman designed around it and returned in eight months; RingConn is licensed and selling at $199–314.</li>
+        <li><b>The underlying patent is under USPTO challenge</b> by Samsung and others. Invalidation would remove the royalty stream and the litigation threat together.</li>
+        <li><b>Smart rings are under 1% of wearables by units</b> — 4.9M against roughly 626M total. This is a niche with a premium price, not a mass category.</li>
+        <li><b>Hardware cadence is accelerating into replacement fatigue.</b> Ring 5 came 18 months after Ring 4, which raises R&D and inventory intensity to defend a subscription base.</li>
+        <li><b>Rings have an attrition mode no other wearable has:</b> fingers change size with weight, pregnancy, temperature and age, and a ring that no longer fits is a full repurchase.</li>
+        <li><b>The two houses disagree on growth</b> — 12.8% versus 53% for the same year. That gap is the central unresolved question for anyone underwriting this.</li>
+        <li><b>Privacy is a live reputational exposure.</b> See Section 4.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ 4 ═══════ -->
+<section id="critique">
+  <div class="secnum">Section 4</div>
+  <h2>The evidence and privacy critique</h2>
+  <p class="prose">Ōura's measurement accuracy holds up better than sceptics assume. The harder problems are
+  what people do with the data, whether anyone's health actually improves, and who else can see it.</p>
+
+  <div class="card" style="margin-top:18px">
+    <h3>On accuracy, the evidence is genuinely good</h3>
+    <p>A 2025 systematic review and meta-analysis in <em>OTO Open</em> pooled six validation studies against
+    polysomnography, n=388, and found <b>no statistically significant difference on any of seven sleep
+    parameters</b> — total sleep time, efficiency, wake after onset, onset latency, light, deep and REM. That
+    is a stronger result than the usual dismissal of consumer sleep tracking allows for, and it should be
+    conceded plainly.</p>
+    <p>The caveats matter, though. The sample is small, it pooled earlier ring generations rather than Ring
+    4 or 5, and null results with wide confidence intervals are not demonstrated equivalence — the deep-sleep
+    interval spans −10 to +13 minutes, a large fraction of a typical night. Agreement on nightly totals is
+    also a much weaker test than epoch-by-epoch staging agreement, which the meta-analysis does not report.</p>
+
+    <h3 style="margin-top:22px">The sensor has a documented bias problem</h3>
+    <p>A 2024 <em>JMIR</em> meta-analysis of 23 pulse-oximetry studies (n=59,684) found SpO2 accuracy
+    breached the FDA's 3% threshold <b>across every skin-tone group</b> — light 3.96%, medium 4.71%, dark
+    4.15% — and wearable pulse-rate error ranging from ±13.5 to ±33.7 bpm against a ±5 bpm industry
+    standard. The finding is broader and worse than the familiar "PPG fails on dark skin" framing. Ring 5's
+    marketing claim of "more powerful LEDs to improve accuracy across varied finger sizes and skin tones"
+    reads as an implicit acknowledgement.</p>
+
+    <h3 style="margin-top:22px">The number that should worry a subscription underwriter</h3>
+    <p>A December 2025 systematic review in <em>Biomimetics</em> covering 107 studies and roughly 100,000
+    participants found <b>adherence falling from 80% at three months to 43% at twelve months</b>. Ōura
+    reports above 80% membership renewal after year one. Both can be true at once only if paying consumers
+    behave very differently from study participants — or if <b>renewal is measuring billing continuation
+    rather than active use.</b> A subscription that keeps billing while the ring sits in a drawer is churn
+    that has not yet expressed itself, and it is the single largest risk to the lifetime value in the model
+    below.</p>
+    <p>The same review found 65% of studies carried moderate-to-high risk of bias, 89% relied on
+    undisclosed proprietary algorithms, only 35% documented participant race or ethnicity, and
+    <b>Ōura alone accounted for 72% of all studies</b> — a degree of vendor concentration that makes the
+    evidence base hard to read as independent.</p>
+
+    <h3 style="margin-top:22px">Orthosomnia is now measured, not anecdotal</h3>
+    <p>A 2026 national survey published in <em>SLEEP</em> (n=1,280) found 32.4% of US adults use digital
+    sleep tracking, and <b>30.9% of those screened positive for orthosomnia risk</b> — anxiety about their
+    own tracker data — roughly twice prior estimates. A validated instrument for it now exists. For a
+    company whose core product is a nightly score, one in three users showing anxiety about that score cuts
+    both ways: it drives engagement in the short run and abandonment in the long run.</p>
+
+    <h3 style="margin-top:22px">Whether any of it improves health is unresolved</h3>
+    <p>The best available evidence — a <em>Lancet Digital Health</em> review of 39 systematic reviews
+    covering 163,992 participants — found activity trackers add roughly 1,800 steps and 40 minutes of
+    walking a day, and about a kilogram of weight loss. Effects on blood pressure, cholesterol and HbA1c were
+    <b>"typically small and often non-significant."</b> And 34 of the 39 reviews were rated critically low
+    confidence. That literature is about wrist-worn step trackers; there is essentially no equivalent
+    outcomes base for sleep-and-recovery-score rings, whose mechanism is quite different.</p>
+
+    <h3 style="margin-top:22px">The privacy exposure is specific and self-inflicted</h3>
+    <p>The Department of Defense has been Ōura's largest enterprise customer since 2019, with tens of
+    thousands of rings deployed, a Fort Worth facility built to serve it, and an enterprise platform hosted
+    on Palantir's federal compliance infrastructure. Ōura describes the Palantir arrangement as a small
+    inherited security layer and says it does not share or sell user data. The backlash in late 2025 was
+    nonetheless real and named — cancellations covered in national press, a petition, and academic
+    write-ups.</p>
+    <p style="margin-bottom:0">The acute version is reproductive data. Ōura markets aggressively to women —
+    cycle, fertility, menopause and pregnancy tracking, with 26M cycles and 350,000 pregnancies logged — and
+    women in their early twenties are its fastest-growing segment. <b>Wearables are not covered by
+    HIPAA.</b> Building the most trusted women's-health data product and being the Pentagon's largest
+    wearable vendor are strategies in tension with the same customer, and 2025 showed the tension is not
+    theoretical. It belongs in an S-1 risk-factors section, which means it will shortly be public.</p>
+  </div>
+</section>
+
+<!-- ═══════ 5 ═══════ -->
+<section id="competition">
+  <div class="secnum">Section 5</div>
+  <h2>The competitive set</h2>
+  <p class="prose">Eleven priced competitors, and Ōura and Whoop are the only two that require a
+  subscription for core functionality. That is a structural alignment, not a coincidence.</p>
+
+  <div class="card scroll" style="margin-top:18px">
+    <table>
+      <thead><tr><th>Product</th><th class="num">Hardware</th><th>Subscription</th><th class="num">3-year cost</th><th>Scale</th><th>Position</th></tr></thead>
+      <tbody>
+        <tr class="hl"><td><b>Ōura Ring 5</b></td><td class="num">$399–499</td><td>$5.99/mo required</td><td class="num">$615–715</td><td>5M+ members<br><span class="small">~8M rings cumulative</span></td><td>Highest hardware price in the category and one of two products gating features behind a fee</td></tr>
+        <tr><td><b>Whoop</b> One / Peak / Life<br><span class="small">the model comparison</span></td><td class="num">included</td><td>$199 / $239 / $359 per yr</td><td class="num">$597–1,077</td><td>~2.5M members<br><span class="small">~$1.1B run-rate</span></td><td>Hardware bundled into subscription. Converges on the same three-year value as Ōura from the opposite direction</td></tr>
+        <tr><td><b>Ultrahuman</b> Ring Pro</td><td class="num">$349</td><td>none (optional add-ons)</td><td class="num">$349</td><td>~$150M run-rate<br><span class="small">#2 by share</span></td><td>Designed around Ōura's patent and back in the US since June. A 43% discount on three-year cost of ownership</td></tr>
+        <tr><td><b>RingConn</b> Gen 2 / Air</td><td class="num">$314 / $199</td><td>none</td><td class="num">$199–314</td><td>not disclosed</td><td>Licensed by Ōura and paying royalties — a permanently sanctioned price anchor at half the cost</td></tr>
+        <tr><td><b>Samsung</b> Galaxy Ring</td><td class="num">$399 list</td><td>none</td><td class="num">$399</td><td>not disclosed</td><td>Persistent deep discounting suggests weak sell-through; successor not expected before 2027</td></tr>
+        <tr><td><b>Circular</b> Ring 2</td><td class="num">$304</td><td>freemium</td><td class="num">$304</td><td>not found</td><td>ECG and AFib, HSA/FSA eligible, "140+ biometrics free forever"</td></tr>
+        <tr><td><b>Garmin</b> CIRQA</td><td class="num">$199.99</td><td>none</td><td class="num">$200</td><td>sold out at launch</td><td>Incumbent distribution, explicitly subscription-free, July 2026</td></tr>
+        <tr><td><b>Amazfit</b> Helio</td><td class="num">$149.99</td><td>none</td><td class="num">$150</td><td>not disclosed</td><td>Helio Ring 2 confirmed for H2 2026 with ECG and body composition in patent filings</td></tr>
+        <tr><td><b>Fitbit Air</b> (Google)</td><td class="num">$99</td><td>$10/mo optional</td><td class="num">$99–459</td><td>not disclosed</td><td>Same architecture as Ōura at a quarter of the hardware price, with the AI layer paywalled</td></tr>
+        <tr><td><b>Movano</b> EvieMED</td><td class="num">not found</td><td>none</td><td class="num">—</td><td>company in distress</td><td>The only FDA-cleared smart-ring pulse oximeter, held by a company facing Nasdaq deficiency notices</td></tr>
+      </tbody>
+    </table>
+    <p class="small" style="margin-top:15px">Three-year cost assumes one device and continuous membership at
+    list, before HSA/FSA treatment or discounting. Ōura's realised hardware price is materially below list —
+    see the assumption register.</p>
+  </div>
+
+  <div class="two">
+    <div class="card">
+      <h3>The moat monetised instead of excluding</h3>
+      <p style="margin:6px 0 0">Ōura won at the ITC in August 2025 and the orders became enforceable in
+      October. Eight months later Ultrahuman was back, selling a designed-around product at $349 with no
+      subscription, and RingConn had converted from defendant to licensee — legitimised, paying royalties,
+      and selling at $199. Ōura now collects an undisclosed royalty from a sanctioned competitor that
+      undercuts it by half. The patent bought time and a revenue line; it did not buy the market. And the
+      patent itself is under USPTO challenge.</p>
+    </div>
+    <div class="card">
+      <h3>Everyone else sells the absence of a subscription</h3>
+      <p style="margin:6px 0 0">Ultrahuman, RingConn, Circular, Amazfit, Renpho, Leep, Garmin and Samsung
+      all market subscription-free as their headline differentiator, and they name Ōura when they do it.
+      Survey data says 92% of prospective buyers would pay extra for health features — but that is stated
+      preference, and the revealed preference visible across 2026 is that the fastest-moving products in the
+      category are the ones that removed the fee.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ 6 ═══════ -->
+<section id="headtohead">
+  <div class="secnum">Section 6</div>
+  <h2>Ōura versus Whoop, over three years</h2>
+  <p class="prose">These are the same business with the revenue recognised in opposite orders. Ōura charges
+  for hardware and rents the software; Whoop gives away hardware and charges more for the software. Holding
+  the customer's holding period constant shows how close the two land — and how differently they get
+  there. <b>These update live with the model in Section 8.</b></p>
+
+  <div class="vs" id="vsBlock"></div>
+
+  <p class="small" style="margin-top:14px">Whoop hardware cost is a modelled assumption — the company does
+  not disclose it, and the device is given away, so it sits in cost of revenue rather than as a price. Ōura
+  figures use the derived realised selling price, not list.</p>
+
+  <div class="note">
+    <b>What the comparison shows.</b> Whoop collects more revenue per member but hands over a device for
+    free, so its gross profit is deferred and its cash is negative at the moment of acquisition. Ōura
+    collects less recurring revenue but banks a hardware margin on day one. <b>The practical difference is
+    who funds the customer acquisition.</b> Ōura's hardware gross profit arrives before any marketing cost
+    is amortised, which is why it can be profitable at $1–2B of revenue while carrying a $71.88 subscription;
+    Whoop has to keep a member for roughly a year before the relationship pays for its own hardware. Ōura's
+    exposure is that the hardware margin depends on holding a price premium the category is attacking;
+    Whoop's is that a cancelled member takes a device with them.
+  </div>
+</section>
+
+<!-- ═══════ 7 ═══════ -->
+<section id="assumptions">
+  <div class="secnum">Section 7</div>
+  <h2>Assumptions</h2>
+  <p class="prose">This comes before the model deliberately. Ōura has published a revenue trajectory, a
+  member count and one retention figure. Everything else below is derived or mine.</p>
+
+  <div class="card scroll" style="margin-top:18px">
+    <table>
+      <thead><tr><th>Input</th><th>Basis</th><th>Where it comes from</th></tr></thead>
+      <tbody>
+        <tr><td>Ring price $399–499 (Ring 5), $349 (Ring 4)</td><td><span class="tag t-rep">Reported</span></td><td>Company store, verified August 2026. Ring 5 raised base finishes $50 and several premium finishes $100</td></tr>
+        <tr><td>Membership $5.99/mo or $69.99/yr</td><td><span class="tag t-rep">Reported</span></td><td>Company membership page. Unchanged through 2026. Required on Gen3 and newer for anything beyond three daily scores</td></tr>
+        <tr><td>Realised hardware ASP $273</td><td><span class="tag t-est">Estimated</span></td><td>Derived by an analyst from Finnish statutory filings. Against a $349–499 list this implies 22–45% of realised give-up to discounting and retail channel margin. <b>The pivotal and least-corroborated number in the model</b></td></tr>
+        <tr><td>Hardware cost $131 per ring</td><td><span class="tag t-est">Estimated</span></td><td>Two unrelated methods converge: a TechInsights teardown put Ring 4 bill of materials below 39% of the $349 price (≈$136) at 50,000 units, and the Finnish filings imply $130.55. At ~3M units a year realised cost should be lower</td></tr>
+        <tr><td>Hardware gross margin ~52%</td><td><span class="tag t-est">Estimated</span></td><td>Follows from the two lines above. No company-disclosed gross margin of any kind exists</td></tr>
+        <tr><td>Subscription gross margin 88%</td><td><span class="tag t-asm">Assumption</span></td><td>Not disclosed. Described only as "high" by third parties. Covers app infrastructure, clinical content and support</td></tr>
+        <tr><td>First-year renewal 80%</td><td><span class="tag t-rep">Reported</span></td><td>The only retention figure Ōura has ever published, stated twice in May 2026. Note it measures renewal, not use</td></tr>
+        <tr><td>Steady-state renewal 65%</td><td><span class="tag t-asm">Assumption</span></td><td>Mine. First-year renewal typically overstates steady state for hardware-tethered subscriptions because device attrition compounds. Set it to 80% to model the company's own figure persisting</td></tr>
+        <tr><td>Subscription attach 60%</td><td><span class="tag t-asm">Assumption</span></td><td><b>Never disclosed</b>; the CEO declined to give it in February 2026. Cumulative rings sold is not an installed base, so the 5M members against ~8M rings is not an attach rate. Calibrate using the implied-members tile in the model</td></tr>
+        <tr><td>CAC $90</td><td><span class="tag t-asm">Assumption</span></td><td><b>Never disclosed.</b> No marketing spend figure exists either. The only adjacent datapoint is that roughly 22% of employees sit in sales and marketing</td></tr>
+        <tr><td>Units 3M per year</td><td><span class="tag t-rep">Reported</span></td><td>Company cites ~3M rings in 2025; an independent read of Finnish filings gives 2.5M. Treat 2.5–3.0M as the range</td></tr>
+        <tr><td>Revenue trajectory</td><td><span class="tag t-rep">Reported</span></td><td>~$250M (2023, implied), &gt;$500M (2024), ~$1B (2025), "close to $2B" 2026 guidance. All CEO statements; none audited</td></tr>
+        <tr><td>Hardware / subscription split 80 / 20</td><td><span class="tag t-rep">Reported</span></td><td>Attributed to the CEO; implies roughly $400M of subscription revenue on ~$2B in 2026</td></tr>
+        <tr><td>Fixed operating cost $700M/yr</td><td><span class="tag t-asm">Assumption</span></td><td>Mine, scaled to 1,200+ employees and a company guiding to ~$2B. Used only for the company-level bridge</td></tr>
+        <tr><td>Competitor prices</td><td><span class="tag t-rep">Reported</span></td><td>Each vendor's own store or press release, verified August 2026</td></tr>
+      </tbody>
+    </table>
+    <p class="small" style="margin-top:15px"><b>Not found, and therefore not estimated:</b> audited
+    financials, gross margin, EBITDA, net income, attach rate, CAC, marketing spend, multi-year retention or
+    cohort curves, enterprise and defence revenue, the RingConn royalty rate, Ring 5 bill of materials,
+    current contract manufacturers, and tariff exposure. Note also that the $96M Department of Defense
+    contract widely cited in 2024 <b>was cancelled in March 2025</b> and should not be modelled as revenue.</p>
+  </div>
+</section>
+
+<!-- ═══════ 8 ═══════ -->
+<section id="model">
+  <div class="secnum">Section 8</div>
+  <h2>The model</h2>
+  <p class="prose">Two revenue lines with very different margins, and a customer who pays the acquisition
+  cost on the way in. Toggle any line off to remove it, or drag to change it. The Whoop comparison in
+  Section 6 updates with every change.</p>
+
+  <div class="modelgrid">
+    <div class="card">
+      <div class="presets">
+        <button class="preset on" data-o="base" onclick="oPreset('base',this)">Base</button>
+        <button class="preset" data-o="company" onclick="oPreset('company',this)">80% renewal branch</button>
+        <button class="preset" data-o="pricewar" onclick="oPreset('pricewar',this)">Subscription-free war</button>
+        <button class="preset" data-o="drawer" onclick="oPreset('drawer',this)">Drawer churn</button>
+      </div>
+
+      <div class="grp">Hardware, per ring sold</div>
+      <div class="row" id="r_oAsp"><input type="checkbox" id="c_oAsp" checked><label for="c_oAsp">Realised selling price <span class="tag tg t-est">est</span></label><div class="val"><span>$</span><input id="i_oAsp" value="273"></div></div>
+      <input type="range" id="s_oAsp" min="120" max="500" step="1" value="273">
+      <div class="row" id="r_oCogs"><input type="checkbox" id="c_oCogs" checked><label for="c_oCogs">Manufacturing cost <span class="tag tg t-est">est</span></label><div class="val"><span>$</span><input id="i_oCogs" value="131"></div></div>
+      <input type="range" id="s_oCogs" min="50" max="300" step="1" value="131">
+      <div class="row" id="r_oShip"><input type="checkbox" id="c_oShip" checked><label for="c_oShip">Fulfilment, returns, warranty <span class="tag tg t-asm">asm</span></label><div class="val"><span>$</span><input id="i_oShip" value="22"></div></div>
+      <input type="range" id="s_oShip" min="0" max="90" step="1" value="22">
+
+      <div class="grp">Subscription</div>
+      <div class="row" id="r_oAttach"><input type="checkbox" id="c_oAttach" checked><label for="c_oAttach">Attach rate <span class="tag tg t-asm">asm</span></label><div class="val"><input id="i_oAttach" value="60"><span>%</span></div></div>
+      <input type="range" id="s_oAttach" min="0" max="100" step="1" value="60">
+      <div class="row" id="r_oSub"><input type="checkbox" id="c_oSub" checked><label for="c_oSub">Membership price / year <span class="tag tg t-rep">rep</span></label><div class="val"><span>$</span><input id="i_oSub" value="72"></div></div>
+      <input type="range" id="s_oSub" min="0" max="240" step="1" value="72">
+      <div class="row" id="r_oSubGm"><input type="checkbox" id="c_oSubGm" checked><label for="c_oSubGm">Subscription gross margin <span class="tag tg t-asm">asm</span></label><div class="val"><input id="i_oSubGm" value="88"><span>%</span></div></div>
+      <input type="range" id="s_oSubGm" min="0" max="98" step="1" value="88">
+      <div class="row" id="r_oRenew"><input type="checkbox" id="c_oRenew" checked><label for="c_oRenew">Annual renewal <span class="tag tg t-asm">asm</span></label><div class="val"><input id="i_oRenew" value="65"><span>%</span></div></div>
+      <input type="range" id="s_oRenew" min="20" max="92" step="1" value="65">
+
+      <div class="grp">Acquisition &amp; scale</div>
+      <div class="row" id="r_oCac"><input type="checkbox" id="c_oCac" checked><label for="c_oCac">Customer acquisition cost <span class="tag tg t-asm">asm</span></label><div class="val"><span>$</span><input id="i_oCac" value="90"></div></div>
+      <input type="range" id="s_oCac" min="0" max="400" step="5" value="90">
+      <div class="row" id="r_oUnits"><input type="checkbox" id="c_oUnits" checked><label for="c_oUnits">Rings sold / year, thousands <span class="tag tg t-rep">rep</span></label><div class="val"><input id="i_oUnits" value="3000"><span>k</span></div></div>
+      <input type="range" id="s_oUnits" min="500" max="8000" step="100" value="3000">
+      <div class="row" id="r_oFixed"><input type="checkbox" id="c_oFixed" checked><label for="c_oFixed">Fixed operating cost, $M/yr <span class="tag tg t-asm">asm</span></label><div class="val"><span>$</span><input id="i_oFixed" value="700"><span>M</span></div></div>
+      <input type="range" id="s_oFixed" min="100" max="1600" step="10" value="700">
+
+      <details>
+        <summary>Why the attach rate is a guess, and how to calibrate it</summary>
+        <p class="small" style="margin:8px 0 0">Ōura has never published one, and the CEO declined to give
+        it in February 2026. Dividing 5M members by ~8M cumulative rings gives about 63%, but cumulative
+        shipments are not an installed base — that figure ignores returns, dead and retired devices,
+        replacements, gifts and enterprise units. Use the <b>implied paid members</b> tile instead: adjust
+        attach and renewal until it lands near the 5M the company reported for Q2 2026, and you have a pair
+        of assumptions that is at least internally consistent with the one number they disclosed.</p>
+      </details>
+    </div>
+
+    <div>
+      <div class="tiles" id="oTiles"></div>
+
+      <div class="note" style="margin:0 0 24px">
+        <b>Ōura's three public numbers do not reconcile, and that is the most useful thing in this model.</b>
+        The company has told us roughly 3M rings a year, above 80% first-year renewal, and 5M+ paid members.
+        Hold those together: members equal annual units × attach × membership life, so attach × life must be
+        about 1.67. If renewal really is 80%, membership life is five years and <b>the attach rate can only be
+        about 33%</b> — far lower than anyone assumes for a product where the subscription is mandatory for
+        most features. If instead attach is the 60% modelled here, then steady-state renewal is about 64%,
+        not 80%. <b>Both cannot be true.</b> The "80% renewal branch" preset shows the first reading; the base
+        case shows the second. Which one the S-1 confirms matters more to the valuation than anything else on
+        this page.
+        <div style="margin-top:11px" class="small"><b>Two honest limits.</b> This is a steady-state model, so
+        for a company growing this fast the implied-members tile runs ahead of reality — a base still ramping
+        has not yet accumulated its full membership life. And implied revenue sits below the ~$2B 2026
+        guidance because unit volume is guided to grow well past the 3M reported for 2025; at a $273 realised
+        price, roughly 5.5–6M units are needed to reach it.</div>
+      </div>
+
+      <div class="card" style="margin-bottom:24px">
+        <h3 style="margin-bottom:2px">From one ring to the P&amp;L</h3>
+        <p class="small" style="margin:0 0 4px">Read down the ladder. Each line is live.</p>
+        <div class="ladder" id="oLadder"></div>
+        <p class="small" style="margin-top:14px"><b>The line that makes this business different.</b> Look at
+        <em>contribution at the point of sale</em>. In a service-only subscription business that line is
+        deeply negative — you pay to acquire a customer and recover it over years. Here the hardware gross
+        profit lands the moment the ring ships, so the customer effectively funds their own acquisition and
+        everything the subscription earns afterwards is incremental. That is the whole structural argument
+        for selling hardware at a margin rather than giving it away.</p>
+        <p class="small" style="margin-top:9px"><b>What it costs.</b> The same structure makes revenue
+        dependent on selling new units every year rather than on a base that compounds. Subscription revenue
+        is roughly 20% of the total, so growth still has to come from moving boxes — into a category where
+        every competitor is cheaper and most charge nothing recurring. Drag the realised price down toward
+        $200 and watch how quickly the advantage disappears.</p>
+        <p class="small" style="margin-top:9px"><b>Two modelling caveats.</b> CAC is charged entirely at the
+        point of sale, which is the conservative treatment. And the model assumes one ring per customer per
+        lifetime — no repurchase on the roughly 18-month hardware cadence — so lifetime value is understated
+        for loyal upgraders and overstated for anyone whose ring stops fitting.</p>
+      </div>
+
+      <figure>
+        <div class="charttitle">Lifetime gross profit per customer</div>
+        <div class="chartsub">Hardware margin arrives at once; subscription margin accrues over the membership life.</div>
+        <div class="legend"><span><i style="background:var(--c-rev)"></i>Revenue</span><span><i style="background:var(--c-cost)"></i>Cost</span><span><i style="background:var(--c-net)"></i>Gross profit</span></div>
+        <svg id="oWaterfall" viewBox="0 0 720 250" role="img" aria-label="Lifetime gross profit waterfall"></svg>
+        <figcaption>Every bar carries its value directly — nothing is encoded by colour alone.</figcaption>
+      </figure>
+
+      <figure>
+        <div class="charttitle">Three-year cost of ownership across the category</div>
+        <div class="chartsub">Hardware plus any required subscription over three years. Ōura's bar moves with the model.</div>
+        <svg id="oLadderChart" viewBox="0 0 720 300" role="img" aria-label="Three-year cost of ownership"></svg>
+      </figure>
+
+      <figure>
+        <div class="charttitle">Lifetime value against renewal rate</div>
+        <div class="chartsub">Hardware profit is fixed; only the subscription tail moves. Your CAC is the break-even line.</div>
+        <div class="legend"><span><i style="background:var(--c-rev)"></i>Lifetime gross profit</span><span><i style="background:var(--c-net)"></i>Your CAC</span></div>
+        <svg id="oSens" viewBox="0 0 720 230" role="img" aria-label="LTV sensitivity to renewal"></svg>
+      </figure>
+
+      <details><summary>Show the full P&amp;L as a table</summary><div id="oTable"></div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ 9 ═══════ -->
+<section id="strategy">
+  <div class="secnum">Section 9</div>
+  <h2>Strategic cases</h2>
+  <p class="prose">Judge each against the structural fact established above: hardware margin funds
+  acquisition, and subscription is only a fifth of revenue. Click "Model this" to load any case.</p>
+
+  <div style="margin-top:20px">
+    <div class="opt">
+      <div class="opt-h"><h3>1 · Hold the premium and out-feature the field</h3>
+        <div style="display:flex;gap:9px;align-items:center"><span class="verdict vd-2">Working so far, narrowing</span>
+        <button class="modelbtn" onclick="jump('base')">Model this</button></div></div>
+      <p style="margin:0">The current strategy, and it has been vindicated: Ring 5 raised prices into a
+      market full of cheaper rings and revenue is still guided to roughly double. The defence is feature
+      cadence — 14 new features in a year, Health Radar, physician messaging, lab uploads, an in-house
+      clinical team of 40+. What makes it fragile is that the premium is being defended against products
+      that are 50–75% cheaper and free of a recurring fee, and the realised selling price is already 22–45%
+      below list. Drag the realised price toward $220 and the hardware margin that funds acquisition
+      compresses fast.</p>
+    </div>
+
+    <div class="opt">
+      <div class="opt-h"><h3>2 · Drop or restructure the subscription</h3>
+        <div style="display:flex;gap:9px;align-items:center"><span class="verdict vd-1">The CEO has ruled it out</span>
+        <button class="modelbtn" onclick="jump('pricewar')">Model this</button></div></div>
+      <p style="margin:0">Every competitor markets subscription-free against Ōura by name, and the CEO has
+      publicly refused twice, arguing the fee funds ongoing development. The model shows why he is right on
+      arithmetic: the subscription is high-margin and removing it costs roughly a fifth of revenue at close
+      to 90% margin, which is most of the profit. It also shows the trap — the fee is the single most
+      attacked feature of the product, and defending it forces the hardware cadence that raises R&amp;D and
+      inventory intensity. The preset models a partial capitulation: attach falls and realised price drops
+      to meet Ultrahuman.</p>
+    </div>
+
+    <div class="opt">
+      <div class="opt-h"><h3>3 · Lean into enterprise, insurers and clinical channels</h3>
+        <div style="display:flex;gap:9px;align-items:center"><span class="verdict vd-3">The real moat</span>
+        <button class="modelbtn ghost" disabled>Different model</button></div></div>
+      <p style="margin:0">This is the part a $199 Shenzhen ring genuinely cannot copy. Ōura already has
+      1,200+ organisational partnerships, the Department of Defense as its largest enterprise customer, and
+      an Essence Healthcare Medicare Advantage deal that as of June 2026 feeds nighttime breathing data into
+      physician workflow for sleep apnoea screening. Procurement relationships, clinical integration, SOC 2
+      and HITRUST certification and a 40-person clinical team are the assets that compound. It is not a
+      preset because the unit is a negotiated contract rather than a retail sale — and note that enterprise
+      revenue share has never been disclosed, so its current contribution is unknown.</p>
+    </div>
+
+    <div class="opt">
+      <div class="opt-h"><h3>4 · Push diagnostics and adjacencies</h3>
+        <div style="display:flex;gap:9px;align-items:center"><span class="verdict vd-2">Convergent, not differentiating</span>
+        <button class="modelbtn ghost" disabled>Attach lever</button></div></div>
+      <p style="margin:0">Health Panels at $99 for 50 biomarkers, the Dexcom Stelo integration at $99, GLP-1
+      journey tools, lab uploads. The strategic problem is that Whoop launched Advanced Labs through the
+      same lab partner — both companies resell Quest — so this adjacency is convergent rather than
+      differentiating. It is also membership-gated and US-only, which makes it an ARPU lever on the existing
+      base rather than an acquisition channel. Model it by raising the membership price rather than the
+      attach rate.</p>
+    </div>
+
+    <div class="opt">
+      <div class="opt-h"><h3>5 · The IPO itself</h3>
+        <div style="display:flex;gap:9px;align-items:center"><span class="verdict vd-2">Timing is the whole question</span>
+        <button class="modelbtn" onclick="jump('company')">Model this</button></div></div>
+      <p style="margin:0">The confidential S-1 went in on 21 May 2026, and Ōura's last private mark of $11B
+      on roughly $2B of guided revenue is about 5.5× forward revenue — cheaper than Whoop at roughly 9× on
+      $1.1B, despite Ōura being the larger business on both revenue and members. The case for going now is
+      that revenue has quadrupled in two years, the company says it is profitable, Apple has retreated and
+      the FDA has just widened what can ship without clearance. The case against is that the S-1 will have
+      to disclose the attach rate, the real retention curve, the gross margin and the enterprise
+      concentration — every number in the register above marked "not found" — into a market where the
+      competitive set reorganised around undercutting the subscription eight weeks before filing.</p>
+    </div>
+
+    <div class="opt">
+      <div class="opt-h"><h3>6 · Defend the patent, or lose the royalty and the shield together</h3>
+        <div style="display:flex;gap:9px;align-items:center"><span class="verdict vd-1">Binary, and outside the company's control</span>
+        <button class="modelbtn ghost" disabled>Not modelled</button></div></div>
+      <p style="margin:0">The patent behind the exclusion order is under post-grant challenge at the USPTO
+      by Samsung and others. If it survives, Ōura keeps a royalty from RingConn and a credible deterrent
+      against anyone else. If it falls, the royalty stops, the deterrent goes, and the eight months of
+      exclusivity it bought against Ultrahuman turn out to be the entire return on the litigation. The
+      outcome is not disclosed as of this writing and is not something Ōura controls — which is exactly why
+      it belongs in a risk section rather than a model.</p>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:1.6rem">
+    <b>Synthesis.</b> Ōura has the better structure of the two consumer-health models examined in this
+    series: the customer funds their own acquisition, which is why it is profitable at a scale where
+    service-only businesses are not. But that structure ties growth to unit sales in a category under 1% of
+    wearables by volume, where it is the most expensive product and one of only two charging a recurring
+    fee. The durable assets are the enterprise and clinical channels, which are the least visible part of
+    the business and the least discussed in its own marketing. The S-1 will make the argument either way,
+    and it will do so with numbers nobody outside the company has yet seen.
+  </div>
+</section>
+
+<footer>
+  <p>Built August 2026 from public sources. Not investment advice, not affiliated with Ōura Health, Whoop or
+  any company named here, and not based on any non-public information. Ōura has filed confidentially for an
+  IPO; nothing here reflects any registration statement, which is not public. Allegations described are
+  allegations. All model assumptions are my own and labelled as such. Charts validated for colour-vision
+  deficiency against the page surface.</p>
+  <details style="border:none;margin-top:14px">
+    <summary>Sources</summary>
+    <p class="srcs" style="margin-top:12px">
+    <a href="https://ouraring.com/store">Ōura store — current pricing</a> ·
+    <a href="https://ouraring.com/membership">Ōura membership</a> ·
+    <a href="https://support.ouraring.com/hc/en-us/articles/4409086524819-Oura-Membership">What the membership gates</a> ·
+    <a href="https://www.businesswire.com/news/home/20260528686853/en/URA-Introduces-The-Worlds-Smallest-Smart-Ring-Oura-Ring-5">Ring 5 launch</a> ·
+    <a href="https://www.forbes.com/sites/davidphelan/2026/05/28/oura-ring-5-claimed-to-be-worlds-smallest-smart-ring-comes-with-up-to-100-price-hike/">Forbes — Ring 5 price increase</a> ·
+    <a href="https://www.businesswire.com/news/home/20260520305107/en/URA-on-Pace-to-Surpass-Five-Million-Paid-Members-This-Quarter-Earns-Spot-on-Annual-CNBC-Disruptor-50-List-for-Fourth-Consecutive-Year">5M paid members and 80% renewal</a> ·
+    <a href="https://www.cnbc.com/2026/05/21/oura-smart-ring-ipo-filing.html">CNBC — confidential IPO filing</a> ·
+    <a href="https://www.fiercehealthcare.com/health-tech/oura-smart-ring-maker-files-confidentially-ipo-consumer-demand-propels-revenue-growth">Fierce Healthcare — IPO and revenue growth</a> ·
+    <a href="https://www.cnbc.com/2025/11/11/smart-ring-maker-oura-expects-close-to-2-billion-in-2026-sales-ceo.html">CNBC — ~$2B 2026 guidance</a> ·
+    <a href="https://www.businesswire.com/news/home/20250922351288/en/URA-Surpasses-5.5-Million-Rings-Sold-and-Doubles-Revenue-for-the-Second-Year-in-a-Row-Empowering-Millions-to-Live-Better-Longer">5.5M rings and revenue doubling</a> ·
+    <a href="https://www.fiercehealthcare.com/health-tech/oura-raises-900m-series-e-oura-ring-sales-catapult">Series E, $900M at $11B</a> ·
+    <a href="https://www.techinsights.com/blog/oura-ring-gen-4-teardown">TechInsights — Ring 4 teardown</a> ·
+    <a href="https://exitsandoutcomes.com/oura-subscription-revs-rings-sold-hardware-margin-new-access-model-participants/">Exits &amp; Outcomes — ASP, cost and hardware margin from Finnish filings</a> ·
+    <a href="https://sacra.com/c/oura/">Sacra — Ōura profile</a> ·
+    <a href="https://fortune.com/2026/02/04/11-billion-oura-ceo-subscriptions-tom-hale-peloton-tesla-elon-musk/">Fortune — the CEO on the subscription</a> ·
+    <a href="https://ouraring.com/blog/health-panels/">Ōura Health Panels</a> ·
+    <a href="https://investors.dexcom.com/news/news-details/2024/Dexcom-and-URA-Announce-Strategic-Partnership/default.aspx">Dexcom partnership and investment</a> ·
+    <a href="https://www.federalregister.gov/documents/2025/08/26/2025-16316/certain-smart-wearable-devices-systems-and-components-thereof-notice-of-the-commissions-final">ITC final determination</a> ·
+    <a href="https://ouraring.com/blog/oura-itc-case/">Ōura on the ITC case and the RingConn licence</a> ·
+    <a href="https://techcrunch.com/2026/02/27/ultrahuman-unveils-new-smart-ring-as-it-awaits-u-s-clearance-after-oura-dispute/">TechCrunch — Ultrahuman Ring Pro</a> ·
+    <a href="https://www.techtimes.com/articles/318765/20260620/ultrahuman-ring-pro-ships-today-subscription-free-ring-targets-oura-15-day-battery.htm">Ultrahuman ships in the US</a> ·
+    <a href="https://ringconn.com/blogs/news/oura-and-ringconn-enter-multi-year-patent-licensing-agreement">RingConn licensing agreement</a> ·
+    <a href="https://www.whoop.com/us/en/membership/">Whoop membership tiers</a> ·
+    <a href="https://www.whoop.com/us/en/press-center/whoop-announces-series-g-funding/">Whoop Series G</a> ·
+    <a href="https://newsroom.questdiagnostics.com/2025-09-30-WHOOP-Launches-Clinician-Reviewed-Advanced-Labs,-Unlocking-a-Comprehensive-View-of-Human-Health">Whoop Advanced Labs</a> ·
+    <a href="https://www.garmin.com/en-US/newsroom/press-release/wearables-health/meet-cirqa-smart-band-the-screen-free-health-and-fitness-tracker-from-garmin/">Garmin CIRQA</a> ·
+    <a href="https://www.wareable.com/fitbit/fitbit-air-official-announcement-price-features-release-date">Fitbit Air</a> ·
+    <a href="https://9to5mac.com/2026/02/05/apple-reportedly-scales-back-plans-for-ai-powered-health-coach/">Apple scales back its health coach</a> ·
+    <a href="https://www.idc.com/promo/wearablevendor/">IDC — wearables tracker</a> ·
+    <a href="https://www.telecoms.com/mobile-devices/wearable-devices-market-expected-to-decline-despite-smart-ring-momentum">CCS Insight — smart ring forecast</a> ·
+    <a href="https://aao-hnsfjournals.onlinelibrary.wiley.com/doi/full/10.1002/oto2.70181">OTO Open — Ōura vs polysomnography meta-analysis</a> ·
+    <a href="https://www.mdpi.com/2313-7673/10/12/819">Biomimetics — smart rings in clinical medicine, 107 studies</a> ·
+    <a href="https://www.jmir.org/2024/1/e62769">JMIR — skin pigmentation and PPG accuracy</a> ·
+    <a href="https://academic.oup.com/sleep/article/49/Supplement_1/A246/8674102">SLEEP — orthosomnia prevalence</a> ·
+    <a href="https://jcsm.aasm.org/doi/10.5664/jcsm.6472">JCSM — the original orthosomnia case series</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/35868813/">Lancet Digital Health — do activity trackers improve health</a> ·
+    <a href="https://www.fda.gov/inspections-compliance-enforcement-and-criminal-investigations/warning-letters/whoop-inc-709755-07142025">FDA warning letter to Whoop</a> ·
+    <a href="https://www.statnews.com/2026/06/23/fda-drops-enforcement-against-wearable-maker-whoop/">STAT — FDA closes the Whoop letter</a> ·
+    <a href="https://www.nixonlawgroup.com/resources/fda-relaxes-clinical-decision-support-and-general-wellness-guidance-what-it-means-for-generative-ai-and-consumer-wearables">FDA's January 2026 wellness guidance</a> ·
+    <a href="https://slate.com/technology/2025/10/oura-ring-pentagon-department-of-defense-health-wearable.html">Slate — Ōura, the Pentagon and Palantir</a> ·
+    <a href="https://www.prnewswire.com/news-releases/essence-healthcare-and-ura-deepen-partnership-to-bring-sleep-health-insights-directly-into-physician-led-care-302794317.html">Essence Healthcare partnership</a> ·
+    <a href="https://defensescoop.com/2024/10/02/pentagon-contracts-for-96m-in-oura-smart-rings-services/">DefenseScoop — the $96M DoD award</a> ·
+    <a href="https://www.parksassociates.com/blogs/connected-health-pr/nearly-50-of-us-internet-households-own-and-use-a-wearable">Parks Associates — wearable ownership and subscription attach</a>
+    </p>
+  </details>
+</footer>
+
+</div>
+<script>
+const cssv=n=>getComputedStyle(document.body).getPropertyValue(n).trim();
+const $=id=>document.getElementById(id);
+const money=v=>(v<0?'−$':'$')+Math.abs(v).toLocaleString('en-US',{maximumFractionDigits:0});
+const money1=v=>(v<0?'−$':'$')+Math.abs(v).toLocaleString('en-US',{maximumFractionDigits:1});
+const mm=(v,d)=>(v<0?'−$':'$')+Math.abs(v).toFixed(d==null?1:d)+'M';
+const bn=v=>(v<0?'−$':'$')+Math.abs(v).toFixed(2)+'B';
+const pct=v=>(v*100).toFixed(0)+'%';
+
+let applyingPreset=false;
+function clearPreset(){ if(!applyingPreset) document.querySelectorAll('[data-o]').forEach(e=>e.classList.remove('on')); }
+function bind(key,onChange){
+  const i=$('i_'+key), s=$('s_'+key), c=$('c_'+key), r=$('r_'+key);
+  i.addEventListener('input',()=>{ const v=parseFloat(i.value); if(!isNaN(v)) s.value=v; clearPreset(); onChange(); });
+  s.addEventListener('input',()=>{ i.value=s.value; clearPreset(); onChange(); });
+  c.addEventListener('change',()=>{ r.classList.toggle('off',!c.checked); clearPreset(); onChange(); });
+}
+const val=k=>$('c_'+k).checked ? (parseFloat($('i_'+k).value)||0) : 0;
+function setv(k,v){ $('i_'+k).value=v; $('s_'+k).value=v; $('c_'+k).checked=true; $('r_'+k).classList.remove('off'); }
+
+function waterfall(svgId,items,netLabel){
+  const svg=$(svgId), W=720,H=250, padL=8,padR=8,padB=46,padT=26;
+  const all=[...items,{label:netLabel,v:items.reduce((a,b)=>a+b.v,0),net:true}];
+  let run=0; const bars=[];
+  all.forEach(d=>{ if(d.net){bars.push({...d,from:0,to:d.v});} else {bars.push({...d,from:run,to:run+d.v}); run+=d.v;} });
+  const top=Math.max(...bars.map(b=>Math.max(b.from,b.to)),0);
+  const bot=Math.min(...bars.map(b=>Math.min(b.from,b.to)),0);
+  const span=(top-bot)||1, plotH=H-padB-padT, y=v=>padT+plotH*(top-v)/span;
+  const bw=(W-padL-padR)/all.length, gap=Math.min(12,bw*0.22);
+  let s=`<line x1="${padL}" y1="${y(0)}" x2="${W-padR}" y2="${y(0)}" stroke="${cssv('--rule')}" stroke-width="1"/>`;
+  bars.forEach((b,idx)=>{
+    const x=padL+idx*bw+gap/2, w=bw-gap;
+    const y1=Math.min(y(b.from),y(b.to)), h=Math.max(Math.abs(y(b.to)-y(b.from)),2);
+    const col=b.net?cssv('--c-net'):(b.v>=0?cssv('--c-rev'):cssv('--c-cost'));
+    s+=`<rect x="${x.toFixed(1)}" y="${y1.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="4" fill="${col}"><title>${b.label}: ${money1(b.v)}</title></rect>`;
+    const ly=(b.to>=b.from)? y1-7 : y1+h+15;
+    s+=`<text x="${(x+w/2).toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" font-size="11.5" font-weight="600" fill="${cssv('--ink')}">${money1(b.v)}</text>`;
+    const words=b.label.split(' '); let l1=b.label,l2='';
+    if(b.label.length>11){ let acc=''; for(const w2 of words){ if((acc+' '+w2).trim().length<=11) acc=(acc+' '+w2).trim(); else l2+=(l2?' ':'')+w2; } l1=acc; }
+    s+=`<text x="${(x+w/2).toFixed(1)}" y="${(H-padB+18)}" text-anchor="middle" font-size="10.5" fill="${cssv('--muted')}">${l1}</text>`;
+    if(l2) s+=`<text x="${(x+w/2).toFixed(1)}" y="${(H-padB+30)}" text-anchor="middle" font-size="10.5" fill="${cssv('--muted')}">${l2}</text>`;
+  });
+  svg.innerHTML=s;
+}
+
+function lineChart(svgId,series,xLabels,yFmt,yMaxForce){
+  const svg=$(svgId), W=720,H=230,padL=52,padR=16,padT=16,padB=34;
+  const n=xLabels.length, yMax=yMaxForce!=null?yMaxForce:Math.max(...series.flatMap(s=>s.data),0.0001);
+  const x=i=>padL+(W-padL-padR)*(i/(n-1)), y=v=>padT+(H-padT-padB)*(1-v/yMax);
+  let s='';
+  for(let g=0;g<=4;g++){ const v=yMax*g/4;
+    s+=`<line x1="${padL}" y1="${y(v).toFixed(1)}" x2="${W-padR}" y2="${y(v).toFixed(1)}" stroke="${cssv('--rule')}" stroke-width="1"/>`
+     +`<text x="${padL-8}" y="${(y(v)+4).toFixed(1)}" text-anchor="end" font-size="11" fill="${cssv('--muted')}" style="font-variant-numeric:tabular-nums">${yFmt(v)}</text>`; }
+  xLabels.forEach((lb,i)=>{ if(lb) s+=`<text x="${x(i).toFixed(1)}" y="${H-padB+18}" text-anchor="middle" font-size="11" fill="${cssv('--muted')}">${lb}</text>`; });
+  series.forEach(ser=>{
+    const col=cssv(ser.color), pts=ser.data.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+    s+=`<polyline points="${pts}" fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"${ser.dashed?' stroke-dasharray="5 4"':''}/>`;
+    const li=ser.data.length-1;
+    s+=`<text x="${(x(li)-4).toFixed(1)}" y="${(y(ser.data[li])+(ser.dashed?18:-10)).toFixed(1)}" text-anchor="end" font-size="11.5" font-weight="600" fill="${col}">${ser.endLabel}</text>`;
+  });
+  svg.innerHTML=s;
+}
+
+function tcoLadder(live){
+  const svg=$('oLadderChart'), W=720,H=300,padL=196,padR=76,padT=8,padB=30;
+  const rows=[
+    {n:'Fitbit Air',v:99},{n:'Amazfit Helio',v:150},{n:'Garmin CIRQA',v:200},
+    {n:'RingConn Gen 2 Air',v:199},{n:'Circular Ring 2',v:304},{n:'Ultrahuman Ring Pro',v:349},
+    {n:'Samsung Galaxy Ring',v:399},{n:'Whoop One (3 yr)',v:597},
+    {n:'Ōura — your model (3 yr)',v:live,liveBar:true}
+  ].sort((a,b)=>a.v-b.v);
+  const max=Math.max(...rows.map(r=>r.v))*1.1;
+  const bh=(H-padT-padB)/rows.length, gap=Math.min(9,bh*0.3), x=v=>padL+(W-padL-padR)*(v/max);
+  const step= max>1400?400:200;
+  let s='';
+  for(let g=0;g<=max;g+=step){
+    s+=`<line x1="${x(g)}" y1="${padT}" x2="${x(g)}" y2="${H-padB}" stroke="${cssv('--rule')}" stroke-width="1"/>`
+     +`<text x="${x(g)}" y="${H-padB+18}" text-anchor="middle" font-size="11" fill="${cssv('--muted')}">$${g}</text>`; }
+  rows.forEach((r,i)=>{
+    const y=padT+i*bh+gap/2, h=bh-gap, col=r.liveBar?cssv('--c-rev'):cssv('--c-cost');
+    s+=`<rect x="${padL}" y="${y.toFixed(1)}" width="${Math.max(x(r.v)-padL,2).toFixed(1)}" height="${h.toFixed(1)}" rx="4" fill="${col}" opacity="${r.liveBar?1:0.7}"><title>${r.n}: $${Math.round(r.v)}</title></rect>`;
+    s+=`<text x="${padL-10}" y="${(y+h/2+4).toFixed(1)}" text-anchor="end" font-size="11.5" fill="${r.liveBar?cssv('--ink'):cssv('--muted')}" font-weight="${r.liveBar?600:400}">${r.n}</text>`;
+    s+=`<text x="${(x(r.v)+8).toFixed(1)}" y="${(y+h/2+4).toFixed(1)}" font-size="11.5" font-weight="600" fill="${cssv('--ink')}" style="font-variant-numeric:tabular-nums">$${Math.round(r.v)}</text>`;
+  });
+  s+=`<text x="${padL}" y="${H-2}" font-size="11" fill="${cssv('--muted')}">Hardware plus any required subscription over three years. Ōura's bar uses realised price, not list</text>`;
+  svg.innerHTML=s;
+}
+
+const PRESETS={
+  base:     {oAsp:273, oCogs:131, oShip:22, oAttach:60, oSub:72, oSubGm:88, oRenew:65, oCac:90,  oUnits:3000, oFixed:700},
+  company:  {oAsp:273, oCogs:131, oShip:22, oAttach:33, oSub:72, oSubGm:88, oRenew:80, oCac:90,  oUnits:3000, oFixed:700},
+  pricewar: {oAsp:215, oCogs:131, oShip:22, oAttach:42, oSub:72, oSubGm:88, oRenew:60, oCac:130, oUnits:3300, oFixed:760},
+  drawer:   {oAsp:273, oCogs:131, oShip:22, oAttach:60, oSub:72, oSubGm:88, oRenew:43, oCac:90,  oUnits:3000, oFixed:700}
+};
+function oPreset(k,btn){ applyingPreset=true; Object.entries(PRESETS[k]).forEach(([a,b])=>setv(a,b)); applyingPreset=false;
+  document.querySelectorAll('[data-o]').forEach(e=>e.classList.remove('on'));
+  (btn||document.querySelector(`[data-o="${k}"]`)).classList.add('on'); drawAll(); }
+function jump(k){ oPreset(k); document.getElementById('model').scrollIntoView({behavior:'smooth',block:'start'}); }
+
+function drawAll(){
+  const asp=val('oAsp'), hcogs=val('oCogs'), ship=val('oShip'),
+        attach=val('oAttach')/100, sub=val('oSub'), subGm=val('oSubGm')/100,
+        renew=Math.min(val('oRenew'),94)/100, cac=val('oCac'),
+        units=val('oUnits')*1000, fixed=val('oFixed')*1e6;
+
+  const hwGp = asp - hcogs - ship;
+  const hwGm = asp>0 ? hwGp/asp : 0;
+  const subYears = 1/Math.max(1-renew,0.06);
+  const subGpPerYear = sub*subGm;
+  const subGpLife = subGpPerYear*subYears;
+  const expSubGp = attach*subGpLife;            // expected across all buyers
+  const ltv = hwGp + expSubGp;
+  const ratio = cac>0 ? ltv/cac : Infinity;
+  const atSale = hwGp - cac;                    // the structural point
+  const paybackMonths = atSale>=0 ? 0 : (subGpPerYear*attach>0 ? (-atSale)/(subGpPerYear*attach)*12 : Infinity);
+
+  const activeSubs = units*attach*subYears;
+  const hwRev = units*asp, subRev = activeSubs*sub, totalRev = hwRev+subRev;
+  const subShare = totalRev>0 ? subRev/totalRev : 0;
+  const companyGp = units*hwGp + activeSubs*subGpPerYear;
+  const companyCac = units*cac;
+  const ebitda = companyGp - companyCac - fixed;
+
+  $('oTiles').innerHTML=`
+    <div class="tile"><div class="k">Hardware gross profit</div><div class="v ${hwGp<0?'neg':''}">${money(hwGp)}</div><div class="n">${pct(hwGm)} margin on ${money(asp)} realised</div></div>
+    <div class="tile"><div class="k">Contribution at sale</div><div class="v ${atSale<0?'neg':''}">${money(atSale)}</div><div class="n">${atSale>=0?'customer funds own acquisition':'recovered from subscription'}</div></div>
+    <div class="tile"><div class="k">Membership life</div><div class="v">${subYears.toFixed(1)}<span style="font-size:14px;color:var(--muted)"> yr</span></div><div class="n">at ${(renew*100).toFixed(0)}% renewal</div></div>
+    <div class="tile"><div class="k">Lifetime value</div><div class="v">${money(ltv)}</div><div class="n">${money(hwGp)} hardware + ${money(expSubGp)} subscription</div></div>
+    <div class="tile"><div class="k">LTV / CAC</div><div class="v ${ratio<1?'neg':''}">${ratio===Infinity?'∞':ratio.toFixed(1)+'×'}</div><div class="n">${ratio>=3?'healthy':ratio>=1?'thin':'value-destroying'}</div></div>
+    <div class="tile"><div class="k">Subscription share</div><div class="v">${pct(subShare)}</div><div class="n">of revenue; 20% reported</div></div>
+    <div class="tile"><div class="k">Implied paid members</div><div class="v">${(activeSubs/1e6).toFixed(1)}M</div><div class="n">vs 5M+ reported Q2 2026</div></div>
+    <div class="tile"><div class="k">Implied revenue</div><div class="v">${bn(totalRev/1e9)}</div><div class="n">vs ~$2B guided for 2026</div></div>`;
+
+  $('oLadder').innerHTML=`
+    <div class="lrow"><span class="lbl">Ring, realised selling price<span class="why">list is $399–499; realised is materially lower after discounting and retail margin</span></span><span class="amt">${money1(asp)}</span></div>
+    <div class="lrow ind"><span class="lbl">Manufacturing cost</span><span class="amt">−${money1(hcogs)}</span></div>
+    <div class="lrow ind"><span class="lbl">Fulfilment, returns, warranty</span><span class="amt">−${money1(ship)}</span></div>
+    <div class="lrow sub"><span class="lbl">Hardware gross profit<span class="why">banked the moment the ring ships</span></span><span class="amt">${money1(hwGp)}</span></div>
+    <div class="lrow"><span class="lbl">Customer acquisition cost<span class="why">charged in full at the point of sale</span></span><span class="amt">−${money1(cac)}</span></div>
+    <div class="lrow sub"><span class="lbl">Contribution at the point of sale<span class="why">${atSale>=0?'positive — the customer has paid for their own acquisition':'negative — must be recovered from the subscription'}</span></span><span class="amt" style="color:${atSale<0?cssv('--neg'):cssv('--ink')}">${money1(atSale)}</span></div>
+    <div class="lrow dim"><span class="lbl" style="padding-top:6px">Membership, per year<span class="why">${(attach*100).toFixed(0)}% attach × ${money(sub)} × ${pct(subGm)} margin</span></span><span class="amt">${money1(attach*subGpPerYear)}</span></div>
+    <div class="lrow dim"><span class="lbl">× membership life</span><span class="amt">${subYears.toFixed(1)} yr</span></div>
+    <div class="lrow sub"><span class="lbl">Lifetime gross profit per customer</span><span class="amt">${money1(ltv)}</span></div>
+    <div class="lrow dim"><span class="lbl" style="padding-top:6px">× rings sold per year<span class="why">${(units/1e6).toFixed(1)}M units, ${(activeSubs/1e6).toFixed(1)}M implied paid members</span></span><span class="amt">${(units/1e6).toFixed(1)}M</span></div>
+    <div class="lrow dim"><span class="lbl">Less fixed operating cost<span class="why">R&amp;D, brand, clinical team, G&amp;A — does not scale per ring</span></span><span class="amt">−${mm(fixed/1e6,0)}</span></div>
+    <div class="lrow sub"><span class="lbl">Company EBITDA</span><span class="amt" style="color:${ebitda<0?cssv('--neg'):cssv('--ink')}">${mm(ebitda/1e6,0)}</span></div>`;
+
+  waterfall('oWaterfall',[
+    {label:'Ring price',v:asp},
+    {label:'Subscription (lifetime)',v:attach*sub*subYears},
+    {label:'Manufacturing',v:-hcogs},
+    {label:'Fulfilment',v:-ship},
+    {label:'Subscription COGS',v:-(attach*sub*subYears*(1-subGm))}
+  ].filter(d=>d.v!==0),'Gross profit');
+
+  tcoLadder(asp + attach*sub*3);
+
+  const rates=[],ltvs=[],cacs=[];
+  for(let r=25;r<=90;r+=5){
+    const yrs=1/Math.max(1-r/100,0.06);
+    rates.push(r); ltvs.push(hwGp + attach*subGpPerYear*yrs); cacs.push(cac);
+  }
+  lineChart('oSens',[{data:ltvs,color:'--c-rev',endLabel:money(ltvs[ltvs.length-1])},
+    {data:cacs,color:'--c-net',dashed:true,endLabel:'CAC '+money(cac)}],
+    rates.map(r=>(r-25)%15===0?r+'%':''),v=>'$'+Math.round(v),Math.max(...ltvs,cac)*1.12);
+
+  // ── head to head vs Whoop ──
+  const W={price:199, hwCost:120, gm:0.85};   // Whoop One tier; hardware cost modelled
+  const wSubYears=subYears;                    // hold holding period constant
+  const wRevLife=W.price*wSubYears;
+  const wCogsLife=W.hwCost + W.price*wSubYears*(1-W.gm);
+  const wGp=wRevLife-wCogsLife;
+  const oRevLife=asp + attach*sub*subYears;
+  const oCogsLife=hcogs+ship + attach*sub*subYears*(1-subGm);
+  const col=(name,meta,rows)=>`<div class="col"><div class="co">${name}</div><div class="meta">${meta}</div>${rows}</div>`;
+  const r=(l,a,cls)=>`<div class="lrow ${cls||''}"><span class="lbl">${l}</span><span class="amt">${a}</span></div>`;
+  $('vsBlock').innerHTML =
+    col('Ōura', `${money(asp)} ring + ${money(sub)}/yr · ${subYears.toFixed(1)}-yr hold`,
+      r('Revenue over the hold',money1(oRevLife))
+      + r('Cost of revenue','−'+money1(oCogsLife))
+      + r('Lifetime gross profit',money1(oRevLife-oCogsLife),'sub')
+      + r('Gross profit at day one',money1(hwGp))
+      + r('Cash position at acquisition',money1(atSale))
+      + r('Scale','5M+ members'))
+  + col('Whoop', `$199/yr, hardware included · ${wSubYears.toFixed(1)}-yr hold`,
+      r('Revenue over the hold',money1(wRevLife))
+      + r('Cost of revenue','−'+money1(wCogsLife))
+      + r('Lifetime gross profit',money1(wGp),'sub')
+      + r('Gross profit at day one','−'+money1(W.hwCost))
+      + r('Cash position at acquisition','−'+money1(W.hwCost+cac))
+      + r('Scale','~2.5M members'));
+
+  $('oTable').innerHTML=`<table><thead><tr><th>Line</th><th class="num">Per customer</th><th class="num">Company, per year</th></tr></thead><tbody>
+    <tr><td>Hardware revenue</td><td class="num">${money1(asp)}</td><td class="num">${bn(hwRev/1e9)}</td></tr>
+    <tr><td>Subscription revenue</td><td class="num">${money1(attach*sub*subYears)}</td><td class="num">${bn(subRev/1e9)}</td></tr>
+    <tr><td><b>Total revenue</b></td><td class="num"><b>${money1(oRevLife)}</b></td><td class="num"><b>${bn(totalRev/1e9)}</b></td></tr>
+    <tr><td>Manufacturing cost</td><td class="num">−${money1(hcogs)}</td><td class="num">${mm(units*hcogs/1e6,0)}</td></tr>
+    <tr><td>Fulfilment, returns, warranty</td><td class="num">−${money1(ship)}</td><td class="num">${mm(units*ship/1e6,0)}</td></tr>
+    <tr><td>Subscription cost of revenue</td><td class="num">−${money1(attach*sub*subYears*(1-subGm))}</td><td class="num">${mm(activeSubs*sub*(1-subGm)/1e6,0)}</td></tr>
+    <tr><td><b>Gross profit</b></td><td class="num"><b>${money1(ltv)}</b></td><td class="num"><b>${mm(companyGp/1e6,0)}</b></td></tr>
+    <tr><td>Customer acquisition cost</td><td class="num">−${money1(cac)}</td><td class="num">${mm(companyCac/1e6,0)}</td></tr>
+    <tr><td>Fixed operating cost</td><td class="num">—</td><td class="num">${mm(fixed/1e6,0)}</td></tr>
+    <tr><td><b>EBITDA</b></td><td class="num">—</td><td class="num"><b>${mm(ebitda/1e6,0)}</b></td></tr>
+    </tbody></table>`;
+}
+
+['oAsp','oCogs','oShip','oAttach','oSub','oSubGm','oRenew','oCac','oUnits','oFixed'].forEach(k=>bind(k,drawAll));
+drawAll();
+
+</script>
+</body>
+</html>

@@ -1,22 +1,20 @@
 ---
 import Base from '../layouts/Base.astro';
 import Log from '../components/Log.astro';
+import { writingPages } from '../writing-pages.js';
 
 const modules = import.meta.glob('./writing/*.mdx', { eager: true });
-const entries = Object.values(modules).map((m) => ({ ...m.frontmatter, url: m.url }));
+const entries = [
+  ...Object.values(modules).map((m) => ({ ...m.frontmatter, url: m.url })),
+  ...writingPages,
+];
 ---
 
-<Base title="Steven Sun">
+<Base title="Your Name">
   <p class="standfirst">
-    I invest in early-stage biotech at Anomaly and help with GTM at Krea. 
-
-    I am interested in health, longevity, and aesthetics and their intersections.
-
-    I am curious about the processes involved in these pursuits.
-    
-    I write about patterns I see in those processes; I often see them through the lens of culture.
-
-
+    I invest in early-stage biotech and write about how drugs actually get made —
+    the trial machinery, the cost of a patient, and why so much of it now runs
+    through China.
   </p>
 
   <Log entries={entries} />
