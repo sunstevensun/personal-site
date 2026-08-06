@@ -7,93 +7,126 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=Azeret+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
+/* ── PRIMITIVE ────────────────────────────────────────────────── */
 :root{
-  --bg:#08090B;
-  --s1:#121317; --s2:#1A1C21; --s3:#23262C; --s4:#2E323A;
+  --ink-900:#08090B; --ink-800:#121317; --ink-700:#1A1C21;
+  --ink-600:#23262C; --ink-500:#2E323A;
+  --paper-50:#FCFCFA; --paper-100:#F1EBC9; --paper-200:#EBE3B9;
+  --paper-300:#E2D8A5; --paper-400:#D2C793; --paper-500:#BFB37A; --paper-600:#CFC38E;
+  --chalk-100:#DFE2E8; --chalk-400:#949AA5; --chalk-600:#5C626D;
+  --soot-900:#2A2415; --soot-600:#5C5334; --soot-400:#655C3A;
+  --green-400:#5CD49B; --green-700:#2E6B46; --green-900:#12301F; --green-100:#A9C2A2;
+  --red-400:#F0614F;   --red-700:#A63A21;   --red-900:#3A1611;   --red-100:#D3B098;
+  --blue-400:#63A9F2;  --blue-700:#2B5A8C;  --blue-900:#12253A;  --blue-100:#AFC1D6;
+  --amber-400:#E8944A; --amber-700:#8F5313; --amber-900:#3A2611; --amber-100:#D5BA85;
+
+  /* type scale — 8 steps, ~1.25 */
+  --text-2xs:8px; --text-xs:10px; --text-sm:12px; --text-base:14px;
+  --text-lg:17px; --text-xl:21px; --text-2xl:27px; --text-3xl:42px;
+  /* space scale — 4px base */
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-6:24px; --sp-8:32px; --sp-12:48px;
+  /* radius scale */
+  --r-sm:6px; --r-md:10px; --r-lg:16px; --r-pill:999px;
+  /* the minimum comfortable tap target */
+  --tap:44px;
+
+/* ── SEMANTIC ─────────────────────────────────────────────────── */
+  --bg:var(--ink-900); --s1:var(--ink-800); --s2:var(--ink-700);
+  --s3:var(--ink-600); --s4:var(--ink-500);
   --line:rgba(255,255,255,.085); --line2:rgba(255,255,255,.045);
-  --silver:#DFE2E8; --steel:#949AA5; --ash:#5C626D;
-  --jade:#5CD49B; --jade-lo:#12301F; --jade-dim:rgba(92,212,155,.10);
-  --sky:#63A9F2; --sky-lo:#12253A;
-  --tang:#E8944A; --tang-lo:#3A2611;
-  --rust:#F0614F; --rust-lo:#3A1611; --rust-dim:rgba(240,97,79,.10);
+  --silver:var(--chalk-100); --steel:var(--chalk-400); --ash:var(--chalk-600);
+  --jade:var(--green-400); --jade-lo:var(--green-900); --jade-dim:rgba(92,212,155,.10);
+  --rust:var(--red-400);   --rust-lo:var(--red-900);   --rust-dim:rgba(240,97,79,.10);
+  --sky:var(--blue-400);   --sky-lo:var(--blue-900);
+  --tang:var(--amber-400); --tang-lo:var(--amber-900);
+  --edge:#000; --onSilver:#0A0B0D; --onJade:#08130D; --onRust:#160705;
+  --card-behind:#0E0F12; --card-behind-ask:#170D0B;
+
   --disp:'DM Serif Display',Georgia,serif;
   --body:'DM Sans',system-ui,sans-serif;
   --mono:'Azeret Mono',ui-monospace,monospace;
-  --edge:#000; --onSilver:#0A0B0D; --onJade:#08130D; --onRust:#160705;
   --safe: env(safe-area-inset-bottom, 0px);
 }
+
 [data-theme="light"]{
-  --bg:#E2D8A5;
-  --s1:#EBE3B9; --s2:#F1EBC9; --s3:#D2C793; --s4:#BFB37A;
+  --bg:var(--paper-300); --s1:var(--paper-200); --s2:var(--paper-100);
+  --s3:var(--paper-400); --s4:var(--paper-500);
   --line:rgba(48,40,16,.16); --line2:rgba(48,40,16,.08);
-  --silver:#2A2415; --steel:#5C5334; --ash:#655C3A;
-  --jade:#2E6B46; --jade-lo:#A9C2A2; --jade-dim:rgba(46,107,70,.13);
-  --rust:#A63A21; --rust-lo:#D3B098; --rust-dim:rgba(166,58,33,.11);
-  --sky:#2B5A8C; --sky-lo:#AFC1D6;
-  --tang:#8F5313; --tang-lo:#D5BA85;
-  --edge:#CFC38E; --onSilver:#EFE9CB; --onJade:#EFE9CB; --onRust:#F3EED6;
+  --silver:var(--soot-900); --steel:var(--soot-600); --ash:var(--soot-400);
+  --jade:var(--green-700); --jade-lo:var(--green-100); --jade-dim:rgba(46,107,70,.13);
+  --rust:var(--red-700);   --rust-lo:var(--red-100);   --rust-dim:rgba(166,58,33,.11);
+  --sky:var(--blue-700);   --sky-lo:var(--blue-100);
+  --tang:var(--amber-700); --tang-lo:var(--amber-100);
+  --edge:var(--paper-600); --onSilver:#EFE9CB; --onJade:#EFE9CB; --onRust:#F3EED6;
+  --card-behind:var(--paper-200); --card-behind-ask:#E8D3C2;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%}
 body{background:var(--edge);color:var(--silver);font-family:var(--body);
   display:flex;justify-content:center;overscroll-behavior:none}
 button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer;padding:0}
-:focus-visible{outline:1px solid var(--jade);outline-offset:2px;border-radius:5px}
+:focus-visible{outline:1px solid var(--jade);outline-offset:2px;border-radius:6px}
 
 #app{width:100%;max-width:420px;background:var(--bg);display:flex;flex-direction:column;
   height:100dvh;position:relative;overflow:hidden;color:var(--silver)}
 
 /* demo bar — not product */
-#demo{background:var(--edge);border-bottom:1px solid var(--line);padding:6px 8px;
+#demo{background:var(--edge);border-bottom:1px solid var(--line);padding:4px 8px;
   display:flex;gap:4px;align-items:center;flex:none;flex-wrap:wrap}
-#demo .lbl{font-family:var(--mono);font-size:7px;letter-spacing:.14em;color:var(--ash);
+#demo .lbl{font-family:var(--mono);font-size:8px;letter-spacing:.14em;color:var(--ash);
   text-transform:uppercase;margin-right:1px}
-#demo button{font-family:var(--mono);font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;
-  padding:5px 7px;border-radius:4px;border:1px solid var(--line);color:var(--ash);white-space:nowrap}
+#demo button{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;
+  padding:4px 8px;border-radius:6px;border:1px solid var(--line);color:var(--ash);white-space:nowrap}
 #demo button.on{background:var(--s3);color:var(--silver)}
 #demo .sp{flex:1}
 
-.top{padding:15px 18px 12px;border-bottom:1px solid var(--line2);flex:none;
+.top{padding:16px 16px 12px;border-bottom:1px solid var(--line2);flex:none;
   display:flex;align-items:baseline;justify-content:space-between}
-.mark{font-family:var(--disp);font-size:19px;letter-spacing:-.005em;color:var(--silver)}
+.mark{font-family:var(--disp);font-size:17px;letter-spacing:-.005em;color:var(--silver)}
 .mark span{color:var(--ash);transition:color .4s}
 .mark span.on{color:var(--jade)}
 .top .ctx{font-family:var(--mono);font-size:8px;letter-spacing:.18em;
-  text-transform:uppercase;color:var(--ash)}
+  text-transform:uppercase;color:var(--ash);margin-left:auto}
+.hostbtn{font-family:var(--disp);font-size:17px;letter-spacing:-.005em;line-height:1.1;
+  color:var(--ash);padding:3px 10px;border-radius:var(--r-sm);
+  border:1px solid transparent;position:relative;margin-left:12px;flex:none}
+.hostbtn.on{color:var(--silver);background:var(--s2);border-color:var(--line)}
+.hostbtn::after{content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:max(100%,var(--tap));height:var(--tap)}
 
 .screen{flex:1;overflow-y:auto;overscroll-behavior:contain;
-  padding:18px 16px calc(22px + var(--safe));-webkit-overflow-scrolling:touch}
+  padding:16px 16px calc(24px + var(--safe));-webkit-overflow-scrolling:touch}
 
 .nav{flex:none;background:var(--bg);backdrop-filter:blur(14px);
   border-top:1px solid var(--line);display:grid;padding-bottom:var(--safe)}
-.nav button{padding:11px 0 13px;font-family:var(--mono);font-size:8px;
+.nav button{padding:12px 0 12px;font-family:var(--mono);font-size:8px;
   letter-spacing:.15em;text-transform:uppercase;color:var(--ash);
   border-top:1px solid transparent;transition:color .18s}
 .nav button.on{color:var(--silver);border-top-color:var(--silver)}
 .nav button.lk{opacity:.3}
 
 /* type */
-.eyebrow{font-family:var(--mono);font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--ash);margin:0 0 10px}
-h1{font-family:var(--disp);font-weight:400;font-size:27px;margin:0 0 5px;
+.eyebrow{font-family:var(--mono);font-size:8px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ash);margin:0 0 8px}
+h1{font-family:var(--disp);font-weight:400;font-size:27px;margin:0 0 4px;
   letter-spacing:-.012em;line-height:1.16;color:var(--silver)}
 h2{font-family:var(--disp);font-weight:400;font-size:17px;margin:0 0 8px;letter-spacing:-.008em}
-h3{font-family:var(--disp);font-weight:400;font-size:25px;margin:9px 0 6px;
+h3{font-family:var(--disp);font-weight:400;font-size:27px;margin:8px 0 4px;
   letter-spacing:-.012em;line-height:1.14}
 .num{font-family:var(--mono);font-weight:700;font-variant-numeric:tabular-nums}
-.note{font-size:11px;color:var(--ash);line-height:1.62;margin-top:11px}
+.note{font-size:10px;color:var(--ash);line-height:1.62;margin-top:12px}
 .note b{color:var(--steel);font-weight:500}
 
-.card{background:var(--s1);border:1px solid var(--line);border-radius:12px;padding:15px;margin-bottom:11px}
+.card{background:var(--s1);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:12px}
 .card.q{background:none;border-color:var(--line2)}
 
-.btn{display:block;width:100%;padding:13px;border-radius:9px;background:var(--silver);
+.btn{display:block;width:100%;padding:12px;border-radius:10px;background:var(--silver);
   color:var(--onSilver);font-family:var(--body);font-weight:500;font-size:14px;letter-spacing:.01em}
 .btn.g{background:none;border:1px solid var(--line);color:var(--silver)}
-.btn.sm{padding:11px;font-size:12.5px}
+.btn.sm{padding:12px;font-size:12px}
 .btn+.btn{margin-top:8px}
 
-.av{border-radius:9px;display:grid;place-items:center;flex:none;
+.av{border-radius:10px;display:grid;place-items:center;flex:none;
   font-family:var(--mono);font-weight:700;width:32px;height:32px;font-size:10px;
   box-sizing:border-box}
 .av.st-good{background:rgba(92,212,155,.17);border:1.5px solid var(--jade);color:var(--jade)}
@@ -101,8 +134,8 @@ h3{font-family:var(--disp);font-weight:400;font-size:25px;margin:9px 0 6px;
 .av.st-dec{background:rgba(232,148,74,.16);border:1.5px solid var(--tang);color:var(--tang)}
 .av.st-bad{background:rgba(240,97,79,.15);border:1.5px solid var(--rust);color:var(--rust)}
 .av.st-none{color:var(--onSilver)}
-.stkey{display:flex;flex-wrap:wrap;gap:11px;margin-top:11px}
-.stkey span{font-family:var(--mono);font-size:7.5px;color:var(--ash);letter-spacing:.09em;
+.stkey{display:flex;flex-wrap:wrap;gap:11px;margin-top:12px}
+.stkey span{font-family:var(--mono);font-size:8px;color:var(--ash);letter-spacing:.09em;
   text-transform:uppercase;display:flex;align-items:center;gap:5px}
 .stkey b{width:11px;height:11px;border-radius:3px;display:block;box-sizing:border-box}
 
@@ -115,8 +148,8 @@ h3{font-family:var(--disp);font-weight:400;font-size:25px;margin:9px 0 6px;
 .strip i.C{background:var(--jade);opacity:.38}
 .strip i.N{background:var(--steel);opacity:.55}
 .strip i.G{background:none;border:1px dashed var(--ash);border-radius:0;opacity:.7}
-.legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
-.legend span{font-family:var(--mono);font-size:7.5px;color:var(--ash);
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.legend span{font-family:var(--mono);font-size:8px;color:var(--ash);
   display:flex;align-items:center;gap:5px;letter-spacing:.08em;text-transform:uppercase}
 .legend b{width:5px;height:11px;border-radius:.5px;display:block}
 
@@ -125,122 +158,120 @@ h3{font-family:var(--disp);font-weight:400;font-size:25px;margin:9px 0 6px;
 .stack{position:absolute;left:0;right:0;top:0;
   transition:transform .34s cubic-bezier(.22,.9,.28,1),opacity .3s}
 .stack.behind{pointer-events:none}
-[data-theme='light'] .stack.behind .face{background:var(--s1);border-color:var(--line)}
-.stack.behind .face{background:#0E0F12;border-color:rgba(255,255,255,.10);
+
+.stack.behind .face{background:var(--card-behind);border-color:rgba(255,255,255,.10);
   box-shadow:0 -8px 20px rgba(48,40,16,.18)}
-.swipe{position:relative;background:none;border:0;padding:0;border-radius:14px;
+.swipe{position:relative;background:none;border:0;padding:0;border-radius:16px;
   touch-action:pan-y;will-change:transform;cursor:pointer}
 .flipper{position:relative;width:100%;transform-style:preserve-3d;
   transition:transform .5s cubic-bezier(.22,.9,.28,1)}
 .flipper.flip{transform:rotateY(180deg)}
 .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  border-radius:16px;border:1px solid var(--line);padding:18px;
+  border-radius:16px;border:1px solid var(--line);padding:16px;
   background:var(--s2);color:var(--silver);
   display:flex;flex-direction:column;overflow:hidden;
   box-shadow:0 -12px 30px rgba(48,40,16,.22)}
 .face.front{position:relative}
-.face.back{transform:rotateY(180deg);padding:15px 15px 11px}
+.face.back{transform:rotateY(180deg);padding:16px 16px 12px}
 .face.back .scrollr{flex:1;overflow-y:auto;overscroll-behavior:contain;margin:0 -4px;padding:0 4px}
 .face.back .scrollr::-webkit-scrollbar{width:0}
 .whenrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.when{font-family:var(--mono);font-size:9.5px;letter-spacing:.15em;
+.when{font-family:var(--mono);font-size:10px;letter-spacing:.15em;
   text-transform:uppercase;color:var(--steel)}
 .who{font-size:12px;color:var(--steel)}
 .spacer{flex:1}
 .hintrow{display:flex;justify-content:space-between;align-items:center;gap:8px;
   font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;color:var(--ash)}
 .hintrow .flipcue{opacity:.65}
-.flipcue{font-family:var(--mono);font-size:7.5px;letter-spacing:.15em;text-transform:uppercase;
+.flipcue{font-family:var(--mono);font-size:8px;letter-spacing:.15em;text-transform:uppercase;
   color:var(--ash)}
 
-.stamp{position:absolute;top:20px;font-family:var(--disp);font-size:20px;
-  padding:5px 13px;border-radius:6px;opacity:0;pointer-events:none;z-index:5;letter-spacing:-.01em}
+.stamp{position:absolute;top:20px;font-family:var(--disp);font-size:21px;
+  padding:4px 12px;border-radius:6px;opacity:0;pointer-events:none;z-index:5;letter-spacing:-.01em}
 .stamp.go{right:18px;border:1px solid var(--jade);color:var(--jade);transform:rotate(8deg)}
 .stamp.no{left:18px;border:1px solid var(--rust);color:var(--rust);transform:rotate(-8deg)}
 
 /* live pill — sits with the time */
 .livepill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:8px;
   letter-spacing:.14em;text-transform:uppercase;color:var(--jade);
-  border:1px solid var(--jade-lo);background:var(--jade-dim);border-radius:20px;padding:4px 9px}
-.livepill i{width:5px;height:5px;border-radius:50%;background:var(--jade);display:block;
-  animation:pulse 1.9s ease-in-out infinite}
-@keyframes pulse{50%{opacity:.25}}
-.cibar{display:flex;align-items:center;gap:9px;margin-top:11px;padding:10px 12px;
+  border:1px solid var(--jade-lo);background:var(--jade-dim);border-radius:16px;padding:4px 8px}
+.livepill i{width:5px;height:5px;border-radius:50%;background:var(--jade);display:block}
+.cibar{display:flex;align-items:center;gap:9px;margin-top:12px;padding:8px 12px;
   border-radius:10px;border:1px solid var(--jade-lo);background:var(--jade-dim)}
 .cibar .tx{flex:1;font-size:12px;color:var(--silver)}
-.cibar .tx small{display:block;font-family:var(--mono);font-size:7.5px;letter-spacing:.13em;
+.cibar .tx small{display:block;font-family:var(--mono);font-size:8px;letter-spacing:.13em;
   text-transform:uppercase;color:var(--ash);margin-top:3px}
-.cibar button{font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;
-  padding:8px 13px;border-radius:7px;background:var(--jade);color:var(--onJade);font-weight:700;flex:none}
+.cibar button{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
+  padding:8px 12px;border-radius:6px;background:var(--jade);color:var(--onJade);font-weight:700;flex:none}
 .cibar .tick2{width:21px;height:21px;border-radius:50%;background:var(--jade);color:var(--onJade);
-  display:grid;place-items:center;font-size:11px;font-weight:700;flex:none}
+  display:grid;place-items:center;font-size:10px;font-weight:700;flex:none}
 
 /* attendee rows */
 .rank{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line2)}
-.rank .ix{font-family:var(--mono);font-size:8.5px;color:var(--ash);width:13px;flex:none}
-.rank .nm{flex:1;min-width:0;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rank .sc{font-family:var(--mono);font-weight:700;font-size:12.5px;flex:none;
+.rank .ix{font-family:var(--mono);font-size:8px;color:var(--ash);width:13px;flex:none}
+.rank .nm{flex:1;min-width:0;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rank .sc{font-family:var(--mono);font-weight:700;font-size:12px;flex:none;
   font-variant-numeric:tabular-nums}
 .hi{color:var(--jade)} .mid{color:var(--silver)} .lo{color:var(--rust)} .na{color:var(--ash)}
-.there{font-family:var(--mono);font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;
+.there{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
   color:var(--jade);border:1px solid var(--jade-lo);background:var(--jade-dim);
-  border-radius:20px;padding:3px 8px;flex:none}
-.p1{font-family:var(--mono);font-size:7.5px;letter-spacing:.1em;color:var(--steel);
-  border:1px solid var(--line);border-radius:20px;padding:2px 6px;flex:none}
+  border-radius:16px;padding:3px 8px;flex:none}
+.p1{font-family:var(--mono);font-size:8px;letter-spacing:.1em;color:var(--steel);
+  border:1px solid var(--line);border-radius:16px;padding:2px 4px;flex:none}
 .seclab{font-family:var(--mono);font-size:8px;letter-spacing:.18em;text-transform:uppercase;
   color:var(--ash);margin:16px 0 4px;display:flex;align-items:baseline;gap:7px}
 .seclab .ct2{color:var(--steel)}
-.newnote{font-size:10.5px;color:var(--ash);line-height:1.5;margin:0 0 6px}
-.mini2{margin-top:9px}
+.newnote{font-size:10px;color:var(--ash);line-height:1.5;margin:0 0 4px}
+.mini2{margin-top:8px}
 .mini2 .r{display:flex;align-items:center;gap:8px;padding:3.5px 0}
-.mini2 .r .av{width:20px;height:20px;border-radius:6px;font-size:7.5px}
-.mini2 .r .n2{flex:1;font-size:11.5px;color:var(--steel);white-space:nowrap;
+.mini2 .r .av{width:20px;height:20px;border-radius:6px;font-size:8px}
+.mini2 .r .n2{flex:1;font-size:12px;color:var(--steel);white-space:nowrap;
   overflow:hidden;text-overflow:ellipsis}
-.mini2 .r .s2{font-family:var(--mono);font-weight:700;font-size:10.5px;font-variant-numeric:tabular-nums}
+.mini2 .r .s2{font-family:var(--mono);font-weight:700;font-size:10px;font-variant-numeric:tabular-nums}
 .mini2 .rest{font-family:var(--mono);font-size:8px;color:var(--ash);letter-spacing:.1em;
-  padding-top:6px;text-transform:uppercase}
+  padding-top:4px;text-transform:uppercase}
 
 /* +1 */
-.p1box{display:flex;align-items:center;gap:10px;margin-top:10px;padding:10px 12px;
+.p1box{display:flex;align-items:center;gap:10px;margin-top:8px;padding:8px 12px;
   border:1px solid var(--line);border-radius:10px}
 .p1box .lb2{flex:1;font-size:12px}
-.p1box .lb2 small{display:block;font-family:var(--mono);font-size:7.5px;letter-spacing:.12em;
+.p1box .lb2 small{display:block;font-family:var(--mono);font-size:8px;letter-spacing:.12em;
   text-transform:uppercase;color:var(--ash);margin-top:4px}
-.p1box button{width:29px;height:29px;border-radius:7px;border:1px solid var(--line);
-  font-family:var(--mono);font-size:13px;display:grid;place-items:center;color:var(--silver)}
-.p1box .ct{font-family:var(--mono);font-weight:700;font-size:15px;min-width:18px;text-align:center}
+.p1box button{width:29px;height:29px;border-radius:6px;border:1px solid var(--line);
+  font-family:var(--mono);font-size:12px;display:grid;place-items:center;color:var(--silver)}
+.p1box .ct{font-family:var(--mono);font-weight:700;font-size:14px;min-width:18px;text-align:center}
 .p1box.on{border-color:var(--jade-lo);background:var(--jade-dim)}
 
 /* calendars */
 .vswitch{display:flex;gap:5px;margin-bottom:4px}
-.vswitch button{font-family:var(--mono);font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;
-  padding:7px 12px;border-radius:20px;border:1px solid var(--line);color:var(--steel)}
+.vswitch button{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
+  padding:8px 12px;border-radius:16px;border:1px solid var(--line);color:var(--steel)}
 .vswitch button.on{background:var(--silver);border-color:var(--silver);color:var(--onSilver);font-weight:700}
 .mnav{display:flex;align-items:center;justify-content:space-between;margin:16px 0 8px}
-.mnav .mo{font-family:var(--disp);font-size:18px;letter-spacing:-.01em}
-.mnav button{font-family:var(--mono);font-size:14px;color:var(--steel);padding:5px 13px;
-  border:1px solid var(--line);border-radius:7px;line-height:1}
+.mnav .mo{font-family:var(--disp);font-size:17px;letter-spacing:-.01em}
+.mnav button{font-family:var(--mono);font-size:14px;color:var(--steel);padding:4px 12px;
+  border:1px solid var(--line);border-radius:6px;line-height:1}
 .mgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
-.mgrid .h{font-family:var(--mono);font-size:7.5px;color:var(--ash);text-align:center;padding-bottom:4px}
-.mcell{aspect-ratio:1;border-radius:7px;background:var(--s1);border:1px solid var(--line2);
+.mgrid .h{font-family:var(--mono);font-size:8px;color:var(--ash);text-align:center;padding-bottom:4px}
+.mcell{aspect-ratio:1;border-radius:6px;background:var(--s1);border:1px solid var(--line2);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
 .mcell.out{background:none;border-color:transparent;opacity:.28}
 .mcell.today{border-color:var(--silver);background:rgba(255,255,255,.05)}
-.mcell .d{font-family:var(--mono);font-size:9.5px;color:var(--steel)}
+.mcell .d{font-family:var(--mono);font-size:10px;color:var(--steel)}
 .mcell.today .d{color:var(--silver);font-weight:700}
 .mcell .dots{display:flex;gap:2px;height:4px}
 .mcell .dots i{width:4px;height:4px;border-radius:50%;display:block}
 .wk{font-family:var(--mono);font-size:8px;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--ash);margin:14px 0 6px}
+  color:var(--ash);margin:12px 0 4px}
 
-.inv{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--line2);
+.inv{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid var(--line2);
   width:100%;text-align:left}
 .inv .body{flex:1;min-width:0}
-.inv .t{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.inv .t{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .inv .m{font-family:var(--mono);font-size:8px;color:var(--ash);margin-top:4px;letter-spacing:.09em}
 .inv .m.warn{color:var(--rust)}
-.pill{font-family:var(--mono);font-size:7.5px;letter-spacing:.13em;text-transform:uppercase;
-  padding:4px 8px;border-radius:20px;border:1px solid var(--line);color:var(--steel);flex:none}
+.pill{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
+  padding:4px 8px;border-radius:16px;border:1px solid var(--line);color:var(--steel);flex:none}
 .pill.go{background:var(--jade);border-color:var(--jade);color:var(--onJade);font-weight:700}
 .pill.no{border-color:var(--rust-lo);color:var(--rust)}
 .pill.by{border-color:var(--line);background:var(--s3);color:var(--silver)}
@@ -249,32 +280,32 @@ h3{font-family:var(--disp);font-weight:400;font-size:25px;margin:9px 0 6px;
 .scrim{position:fixed;inset:0;background:rgba(20,16,6,.55);z-index:60;
   display:flex;align-items:flex-end;justify-content:center}
 .sheet{width:100%;max-width:420px;background:var(--s1);color:var(--silver);border-radius:16px 16px 0 0;
-  border-top:1px solid var(--line);padding:16px 16px calc(26px + var(--safe));
+  border-top:1px solid var(--line);padding:16px 16px calc(24px + var(--safe));
   max-height:88vh;overflow-y:auto;animation:up .24s cubic-bezier(.22,1,.36,1)}
 @keyframes up{from{transform:translateY(101%)}}
-.grab{width:30px;height:3px;border-radius:2px;background:var(--s4);margin:0 auto 15px}
-.rsvp{display:grid;gap:7px;margin-top:14px}
-.rsvp button{padding:13px 15px;border-radius:10px;border:1px solid var(--line);
-  font-size:13px;text-align:left}
+.grab{width:30px;height:3px;border-radius:2px;background:var(--s4);margin:0 auto 16px}
+.rsvp{display:grid;gap:7px;margin-top:12px}
+.rsvp button{padding:12px 16px;border-radius:10px;border:1px solid var(--line);
+  font-size:12px;text-align:left}
 .rsvp button.sel{background:var(--jade);border-color:var(--jade);color:var(--onJade);font-weight:700}
 .rsvp button.sel.n{background:var(--rust);border-color:var(--rust);color:var(--onRust)}
 .rsvp button.sel.b{background:var(--silver);border-color:var(--silver);color:var(--onSilver)}
-.rsvp small{display:block;font-family:var(--mono);font-size:7.5px;letter-spacing:.12em;
+.rsvp small{display:block;font-family:var(--mono);font-size:8px;letter-spacing:.12em;
   text-transform:uppercase;opacity:.62;margin-top:4px}
-.dates{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}
-.dates button{font-family:var(--mono);font-size:9px;padding:7px 10px;border-radius:7px;
+.dates{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.dates button{font-family:var(--mono);font-size:8px;padding:8px 8px;border-radius:6px;
   border:1px solid var(--line);color:var(--steel)}
 .dates button.on{background:var(--silver);border-color:var(--silver);color:var(--onSilver);font-weight:700}
 
 /* check-in */
-.cirow{display:flex;gap:8px;margin-top:14px;align-items:stretch}
+.cirow{display:flex;gap:8px;margin-top:12px;align-items:stretch}
 .entry{flex:1;background:var(--s1);border:1px solid var(--line);border-radius:10px;
-  padding:14px 13px;color:var(--silver);font-family:var(--mono);font-size:15px;
+  padding:12px 12px;color:var(--silver);font-family:var(--mono);font-size:14px;
   letter-spacing:.05em;text-transform:uppercase}
-.entry::placeholder{color:var(--ash);letter-spacing:.14em;font-size:11px}
-.go2{flex:none;padding:0 19px;border-radius:10px;background:var(--jade);color:var(--onJade);
-  font-family:var(--body);font-weight:500;font-size:13.5px;display:grid;place-items:center}
-.done{text-align:center;padding:38px 16px}
+.entry::placeholder{color:var(--ash);letter-spacing:.14em;font-size:10px}
+.go2{flex:none;padding:0 16px;border-radius:10px;background:var(--jade);color:var(--onJade);
+  font-family:var(--body);font-weight:500;font-size:14px;display:grid;place-items:center}
+.done{text-align:center;padding:32px 16px}
 .done .ring{width:62px;height:62px;border-radius:50%;background:var(--jade);color:var(--onJade);
   display:grid;place-items:center;font-size:27px;margin:0 auto 16px;
   animation:pop .42s cubic-bezier(.22,1.4,.4,1)}
@@ -284,63 +315,63 @@ h3{font-family:var(--disp);font-weight:400;font-size:25px;margin:9px 0 6px;
 .proj.sticky{position:sticky;top:-1px;z-index:15;
   box-shadow:0 10px 18px -6px var(--bg);backdrop-filter:blur(6px)}
 .proj{background:linear-gradient(168deg,var(--s2),var(--s1) 62%);
-  border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:11px}
-.big{font-family:var(--mono);font-weight:700;font-size:40px;line-height:.9;
+  border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+.big{font-family:var(--mono);font-weight:700;font-size:42px;line-height:.9;
   color:var(--silver);letter-spacing:-.045em}
-.band{margin-top:15px;height:23px;position:relative}
+.band{margin-top:16px;height:23px;position:relative}
 .band .tr{position:absolute;top:10px;left:0;right:0;height:2px;background:var(--s4);border-radius:2px}
 .band .fl{position:absolute;top:10px;height:2px;background:var(--silver);border-radius:2px;
   transition:left .3s,width .3s}
 .band .tk{position:absolute;top:5px;width:1px;height:12px;background:var(--silver);transition:left .3s}
-.band .lb{position:absolute;top:19px;font-family:var(--mono);font-size:7.5px;color:var(--ash)}
-.ceil{border-top:1px solid var(--line);margin-top:13px;padding-top:11px;
+.band .lb{position:absolute;top:19px;font-family:var(--mono);font-size:8px;color:var(--ash)}
+.ceil{border-top:1px solid var(--line);margin-top:12px;padding-top:12px;
   display:flex;align-items:baseline;justify-content:space-between}
-.ceil .n{font-family:var(--mono);font-weight:700;font-size:18px;color:var(--steel)}
-.ceil .k{font-family:var(--mono);font-size:7.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ash)}
-.warnbox{border:1px solid var(--rust-lo);background:var(--rust-dim);border-radius:9px;
-  padding:11px 12px;margin-top:10px;font-size:11.5px;line-height:1.55;color:var(--steel)}
+.ceil .n{font-family:var(--mono);font-weight:700;font-size:17px;color:var(--steel)}
+.ceil .k{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;color:var(--ash)}
+.warnbox{border:1px solid var(--rust-lo);background:var(--rust-dim);border-radius:10px;
+  padding:12px 12px;margin-top:8px;font-size:12px;line-height:1.55;color:var(--steel)}
 .warnbox b{color:var(--rust);font-weight:500}
 
 /* people rows */
-.prow{display:flex;align-items:center;gap:10px;padding:9px 0;
+.prow{display:flex;align-items:center;gap:10px;padding:8px 0;
   border-bottom:1px solid var(--line2);width:100%;text-align:left}
 .prow .nm{flex:1;min-width:0}
-.prow .nm .a{font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prow .nm .a{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .prow .nm .b{font-family:var(--mono);font-size:8px;color:var(--ash);margin-top:3px;letter-spacing:.09em}
 .snap{display:flex;gap:9px;flex:none}
 .snap div{text-align:right}
 .snap .v{font-family:var(--mono);font-weight:700;font-size:12px;font-variant-numeric:tabular-nums}
-.snap .k{font-family:var(--mono);font-size:6.5px;letter-spacing:.11em;color:var(--ash);
+.snap .k{font-family:var(--mono);font-size:8px;letter-spacing:.11em;color:var(--ash);
   text-transform:uppercase;margin-top:2px}
 .add{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
-  padding:7px 10px;border-radius:7px;border:1px solid var(--line);color:var(--steel);flex:none}
+  padding:8px 8px;border-radius:6px;border:1px solid var(--line);color:var(--steel);flex:none}
 .add.on{background:var(--silver);border-color:var(--silver);color:var(--onSilver);font-weight:700}
 
 /* record */
-.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:14px 0 0}
-.three div{background:var(--bg);border:1px solid var(--line2);border-radius:10px;padding:11px 9px}
-.three .v{font-family:var(--mono);font-weight:700;font-size:18px;line-height:1}
-.three .k{font-family:var(--mono);font-size:7px;letter-spacing:.13em;text-transform:uppercase;
-  color:var(--ash);margin-top:6px;line-height:1.35}
+.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0 0}
+.three div{background:var(--bg);border:1px solid var(--line2);border-radius:10px;padding:12px 8px}
+.three .v{font-family:var(--mono);font-weight:700;font-size:17px;line-height:1}
+.three .k{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ash);margin-top:4px;line-height:1.35}
 .lockbox{background:var(--s1);border:1px solid var(--line);border-radius:10px;
-  padding:13px;font-size:11.5px;color:var(--steel);line-height:1.6}
+  padding:12px;font-size:12px;color:var(--steel);line-height:1.6}
 .lockbox b{color:var(--silver);font-weight:500}
 
 /* door */
-.codebox{background:var(--s1);border:1px solid var(--line);border-radius:14px;
-  padding:24px 18px;text-align:center;margin-top:8px}
-.code{font-family:var(--mono);font-weight:700;font-size:25px;letter-spacing:.02em;
+.codebox{background:var(--s1);border:1px solid var(--line);border-radius:16px;
+  padding:24px 16px;text-align:center;margin-top:8px}
+.code{font-family:var(--mono);font-weight:700;font-size:27px;letter-spacing:.02em;
   color:var(--jade);line-height:1.3}
 .tick{height:2px;background:var(--s3);border-radius:2px;margin-top:16px;overflow:hidden}
 .tick i{display:block;height:100%;background:var(--jade);width:100%;transform-origin:left}
-.drow{display:flex;align-items:center;gap:10px;padding:10px 11px;border-radius:10px;
-  border:1px solid var(--line2);margin-bottom:6px;background:var(--s1);transition:all .25s}
+.drow{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:10px;
+  border:1px solid var(--line2);margin-bottom:4px;background:var(--s1);transition:all .25s}
 .drow.in{border-color:var(--jade-lo);background:var(--jade-dim)}
 .drow.part{border-color:var(--line);background:var(--s2)}
-.drow .st{font-family:var(--mono);font-size:7.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ash)}
+.drow .st{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;color:var(--ash)}
 .dact{display:flex;gap:5px;flex:none;align-items:center}
 .dact button{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
-  padding:6px 9px;border-radius:7px;border:1px solid var(--line);color:var(--steel)}
+  padding:4px 8px;border-radius:6px;border:1px solid var(--line);color:var(--steel)}
 .dact button.p1b{color:var(--silver)}
 .dact .ok{width:24px;height:24px;border-radius:50%;background:var(--jade);color:var(--onJade);
   display:grid;place-items:center;font-size:10px;font-weight:700;flex:none}
@@ -348,98 +379,98 @@ h3{font-family:var(--disp);font-weight:400;font-size:25px;margin:9px 0 6px;
 .chk{width:18px;height:18px;border-radius:50%;background:var(--jade);color:var(--onJade);
   display:grid;place-items:center;font-size:10px;font-weight:700;flex:none}
 .tapin{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
-  padding:6px 10px;border-radius:7px;border:1px solid var(--line);color:var(--steel)}
+  padding:4px 8px;border-radius:6px;border:1px solid var(--line);color:var(--steel)}
 
 .bigcode{position:fixed;inset:0;z-index:90;background:var(--bg);color:var(--silver);display:flex;
   flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
 .bigcode .w{font-family:var(--mono);font-weight:700;color:var(--jade);line-height:1.05;
   font-size:clamp(38px,13vw,96px);letter-spacing:-.02em;word-break:break-word}
 .bigcode .cd{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--ash);margin-top:28px}
-.bigcode .ev{font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ash);margin-top:24px}
+.bigcode .ev{font-family:var(--mono);font-size:8px;letter-spacing:.2em;text-transform:uppercase;
   color:var(--ash);position:absolute;top:26px}
-.bigcode .x{position:absolute;bottom:34px;font-family:var(--mono);font-size:9px;
+.bigcode .x{position:absolute;bottom:34px;font-family:var(--mono);font-size:8px;
   letter-spacing:.16em;text-transform:uppercase;color:var(--steel);
-  border:1px solid var(--line);border-radius:7px;padding:11px 18px}
+  border:1px solid var(--line);border-radius:6px;padding:12px 16px}
 .bigcode .bar{position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--s3)}
 .bigcode .bar i{display:block;height:100%;background:var(--jade);transform-origin:left}
 
 /* rating */
 .rate{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
-.rate button{padding:16px 10px;border-radius:10px;border:1px solid var(--line);
-  font-family:var(--body);font-size:13px}
+.rate button{padding:16px 8px;border-radius:10px;border:1px solid var(--line);
+  font-family:var(--body);font-size:12px}
 .rate button.sel{background:var(--jade);border-color:var(--jade);color:var(--onJade);font-weight:500}
 .rate button.sel.n{background:var(--s3);border-color:var(--steel);color:var(--silver)}
 textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;
-  padding:12px;color:var(--silver);font-family:var(--body);font-size:13px;min-height:74px;
-  resize:vertical;margin-top:10px}
+  padding:12px;color:var(--silver);font-family:var(--body);font-size:12px;min-height:74px;
+  resize:vertical;margin-top:8px}
 textarea::placeholder{color:var(--ash)}
 
 /* create */
 .lab{font-family:var(--mono);font-size:8px;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--ash);margin:18px 0 7px;display:block}
+  color:var(--ash);margin:16px 0 8px;display:block}
 input[type=time],input[type=number],select,.in,.field{
   width:100%;background:var(--s1);border:1px solid var(--line);border-radius:10px;
-  padding:13px;color:var(--silver);font-family:var(--body);font-size:15px;
+  padding:12px;color:var(--silver);font-family:var(--body);font-size:14px;
   -webkit-appearance:none;appearance:none}
 input[type=time]{font-family:var(--mono);letter-spacing:.02em}
-input[type=number]{font-family:var(--mono);font-weight:700;font-size:19px;text-align:center}
+input[type=number]{font-family:var(--mono);font-weight:700;font-size:17px;text-align:center}
 select{background-image:linear-gradient(45deg,transparent 50%,var(--steel) 50%),
   linear-gradient(135deg,var(--steel) 50%,transparent 50%);
   background-position:calc(100% - 19px) 50%,calc(100% - 14px) 50%;
-  background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:38px}
+  background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:32px}
 select option{background:var(--s2);color:var(--silver)}
 input::-webkit-calendar-picker-indicator{filter:invert(.65)}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.cal{margin-top:6px}
-.calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.cal{margin-top:4px}
+.calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 .calhead .mo{font-family:var(--disp);font-size:17px;letter-spacing:-.01em}
-.calhead button{font-family:var(--mono);font-size:13px;color:var(--steel);padding:5px 12px;
-  border:1px solid var(--line);border-radius:7px;line-height:1}
+.calhead button{font-family:var(--mono);font-size:12px;color:var(--steel);padding:4px 12px;
+  border:1px solid var(--line);border-radius:6px;line-height:1}
 .cg{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
-.cg .h{font-family:var(--mono);font-size:7.5px;color:var(--ash);text-align:center;padding-bottom:4px}
-.cg button{aspect-ratio:1;border-radius:7px;font-family:var(--mono);font-size:11px;
+.cg .h{font-family:var(--mono);font-size:8px;color:var(--ash);text-align:center;padding-bottom:4px}
+.cg button{aspect-ratio:1;border-radius:6px;font-family:var(--mono);font-size:10px;
   color:var(--steel);background:var(--s1);border:1px solid var(--line2);
   display:grid;place-items:center}
 .cg button.pastd{opacity:.25}
 .cg button.sel{background:var(--silver);border-color:var(--silver);color:var(--onSilver);font-weight:700}
 .cg span{aspect-ratio:1}
 .pol{display:grid;gap:6px;margin-top:4px}
-.pol button{padding:12px 13px;border-radius:10px;border:1px solid var(--line);text-align:left;font-size:12.5px}
+.pol button{padding:12px 12px;border-radius:10px;border:1px solid var(--line);text-align:left;font-size:12px}
 .pol button.on{background:var(--s2);border-color:var(--silver)}
 .pol .ttl{display:block}
-.pol small{display:block;font-family:var(--mono);font-size:7.5px;letter-spacing:.11em;
+.pol small{display:block;font-family:var(--mono);font-size:8px;letter-spacing:.11em;
   text-transform:uppercase;color:var(--ash);margin-top:4px}
-.badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:7.5px;
-  letter-spacing:.14em;text-transform:uppercase;padding:5px 9px;border-radius:20px;
+.badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:8px;
+  letter-spacing:.14em;text-transform:uppercase;padding:4px 8px;border-radius:16px;
   border:1px solid var(--line);color:var(--steel)}
 .badge.open{color:var(--silver)}
 .badge.none{opacity:.6}
 .fab{position:absolute;right:16px;bottom:calc(72px + var(--safe));z-index:20;
-  background:var(--silver);color:var(--onSilver);border-radius:24px;padding:13px 19px;
-  font-family:var(--body);font-weight:500;font-size:13.5px;
+  background:var(--silver);color:var(--onSilver);border-radius:16px;padding:12px 16px;
+  font-family:var(--body);font-weight:500;font-size:14px;
   box-shadow:0 8px 26px rgba(48,40,16,.28), 0 0 0 4px var(--bg)}
-.gate{border:1px solid var(--rust-lo);background:var(--rust-dim);border-radius:11px;
-  padding:14px;margin-bottom:12px}
-.gate h4{font-family:var(--disp);font-size:16px;margin:0 0 7px;color:var(--rust);letter-spacing:-.008em}
-.gate p{margin:0;font-size:11.5px;line-height:1.6;color:var(--steel)}
+.gate{border:1px solid var(--rust-lo);background:var(--rust-dim);border-radius:10px;
+  padding:12px;margin-bottom:12px}
+.gate h4{font-family:var(--disp);font-size:17px;margin:0 0 8px;color:var(--rust);letter-spacing:-.008em}
+.gate p{margin:0;font-size:12px;line-height:1.6;color:var(--steel)}
 .evrow{display:flex;align-items:center;gap:11px;padding:12px 0;
   border-bottom:1px solid var(--line2);width:100%;text-align:left}
 .evrow .bd{flex:1;min-width:0}
-.evrow .t{font-size:13.5px}
+.evrow .t{font-size:14px}
 .evrow .m{font-family:var(--mono);font-size:8px;color:var(--ash);margin-top:4px;letter-spacing:.09em}
 .evrow .m.due{color:var(--rust)}
-.rev{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line2);font-size:12.5px}
+.rev{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line2);font-size:12px}
 .rev .k{color:var(--ash)}
-.rev .v{font-family:var(--mono);font-size:11px}
+.rev .v{font-family:var(--mono);font-size:10px}
 
 /* pause */
-.sw{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line2)}
+.sw{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line2)}
 .sw:last-of-type{border-bottom:0}
 .sw .cp{flex:1}
-.sw .cp b{display:block;font-weight:500;font-size:12.5px}
-.sw .cp small{display:block;font-size:10.5px;color:var(--ash);line-height:1.55;margin-top:4px}
-.tog{width:42px;height:25px;border-radius:13px;background:var(--s3);position:relative;
+.sw .cp b{display:block;font-weight:500;font-size:12px}
+.sw .cp small{display:block;font-size:10px;color:var(--ash);line-height:1.55;margin-top:4px}
+.tog{width:42px;height:25px;border-radius:10px;background:var(--s3);position:relative;
   flex:none;transition:background .2s;border:1px solid var(--line)}
 .tog i{position:absolute;top:2px;left:2px;width:19px;height:19px;border-radius:50%;
   background:var(--ash);transition:transform .2s,background .2s}
@@ -447,112 +478,112 @@ input::-webkit-calendar-picker-indicator{filter:invert(.65)}
 .tog.on i{transform:translateX(17px);background:var(--jade)}
 
 /* disclosure */
-.disc{padding:30px 22px calc(28px + var(--safe));min-height:100%;display:flex;flex-direction:column}
-.disc h1{font-size:42px;margin-bottom:26px;line-height:1.06}
-.dblock{border-left:1px solid var(--line);padding-left:17px;margin-bottom:28px}
+.disc{padding:32px 24px calc(24px + var(--safe));min-height:100%;display:flex;flex-direction:column}
+.disc h1{font-size:42px;margin-bottom:24px;line-height:1.06}
+.dblock{border-left:1px solid var(--line);padding-left:16px;margin-bottom:24px}
 .dblock.key{border-color:var(--jade);background:var(--jade-dim);
-  padding:13px 15px;border-radius:0 8px 8px 0}
-.dblock h4{font-family:var(--disp);font-size:23px;margin:0 0 10px;letter-spacing:-.012em;
+  padding:12px 16px;border-radius:0 8px 8px 0}
+.dblock h4{font-family:var(--disp);font-size:21px;margin:0 0 8px;letter-spacing:-.012em;
   line-height:1.14}
-.dblock p{margin:0;font-size:16px;line-height:1.6;color:var(--steel)}
-.dblock .sc{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+.dblock p{margin:0;font-size:17px;line-height:1.6;color:var(--steel)}
+.dblock .sc{display:flex;gap:7px;margin-top:8px;flex-wrap:wrap}
 .dblock .sc span{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;
-  border:1px solid var(--jade-lo);color:var(--jade);padding:5px 10px;border-radius:20px}
+  border:1px solid var(--jade-lo);color:var(--jade);padding:4px 8px;border-radius:16px}
 .steps{display:none}
 .opts{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
-.opts button{font-family:var(--mono);font-size:9.5px;padding:9px 12px;border-radius:8px;
+.opts button{font-family:var(--mono);font-size:10px;padding:8px 12px;border-radius:6px;
   border:1px solid var(--line);color:var(--steel)}
 .opts button.on{background:var(--silver);border-color:var(--silver);color:var(--onSilver);font-weight:700}
 /* ── invitations ── */
 .slot{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid var(--line2)}
-.slot .ic{width:30px;height:30px;border-radius:8px;border:1px dashed var(--ash);flex:none;
-  display:grid;place-items:center;font-family:var(--mono);font-size:11px;color:var(--ash)}
+.slot .ic{width:30px;height:30px;border-radius:6px;border:1px dashed var(--ash);flex:none;
+  display:grid;place-items:center;font-family:var(--mono);font-size:10px;color:var(--ash)}
 .slot .ic.used{border:1px solid var(--line);background:var(--s2);color:var(--steel)}
 .slot .ic.claimed{border:0;background:var(--jade);color:var(--onJade);font-weight:700}
 .slot .bd{flex:1;min-width:0}
-.slot .bd .t{font-size:12.5px}
+.slot .bd .t{font-size:12px}
 .slot .bd .m{font-family:var(--mono);font-size:8px;color:var(--ash);margin-top:4px;letter-spacing:.1em}
 .slot .bd .m.live{color:var(--jade)}
 .slot .act{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
-  padding:7px 10px;border-radius:7px;border:1px solid var(--line);color:var(--steel);flex:none}
+  padding:8px 8px;border-radius:6px;border:1px solid var(--line);color:var(--steel);flex:none}
 .slot .act.pri{background:var(--silver);border-color:var(--silver);color:var(--onSilver);font-weight:700}
 
-.linkbox{background:var(--s1);border:1px solid var(--line);border-radius:10px;padding:13px;
+.linkbox{background:var(--s1);border:1px solid var(--line);border-radius:10px;padding:12px;
   margin-top:12px;display:flex;align-items:center;gap:10px}
-.linkbox code{flex:1;font-family:var(--mono);font-size:11px;color:var(--jade);
+.linkbox code{flex:1;font-family:var(--mono);font-size:10px;color:var(--jade);
   word-break:break-all;line-height:1.5}
 .linkbox button{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
-  padding:8px 11px;border-radius:7px;background:var(--silver);color:var(--onSilver);font-weight:700;flex:none}
-.meta{display:flex;gap:14px;margin-top:12px;padding-top:11px;border-top:1px solid var(--line2)}
-.meta div .v{font-family:var(--mono);font-weight:700;font-size:13px}
-.meta div .k{font-family:var(--mono);font-size:7px;letter-spacing:.13em;text-transform:uppercase;
+  padding:8px 12px;border-radius:6px;background:var(--silver);color:var(--onSilver);font-weight:700;flex:none}
+.meta{display:flex;gap:14px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line2)}
+.meta div .v{font-family:var(--mono);font-weight:700;font-size:12px}
+.meta div .k{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
   color:var(--ash);margin-top:4px}
 
 /* claim page */
-.claim{padding:30px 22px calc(30px + var(--safe));min-height:100%;display:flex;flex-direction:column}
-.crest{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);
-  display:grid;place-items:center;font-family:var(--disp);font-size:20px;color:var(--jade);
-  margin-bottom:22px}
-.fromwho{display:flex;align-items:center;gap:11px;padding:13px;border:1px solid var(--line);
-  border-radius:10px;background:var(--s1);margin:18px 0}
+.claim{padding:32px 24px calc(32px + var(--safe));min-height:100%;display:flex;flex-direction:column}
+.crest{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);
+  display:grid;place-items:center;font-family:var(--disp);font-size:21px;color:var(--jade);
+  margin-bottom:24px}
+.fromwho{display:flex;align-items:center;gap:11px;padding:12px;border:1px solid var(--line);
+  border-radius:10px;background:var(--s1);margin:16px 0}
 .fromwho .bd{flex:1}
-.fromwho .bd .t{font-size:13px}
+.fromwho .bd .t{font-size:12px}
 .fromwho .bd .m{font-family:var(--mono);font-size:8px;color:var(--ash);margin-top:4px;letter-spacing:.1em}
 
 /* referral queue */
 .qrow{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid var(--line2)}
-.qrow .n{font-family:var(--mono);font-size:9px;color:var(--ash);width:14px;flex:none}
+.qrow .n{font-family:var(--mono);font-size:8px;color:var(--ash);width:14px;flex:none}
 .qrow .bd{flex:1;min-width:0}
-.qrow .bd .t{font-size:12.5px}
+.qrow .bd .t{font-size:12px}
 .qrow .bd .m{font-family:var(--mono);font-size:8px;color:var(--ash);margin-top:4px;letter-spacing:.1em}
 .qrow .act{display:flex;gap:5px;flex:none}
 .qrow .act button{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
-  padding:7px 9px;border-radius:7px;border:1px solid var(--line);color:var(--steel)}
+  padding:8px 8px;border-radius:6px;border:1px solid var(--line);color:var(--steel)}
 .qrow .act button.pri{background:var(--jade);border-color:var(--jade);color:var(--onJade);font-weight:700}
-.emptyq{border:1px dashed var(--line);border-radius:10px;padding:20px 16px;text-align:center;
-  color:var(--ash);font-size:11.5px;line-height:1.6;margin-top:10px}
+.emptyq{border:1px dashed var(--line);border-radius:10px;padding:16px 16px;text-align:center;
+  color:var(--ash);font-size:12px;line-height:1.6;margin-top:8px}
 
 /* vouch request */
-.vouch{border:1px solid var(--jade-lo);background:var(--jade-dim);border-radius:11px;
-  padding:14px;margin-bottom:11px}
-.vouch h4{font-family:var(--disp);font-size:16px;margin:0 0 7px;letter-spacing:-.008em}
-.vouch p{margin:0;font-size:11.5px;line-height:1.6;color:var(--steel)}
+.vouch{border:1px solid var(--jade-lo);background:var(--jade-dim);border-radius:10px;
+  padding:12px;margin-bottom:12px}
+.vouch h4{font-family:var(--disp);font-size:17px;margin:0 0 8px;letter-spacing:-.008em}
+.vouch p{margin:0;font-size:12px;line-height:1.6;color:var(--steel)}
 .vouch .row{display:flex;gap:7px;margin-top:12px}
-.vouch .row button{flex:1;padding:10px;border-radius:8px;border:1px solid var(--line);
-  font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
+.vouch .row button{flex:1;padding:8px;border-radius:6px;border:1px solid var(--line);
+  font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
 .vouch .row button.yes{background:var(--jade);border-color:var(--jade);color:var(--onJade);font-weight:700}
 
-.wl{padding:26px 20px calc(26px + var(--safe));min-height:100%;display:flex;flex-direction:column}
-.pos{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+.wl{padding:24px 16px calc(24px + var(--safe));min-height:100%;display:flex;flex-direction:column}
+.pos{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
   color:var(--jade);border:1px solid var(--jade-lo);background:var(--jade-dim);
-  border-radius:20px;padding:7px 13px;display:inline-flex;align-self:flex-start}
+  border-radius:16px;padding:8px 12px;display:inline-flex;align-self:flex-start}
 
 /* ── sponsorship ── */
-.spon{display:flex;align-items:center;gap:11px;padding:13px 0;border-bottom:1px solid var(--line2)}
+.spon{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid var(--line2)}
 .spon .bd{flex:1;min-width:0}
-.spon .bd .t{font-size:12.5px}
+.spon .bd .t{font-size:12px}
 .spon .bd .m{font-family:var(--mono);font-size:8px;color:var(--ash);margin-top:4px;letter-spacing:.1em}
 .spon .bd .m.good{color:var(--jade)}
 .spon .bd .m.bad{color:var(--rust)}
-.prog{display:flex;gap:3px;margin-top:7px}
+.prog{display:flex;gap:3px;margin-top:8px}
 .prog i{width:20px;height:3px;border-radius:2px;background:var(--s3);display:block}
 .prog i.k{background:var(--jade)}
 .prog i.f{background:var(--rust)}
 .earn{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
-  padding:5px 9px;border-radius:20px;flex:none;border:1px solid var(--line);color:var(--ash)}
+  padding:4px 8px;border-radius:16px;flex:none;border:1px solid var(--line);color:var(--ash)}
 .earn.yes{border-color:var(--jade-lo);background:var(--jade-dim);color:var(--jade)}
 .earn.no{border-color:var(--rust-lo);background:var(--rust-dim);color:var(--rust)}
-.avail{display:flex;align-items:baseline;gap:11px;margin-top:14px}
+.avail{display:flex;align-items:baseline;gap:11px;margin-top:12px}
 .avail .n{font-family:var(--mono);font-weight:700;font-size:42px;color:var(--silver);
   line-height:.9;letter-spacing:-.04em}
 .avail .k{font-family:var(--mono);font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--ash)}
 
 /* ── invitation ledger ── */
-.ledg{margin-top:6px}
-.ledg .r{display:flex;align-items:baseline;gap:10px;padding:10px 0;border-bottom:1px solid var(--line2)}
+.ledg{margin-top:4px}
+.ledg .r{display:flex;align-items:baseline;gap:10px;padding:8px 0;border-bottom:1px solid var(--line2)}
 .ledg .r:last-child{border-bottom:0}
-.ledg .r .lb3{flex:1;font-size:12.5px}
-.ledg .r .lb3 small{display:block;font-family:var(--mono);font-size:7.5px;letter-spacing:.12em;
+.ledg .r .lb3{flex:1;font-size:12px}
+.ledg .r .lb3 small{display:block;font-family:var(--mono);font-size:8px;letter-spacing:.12em;
   text-transform:uppercase;color:var(--ash);margin-top:4px}
 .ledg .r .amt{font-family:var(--mono);font-weight:700;font-size:14px;flex:none;
   font-variant-numeric:tabular-nums}
@@ -560,51 +591,51 @@ input::-webkit-calendar-picker-indicator{filter:invert(.65)}
 .ledg .r .amt.minus{color:var(--steel)}
 .ledg .tot{display:flex;align-items:baseline;gap:10px;padding-top:12px;margin-top:4px;
   border-top:1px solid var(--line)}
-.ledg .tot .lb3{flex:1;font-size:12.5px;color:var(--silver)}
-.ledg .tot .amt{font-family:var(--mono);font-weight:700;font-size:19px;color:var(--silver)}
+.ledg .tot .lb3{flex:1;font-size:12px;color:var(--silver)}
+.ledg .tot .amt{font-family:var(--mono);font-weight:700;font-size:17px;color:var(--silver)}
 
-.tiers{display:grid;gap:4px;margin-top:10px}
-.tiers .t2{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;
-  border:1px solid var(--line2);font-family:var(--mono);font-size:9.5px;color:var(--ash)}
+.tiers{display:grid;gap:4px;margin-top:8px}
+.tiers .t2{display:flex;align-items:center;gap:10px;padding:8px 8px;border-radius:6px;
+  border:1px solid var(--line2);font-family:var(--mono);font-size:10px;color:var(--ash)}
 .tiers .t2.you{border-color:var(--jade-lo);background:var(--jade-dim);color:var(--jade)}
 .tiers .t2 .rg{flex:1}
 .tiers .t2 .gv{font-weight:700}
-.locked{border:1px dashed var(--line);border-radius:10px;padding:18px 16px;text-align:center;
-  color:var(--ash);font-size:11.5px;line-height:1.65;margin-top:14px}
+.locked{border:1px dashed var(--line);border-radius:10px;padding:16px 16px;text-align:center;
+  color:var(--ash);font-size:12px;line-height:1.65;margin-top:12px}
 .locked b{color:var(--steel);font-weight:500}
 
 /* ── cycle allowance ── */
 .cyc{background:linear-gradient(168deg,var(--s2),var(--s1) 62%);border:1px solid var(--line);
-  border-radius:14px;padding:16px;margin-top:14px}
+  border-radius:16px;padding:16px;margin-top:12px}
 .cyc .hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px}
 .cyc .hd .k{font-family:var(--mono);font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--ash)}
-.cyc .big2{font-family:var(--mono);font-weight:700;font-size:38px;color:var(--silver);
+.cyc .big2{font-family:var(--mono);font-weight:700;font-size:42px;color:var(--silver);
   line-height:.9;letter-spacing:-.04em}
 .cyc .sub2{font-family:var(--mono);font-size:8px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--ash);margin-top:7px}
-.pips{display:flex;gap:5px;margin-top:14px}
+  color:var(--ash);margin-top:8px}
+.pips{display:flex;gap:5px;margin-top:12px}
 .pips i{flex:1;height:5px;border-radius:3px;background:var(--s3);display:block;max-width:34px}
 .pips i.left{background:var(--silver)}
 .pips i.gone{background:var(--s4)}
-.nxt{border-top:1px solid var(--line);margin-top:14px;padding-top:12px;
+.nxt{border-top:1px solid var(--line);margin-top:12px;padding-top:12px;
   display:flex;align-items:baseline;justify-content:space-between}
 .nxt .k{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;color:var(--ash)}
-.nxt .v{font-family:var(--mono);font-weight:700;font-size:16px}
+.nxt .v{font-family:var(--mono);font-weight:700;font-size:17px}
 .nxt .v.up{color:var(--jade)} .nxt .v.dn{color:var(--rust)}
-.contrib{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid var(--line2)}
+.contrib{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--line2)}
 .contrib .bd{flex:1;min-width:0}
-.contrib .bd .t{font-size:12.5px}
+.contrib .bd .t{font-size:12px}
 .contrib .bd .m{font-family:var(--mono);font-size:8px;color:var(--ash);margin-top:4px;letter-spacing:.1em}
-.contrib .d{font-family:var(--mono);font-weight:700;font-size:13px;flex:none}
+.contrib .d{font-family:var(--mono);font-weight:700;font-size:12px;flex:none}
 .contrib .d.plus{color:var(--jade)} .contrib .d.minus{color:var(--rust)} .contrib .d.zero{color:var(--ash)}
 
 .gone{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
   color:var(--rust);border:1px solid var(--rust-lo);background:var(--rust-dim);
-  border-radius:20px;padding:3px 8px;flex:none}
+  border-radius:16px;padding:3px 8px;flex:none}
 
 /* ── host notes on the card ── */
-.deets{font-size:11.5px;line-height:1.55;color:var(--steel);margin-top:10px;
-  padding-left:11px;border-left:1px solid var(--line);
+.deets{font-size:12px;line-height:1.55;color:var(--steel);margin-top:8px;
+  padding-left:12px;border-left:1px solid var(--line);
   display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .deets.full{-webkit-line-clamp:unset;display:block}
 textarea.deets-in{min-height:88px}
@@ -612,22 +643,22 @@ textarea.deets-in{min-height:88px}
 
 /* ── answer-first invitation rows ── */
 .inv.needs{background:var(--s1);border:1px solid var(--line);border-radius:10px;
-  padding:12px;margin-bottom:7px;border-bottom:1px solid var(--line)}
+  padding:12px;margin-bottom:8px;border-bottom:1px solid var(--line)}
 .pill.answer{background:var(--silver);border-color:var(--silver);color:var(--onSilver);
-  font-weight:700;padding:7px 13px;font-size:8.5px}
+  font-weight:700;padding:8px 12px;font-size:8px}
 .divid{font-family:var(--mono);font-size:8px;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--ash);margin:20px 0 8px}
+  color:var(--ash);margin:16px 0 8px}
 
 /* ── host: past event summary ── */
-.sumrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line2)}
+.sumrow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line2)}
 .sumrow:last-child{border-bottom:0}
 .sumrow .k2{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
   color:var(--ash);flex:none;width:104px}
-.sumrow .v2{flex:1;font-size:12.5px}
+.sumrow .v2{flex:1;font-size:12px}
 .sumrow .v2 small{display:block;font-family:var(--mono);font-size:8px;color:var(--ash);
   margin-top:3px;letter-spacing:.1em}
-.turnout{display:flex;align-items:baseline;gap:9px;margin:2px 0 10px}
-.turnout .n3{font-family:var(--mono);font-weight:700;font-size:30px;letter-spacing:-.03em}
+.turnout{display:flex;align-items:baseline;gap:9px;margin:2px 0 8px}
+.turnout .n3{font-family:var(--mono);font-weight:700;font-size:27px;letter-spacing:-.03em}
 .turnout .n3.good{color:var(--jade)} .turnout .n3.off{color:var(--rust)}
 .turnout .k3{font-family:var(--mono);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--ash)}
 
@@ -636,105 +667,105 @@ textarea.deets-in{min-height:88px}
 .dact button.p1b.off{background:var(--s3);border-color:var(--line);color:var(--ash)}
 
 /* ── deadlines on Today ── */
-.dl-strip{margin-bottom:14px}
+.dl-strip{margin-bottom:12px}
 .dl-row{display:flex;align-items:center;gap:11px;padding:12px;border-radius:10px;
-  border:1px solid var(--line);background:var(--s1);margin-bottom:7px;width:100%;text-align:left}
+  border:1px solid var(--line);background:var(--s1);margin-bottom:8px;width:100%;text-align:left}
 .dl-row.urgent{border-color:var(--rust-lo);background:var(--rust-dim)}
 .dl-row.lapsed{border-color:var(--line2);background:none;opacity:.75}
 .dl-row .bd{flex:1;min-width:0}
-.dl-row .bd .t{font-size:13px}
+.dl-row .bd .t{font-size:12px}
 .dl-row .bd .m{font-family:var(--mono);font-size:8px;color:var(--ash);margin-top:4px;letter-spacing:.11em}
 .dl-row.urgent .bd .m{color:var(--rust)}
 .dl-row .cta{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
-  padding:7px 11px;border-radius:7px;background:var(--silver);color:var(--onSilver);font-weight:700;flex:none}
+  padding:8px 12px;border-radius:6px;background:var(--silver);color:var(--onSilver);font-weight:700;flex:none}
 .dl-row.lapsed .cta{background:none;border:1px solid var(--line);color:var(--ash);font-weight:400}
-.rtline{display:flex;align-items:center;gap:9px;margin-top:10px;padding:10px 12px;
-  border-radius:9px;border:1px solid var(--line2)}
-.rtline .v4{font-family:var(--mono);font-weight:700;font-size:15px;color:var(--silver)}
-.rtline .k4{flex:1;font-size:11px;color:var(--ash);line-height:1.5}
+.rtline{display:flex;align-items:center;gap:9px;margin-top:8px;padding:8px 12px;
+  border-radius:10px;border:1px solid var(--line2)}
+.rtline .v4{font-family:var(--mono);font-weight:700;font-size:14px;color:var(--silver)}
+.rtline .k4{flex:1;font-size:10px;color:var(--ash);line-height:1.5}
 
 /* ── answer cards ── */
 .face.ask{background:var(--rust-dim);
   border-color:rgba(240,97,79,.34)}
-[data-theme='light'] .stack.behind .face.ask{background:#E8D3C2;border-color:var(--rust-lo)}
-.stack.behind .face.ask{background:#170D0B;border-color:rgba(240,97,79,.22)}
+
+.stack.behind .face.ask{background:var(--card-behind-ask);border-color:rgba(240,97,79,.22)}
 .duepill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:8px;
   letter-spacing:.14em;text-transform:uppercase;color:var(--rust);
-  border:1px solid var(--rust-lo);background:var(--rust-dim);border-radius:20px;padding:4px 9px}
+  border:1px solid var(--rust-lo);background:var(--rust-dim);border-radius:16px;padding:4px 8px}
 .duepill i{width:5px;height:5px;border-radius:50%;background:var(--rust);display:block}
-.waited{display:flex;align-items:baseline;gap:9px;margin-top:12px;padding:10px 12px;
-  border-radius:9px;border:1px solid var(--line)}
+.waited{display:flex;align-items:baseline;gap:9px;margin-top:12px;padding:8px 12px;
+  border-radius:10px;border:1px solid var(--line)}
 .waited .v5{font-family:var(--mono);font-weight:700;font-size:17px;color:var(--silver)}
-.waited .k5{flex:1;font-size:10.5px;color:var(--ash);line-height:1.5}
+.waited .k5{flex:1;font-size:10px;color:var(--ash);line-height:1.5}
 .waited.slow .v5{color:var(--rust)}
 .stamp.yes2{right:18px;border:1px solid var(--jade);color:var(--jade);transform:rotate(8deg)}
 .stamp.no2{left:18px;border:1px solid var(--rust);color:var(--rust);transform:rotate(-8deg)}
 
 /* ── lapsed list ── */
 .lapsehead{font-family:var(--mono);font-size:8px;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--ash);margin:22px 0 8px}
+  color:var(--ash);margin:24px 0 8px}
 .lapse{display:flex;align-items:center;gap:11px;padding:12px;border-radius:10px;
-  border:1px solid var(--line2);margin-bottom:7px}
+  border:1px solid var(--line2);margin-bottom:8px}
 .lapse .bd{flex:1;min-width:0}
-.lapse .bd .t{font-size:12.5px;color:var(--steel)}
+.lapse .bd .t{font-size:12px;color:var(--steel)}
 .lapse .bd .m{font-family:var(--mono);font-size:8px;color:var(--ash);margin-top:4px;letter-spacing:.11em}
 .lapse .wl2{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
-  padding:8px 11px;border-radius:7px;border:1px solid var(--line);color:var(--silver);flex:none}
+  padding:8px 12px;border-radius:6px;border:1px solid var(--line);color:var(--silver);flex:none}
 .lapse .wl2.on{background:var(--silver);border-color:var(--silver);color:var(--onSilver);font-weight:700}
 .lapse .wl2.full{opacity:.4}
 
 /* ── gate + orientation ── */
 .gate2{position:fixed;inset:0;z-index:200;background:var(--bg);color:var(--silver);display:flex;flex-direction:column;
   align-items:center;justify-content:center;padding:32px 24px calc(32px + var(--safe));text-align:center}
-.gate2 .mk{font-family:var(--disp);font-size:34px;color:var(--silver);letter-spacing:-.01em}
+.gate2 .mk{font-family:var(--disp);font-size:27px;color:var(--silver);letter-spacing:-.01em}
 .gate2 .mk span{color:var(--jade)}
-.gate2 .sub3{font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+.gate2 .sub3{font-family:var(--mono);font-size:8px;letter-spacing:.22em;text-transform:uppercase;
   color:var(--ash);margin-top:12px}
-.gate2 input{width:100%;max-width:290px;margin-top:34px;background:var(--s1);
-  border:1px solid var(--line);border-radius:10px;padding:15px;color:var(--silver);
-  font-family:var(--mono);font-size:16px;text-align:center;letter-spacing:.08em;
+.gate2 input{width:100%;max-width:290px;margin-top:32px;background:var(--s1);
+  border:1px solid var(--line);border-radius:10px;padding:16px;color:var(--silver);
+  font-family:var(--mono);font-size:17px;text-align:center;letter-spacing:.08em;
   text-transform:lowercase;-webkit-appearance:none}
-.gate2 input::placeholder{color:var(--ash);letter-spacing:.16em;font-size:11px;text-transform:uppercase}
+.gate2 input::placeholder{color:var(--ash);letter-spacing:.16em;font-size:10px;text-transform:uppercase}
 .gate2 input.wrong{border-color:var(--rust);animation:shake .3s}
 @keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-.gate2 button{width:100%;max-width:290px;margin-top:10px;padding:14px;border-radius:10px;
+.gate2 button{width:100%;max-width:290px;margin-top:8px;padding:12px;border-radius:10px;
   background:var(--silver);color:var(--onSilver);font-family:var(--body);font-weight:500;font-size:14px}
-.gate2 .hint2{font-family:var(--mono);font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;
+.gate2 .hint2{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
   color:var(--ash);margin-top:24px;line-height:1.9}
 
-.orient{padding:34px 22px calc(30px + var(--safe));min-height:100%;display:flex;flex-direction:column}
-.orient h1{font-size:29px;margin-bottom:6px}
-.ostep{display:flex;gap:13px;padding:13px 0;border-bottom:1px solid var(--line2)}
-.ostep .no2{font-family:var(--mono);font-size:9px;color:var(--ash);width:15px;flex:none;padding-top:2px}
+.orient{padding:32px 24px calc(32px + var(--safe));min-height:100%;display:flex;flex-direction:column}
+.orient h1{font-size:27px;margin-bottom:4px}
+.ostep{display:flex;gap:13px;padding:12px 0;border-bottom:1px solid var(--line2)}
+.ostep .no2{font-family:var(--mono);font-size:8px;color:var(--ash);width:15px;flex:none;padding-top:2px}
 .ostep .bd2{flex:1}
-.ostep .bd2 b{display:block;font-weight:500;font-size:13px}
-.ostep .bd2 small{display:block;font-size:11px;color:var(--ash);line-height:1.55;margin-top:4px}
-.otip{border:1px solid var(--line);border-radius:10px;padding:13px;margin-top:18px;
-  font-size:11.5px;line-height:1.6;color:var(--steel)}
+.ostep .bd2 b{display:block;font-weight:500;font-size:12px}
+.ostep .bd2 small{display:block;font-size:10px;color:var(--ash);line-height:1.55;margin-top:4px}
+.otip{border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:16px;
+  font-size:12px;line-height:1.6;color:var(--steel)}
 .otip b{color:var(--silver);font-weight:500}
 
-.peek{padding:15px 18px 0}
-.peek .pw2{font-family:var(--mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;
+.peek{padding:16px 16px 0}
+.peek .pw2{font-family:var(--mono);font-size:8px;letter-spacing:.15em;text-transform:uppercase;
   color:var(--ash)}
-.peek .pt{font-family:var(--disp);font-size:19px;color:var(--steel);letter-spacing:-.012em;
-  margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.peek .pt{font-family:var(--disp);font-size:17px;color:var(--steel);letter-spacing:-.012em;
+  margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* ── conflict flag ── */
-.clash{display:flex;align-items:center;gap:9px;margin-top:11px;padding:10px 12px;
-  border-radius:9px;border:1px solid rgba(240,97,79,.30);background:var(--rust-dim)}
-.clash .ic2{font-family:var(--mono);font-size:13px;color:var(--rust);flex:none}
-.clash .tx2{flex:1;font-size:11.5px;color:var(--silver);line-height:1.5}
-.clash .tx2 small{display:block;font-family:var(--mono);font-size:7.5px;letter-spacing:.13em;
+.clash{display:flex;align-items:center;gap:9px;margin-top:12px;padding:8px 12px;
+  border-radius:10px;border:1px solid rgba(240,97,79,.30);background:var(--rust-dim)}
+.clash .ic2{font-family:var(--mono);font-size:12px;color:var(--rust);flex:none}
+.clash .tx2{flex:1;font-size:12px;color:var(--silver);line-height:1.5}
+.clash .tx2 small{display:block;font-family:var(--mono);font-size:8px;letter-spacing:.13em;
   text-transform:uppercase;color:var(--rust);margin-top:4px}
 
 /* ── member record sheet ── */
 .rec-hd{display:flex;align-items:center;gap:12px;margin-bottom:4px}
 .rec-hd .bd3{flex:1}
 .rec-hd .bd3 .n6{font-family:var(--disp);font-size:21px;letter-spacing:-.01em}
-.rec-hd .bd3 .h6{font-family:var(--mono);font-size:8.5px;color:var(--ash);
+.rec-hd .bd3 .h6{font-family:var(--mono);font-size:8px;color:var(--ash);
   letter-spacing:.12em;margin-top:4px}
-.rec-hd .big3{font-family:var(--mono);font-weight:700;font-size:28px;letter-spacing:-.03em}
-.reads{border:1px solid var(--line);border-radius:10px;padding:13px;margin-top:14px;
+.rec-hd .big3{font-family:var(--mono);font-weight:700;font-size:27px;letter-spacing:-.03em}
+.reads{border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:12px;
   font-size:12px;line-height:1.6;color:var(--steel)}
 .reads b{color:var(--silver);font-weight:500}
 
@@ -742,7 +773,7 @@ textarea.deets-in{min-height:88px}
 .fab.settle{background:var(--rust);color:var(--onRust)}
 /* ── suggestions from history ── */
 .sugg{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.sugg button{font-family:var(--mono);font-size:9.5px;padding:8px 11px;border-radius:8px;
+.sugg button{font-family:var(--mono);font-size:10px;padding:8px 12px;border-radius:6px;
   border:1px dashed rgba(255,255,255,.16);color:var(--steel);display:flex;align-items:center;gap:6px}
 .sugg button:active{border-style:solid}
 .sugg button.on{background:var(--silver);border-color:var(--silver);border-style:solid;
@@ -750,117 +781,117 @@ textarea.deets-in{min-height:88px}
 .sugg .why{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--ash)}
 .sugg button.on .why{color:rgba(10,11,13,.55)}
 .recall{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
-  color:var(--ash);margin-top:9px;display:block}
-.usual{border:1px solid var(--line);border-radius:10px;padding:12px 13px;margin-top:10px;
-  font-size:11.5px;line-height:1.6;color:var(--steel)}
+  color:var(--ash);margin-top:8px;display:block}
+.usual{border:1px solid var(--line);border-radius:10px;padding:12px 12px;margin-top:8px;
+  font-size:12px;line-height:1.6;color:var(--steel)}
 .usual b{color:var(--silver);font-weight:500}
-.usual .row2{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
-.usual .row2 button{font-family:var(--mono);font-size:9px;padding:7px 10px;border-radius:7px;
+.usual .row2{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.usual .row2 button{font-family:var(--mono);font-size:8px;padding:8px 8px;border-radius:6px;
   border:1px solid var(--line);color:var(--silver)}
 
 /* ── progress toward a record ── */
-.prog2{border:1px solid var(--line);border-radius:12px;padding:15px;margin-top:14px}
+.prog2{border:1px solid var(--line);border-radius:10px;padding:16px;margin-top:12px}
 .prog2.done{border-color:var(--jade-lo);background:var(--jade-dim)}
 .prog2 .hd2{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px}
-.prog2 .hd2 .t3{font-family:var(--disp);font-size:18px;letter-spacing:-.01em}
-.prog2 .hd2 .c3{font-family:var(--mono);font-weight:700;font-size:13px;color:var(--steel)}
+.prog2 .hd2 .t3{font-family:var(--disp);font-size:17px;letter-spacing:-.01em}
+.prog2 .hd2 .c3{font-family:var(--mono);font-weight:700;font-size:12px;color:var(--steel)}
 .prog2.done .hd2 .c3{color:var(--jade)}
 .pips2{display:flex;gap:4px}
 .pips2 i{flex:1;height:6px;border-radius:3px;background:var(--s3);display:block}
 .pips2 i.fill{background:var(--silver)}
 .prog2.done .pips2 i.fill{background:var(--jade)}
-.rhythm{display:flex;align-items:center;gap:9px;margin-top:13px;padding-top:12px;
+.rhythm{display:flex;align-items:center;gap:9px;margin-top:12px;padding-top:12px;
   border-top:1px solid var(--line2)}
 .rhythm .dot3{width:7px;height:7px;border-radius:50%;flex:none}
-.rhythm .tx3{flex:1;font-size:11.5px;color:var(--ash);line-height:1.5}
+.rhythm .tx3{flex:1;font-size:12px;color:var(--ash);line-height:1.5}
 .rhythm .tx3 b{color:var(--silver);font-weight:500}
 
 /* opening-week emptiness */
-.cold{border:1px dashed var(--line);border-radius:12px;padding:20px 16px;text-align:center;
+.cold{border:1px dashed var(--line);border-radius:10px;padding:16px 16px;text-align:center;
   color:var(--ash);font-size:12px;line-height:1.65;margin-top:12px}
 .cold b{color:var(--steel);font-weight:500}
 
 /* ── global page ── */
-.gstat{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
-.gstat div{background:var(--s1);border:1px solid var(--line);border-radius:11px;padding:13px}
-.gstat .v6{font-family:var(--mono);font-weight:700;font-size:24px;line-height:1;letter-spacing:-.03em}
-.gstat .k6{font-family:var(--mono);font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--ash);margin-top:7px;line-height:1.35}
-.gstat .tr6{font-family:var(--mono);font-size:9px;margin-top:6px}
+.gstat{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+.gstat div{background:var(--s1);border:1px solid var(--line);border-radius:10px;padding:12px}
+.gstat .v6{font-family:var(--mono);font-weight:700;font-size:21px;line-height:1;letter-spacing:-.03em}
+.gstat .k6{font-family:var(--mono);font-size:8px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ash);margin-top:8px;line-height:1.35}
+.gstat .tr6{font-family:var(--mono);font-size:8px;margin-top:4px}
 .gstat .tr6.up{color:var(--jade)} .gstat .tr6.dn{color:var(--rust)}
-.spark{display:flex;align-items:flex-end;gap:2px;height:22px;margin-top:9px}
+.spark{display:flex;align-items:flex-end;gap:2px;height:22px;margin-top:8px}
 .spark i{flex:1;background:var(--s4);border-radius:1px;display:block;min-width:3px}
 .spark i.last{background:var(--silver)}
-.gline{border:1px solid var(--line);border-radius:11px;padding:14px;margin-top:12px;
-  font-size:12.5px;line-height:1.62;color:var(--steel)}
+.gline{border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:12px;
+  font-size:12px;line-height:1.62;color:var(--steel)}
 .gline b{color:var(--silver);font-weight:500}
-.gleft{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--line2)}
+.gleft{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid var(--line2)}
 .gleft .bd4{flex:1}
-.gleft .bd4 .t4{font-size:12.5px}
+.gleft .bd4 .t4{font-size:12px}
 .gleft .bd4 .m4{font-family:var(--mono);font-size:8px;color:var(--ash);margin-top:4px;letter-spacing:.1em}
 .gleft .v7{font-family:var(--mono);font-weight:700;font-size:14px}
 
 /* ── how are we doing ── */
 .hero2{background:linear-gradient(168deg,var(--s2),var(--s1) 62%);border:1px solid var(--jade-lo);
-  border-radius:14px;padding:18px;margin-top:14px}
+  border-radius:16px;padding:16px;margin-top:12px}
 .hero2 .k7{font-family:var(--mono);font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--ash)}
-.hero2 .v8{font-family:var(--mono);font-weight:700;font-size:46px;line-height:.9;
-  letter-spacing:-.045em;color:var(--jade);margin-top:9px}
-.hero2 .d8{font-family:var(--mono);font-size:10px;color:var(--jade);margin-top:9px}
-.hero2 .sub8{font-size:12px;color:var(--steel);line-height:1.6;margin-top:11px}
+.hero2 .v8{font-family:var(--mono);font-weight:700;font-size:42px;line-height:.9;
+  letter-spacing:-.045em;color:var(--jade);margin-top:8px}
+.hero2 .d8{font-family:var(--mono);font-size:10px;color:var(--jade);margin-top:8px}
+.hero2 .sub8{font-size:12px;color:var(--steel);line-height:1.6;margin-top:12px}
 .hero2 .sub8 b{color:var(--silver);font-weight:500}
-.twoup{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px}
-.twoup div{background:var(--s1);border:1px solid var(--line);border-radius:11px;padding:14px}
-.twoup .v9{font-family:var(--mono);font-weight:700;font-size:26px;line-height:1;letter-spacing:-.03em}
-.twoup .k9{font-family:var(--mono);font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--ash);margin-top:7px;line-height:1.35}
-.twoup .t9{font-family:var(--mono);font-size:9px;margin-top:6px;color:var(--jade)}
+.twoup{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+.twoup div{background:var(--s1);border:1px solid var(--line);border-radius:10px;padding:12px}
+.twoup .v9{font-family:var(--mono);font-weight:700;font-size:27px;line-height:1;letter-spacing:-.03em}
+.twoup .k9{font-family:var(--mono);font-size:8px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ash);margin-top:8px;line-height:1.35}
+.twoup .t9{font-family:var(--mono);font-size:8px;margin-top:4px;color:var(--jade)}
 
-.slipped{border:1px solid var(--tang);background:rgba(232,148,74,.13);border-radius:12px;
-  padding:15px;margin-top:14px}
-.slipped h4{font-family:var(--disp);font-size:19px;margin:0 0 8px;color:var(--tang);letter-spacing:-.01em}
-.slipped p{margin:0;font-size:12.5px;line-height:1.6;color:var(--silver)}
+.slipped{border:1px solid var(--tang);background:rgba(232,148,74,.13);border-radius:10px;
+  padding:16px;margin-top:12px}
+.slipped h4{font-family:var(--disp);font-size:17px;margin:0 0 8px;color:var(--tang);letter-spacing:-.01em}
+.slipped p{margin:0;font-size:12px;line-height:1.6;color:var(--silver)}
 .slipped .strip i.K{background:var(--tang)}
 .slipped .pips2 i.fill{background:var(--tang)}
 
 /* ── wave two readiness ── */
-.gate3{border:1px solid var(--line);border-radius:13px;padding:16px;margin-top:16px}
+.gate3{border:1px solid var(--line);border-radius:10px;padding:16px;margin-top:16px}
 .gate3.ready{border-color:var(--jade);background:var(--jade-dim)}
 .gate3 .hd3{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px}
-.gate3 .hd3 .t7{font-family:var(--disp);font-size:20px;letter-spacing:-.012em}
+.gate3 .hd3 .t7{font-family:var(--disp);font-size:21px;letter-spacing:-.012em}
 .gate3.ready .hd3 .t7{color:var(--jade)}
-.gate3 .hd3 .c7{font-family:var(--mono);font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--ash)}
-.crit{margin-top:15px}
-.crit .row3{display:flex;align-items:baseline;gap:9px;margin-bottom:6px}
-.crit .row3 .lb4{flex:1;font-size:12.5px}
+.gate3 .hd3 .c7{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;color:var(--ash)}
+.crit{margin-top:16px}
+.crit .row3{display:flex;align-items:baseline;gap:9px;margin-bottom:4px}
+.crit .row3 .lb4{flex:1;font-size:12px}
 .crit .row3 .vl{font-family:var(--mono);font-weight:700;font-size:12px;color:var(--steel)}
 .crit .row3 .vl.hit{color:var(--jade)}
-.crit .bar3{height:5px;border-radius:3px;background:var(--s3);overflow:hidden;margin-bottom:14px}
+.crit .bar3{height:5px;border-radius:3px;background:var(--s3);overflow:hidden;margin-bottom:12px}
 .crit .bar3 i{display:block;height:100%;background:var(--steel);transition:width .4s}
 .crit .bar3 i.hit{background:var(--jade)}
-.unlock{border:1px solid var(--jade);background:var(--jade-dim);border-radius:13px;
-  padding:18px;margin-top:16px;text-align:center}
-.unlock .big4{font-family:var(--disp);font-size:26px;color:var(--jade);letter-spacing:-.015em;line-height:1.15}
-.unlock p{margin:11px 0 0;font-size:13px;line-height:1.6;color:var(--silver)}
-.unlock .cnt{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--jade);margin-top:14px}
-.freebadge{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:9.5px;
+.unlock{border:1px solid var(--jade);background:var(--jade-dim);border-radius:10px;
+  padding:16px;margin-top:16px;text-align:center}
+.unlock .big4{font-family:var(--disp);font-size:27px;color:var(--jade);letter-spacing:-.015em;line-height:1.15}
+.unlock p{margin:12px 0 0;font-size:12px;line-height:1.6;color:var(--silver)}
+.unlock .cnt{font-family:var(--mono);font-weight:700;font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--jade);margin-top:12px}
+.freebadge{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;
   letter-spacing:.14em;text-transform:uppercase;color:var(--jade);border:1px solid var(--jade-lo);
-  background:var(--jade-dim);border-radius:20px;padding:6px 12px;margin-bottom:16px}
+  background:var(--jade-dim);border-radius:16px;padding:4px 12px;margin-bottom:16px}
 
-.cohort{display:flex;gap:5px;margin:14px 0 0}
-.cohort button{flex:1;font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;
-  text-transform:uppercase;padding:8px 6px;border-radius:8px;border:1px solid var(--line);color:var(--steel)}
+.cohort{display:flex;gap:5px;margin:12px 0 0}
+.cohort button{flex:1;font-family:var(--mono);font-size:8px;letter-spacing:.12em;
+  text-transform:uppercase;padding:8px 4px;border-radius:6px;border:1px solid var(--line);color:var(--steel)}
 .cohort button.on{background:var(--silver);border-color:var(--silver);color:var(--onSilver);font-weight:700}
 .wavenote{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
   color:var(--ash);margin-top:8px;text-align:center}
 
-.setrow{display:flex;align-items:center;gap:12px;padding:13px 0}
-.setrow .cp2{flex:1;font-size:12.5px}
-.setrow .cp2 small{display:block;font-size:10.5px;color:var(--ash);margin-top:4px;line-height:1.5}
-.seg{display:flex;gap:4px;flex:none;border:1px solid var(--line);border-radius:9px;padding:3px}
+.setrow{display:flex;align-items:center;gap:12px;padding:12px 0}
+.setrow .cp2{flex:1;font-size:12px}
+.setrow .cp2 small{display:block;font-size:10px;color:var(--ash);margin-top:4px;line-height:1.5}
+.seg{display:flex;gap:4px;flex:none;border:1px solid var(--line);border-radius:10px;padding:3px}
 .seg button{font-family:var(--mono);font-size:8px;letter-spacing:.11em;text-transform:uppercase;
-  padding:7px 11px;border-radius:6px;color:var(--ash)}
+  padding:8px 12px;border-radius:6px;color:var(--ash)}
 .seg button.on{background:var(--silver);color:var(--onSilver);font-weight:700}
 
 .chk2{width:24px;height:24px;border-radius:6px;border:1.5px solid var(--line);flex:none;
@@ -870,15 +901,15 @@ textarea.deets-in{min-height:88px}
 
 /* ── decline-all durations ── */
 .durs{display:flex;gap:6px;margin-top:12px}
-.durs button{flex:1;font-family:var(--mono);font-size:9px;letter-spacing:.11em;text-transform:uppercase;
-  padding:10px 6px;border-radius:8px;border:1px solid var(--line);color:var(--steel)}
+.durs button{flex:1;font-family:var(--mono);font-size:8px;letter-spacing:.11em;text-transform:uppercase;
+  padding:8px 4px;border-radius:6px;border:1px solid var(--line);color:var(--steel)}
 .durs button.on{background:var(--silver);border-color:var(--silver);color:var(--onSilver);font-weight:700}
-textarea.reason{min-height:64px;margin-top:10px}
+textarea.reason{min-height:64px;margin-top:8px}
 
 /* ── named invitation ── */
-.namelink{background:var(--s1);border:1px solid var(--line);border-radius:11px;padding:14px;margin-top:12px}
-.namelink .fld{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:9px;
-  padding:12px;color:var(--silver);font-family:var(--body);font-size:15px;margin-top:8px}
+.namelink{background:var(--s1);border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:12px}
+.namelink .fld{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;
+  padding:12px;color:var(--silver);font-family:var(--body);font-size:14px;margin-top:8px}
 .namelink .fld::placeholder{color:var(--ash)}
 .mismatch{border:1px solid var(--rust-lo);background:var(--rust-dim);border-radius:10px;
   padding:12px;margin-top:12px;font-size:12px;line-height:1.6;color:var(--silver)}
@@ -888,47 +919,241 @@ textarea.reason{min-height:64px;margin-top:10px}
 .matched b{color:var(--jade);font-weight:500}
 
 /* ── loud clash ── */
-.clashbig{border:2px solid var(--rust);background:var(--rust-dim);border-radius:12px;
-  padding:14px;margin-top:12px}
+.clashbig{border:2px solid var(--rust);background:var(--rust-dim);border-radius:10px;
+  padding:12px;margin-top:12px}
 .clashbig .hd4{display:flex;align-items:center;gap:9px}
 .clashbig .bang{width:26px;height:26px;border-radius:50%;background:var(--rust);color:var(--onRust);
-  display:grid;place-items:center;font-family:var(--mono);font-weight:700;font-size:15px;flex:none;
+  display:grid;place-items:center;font-family:var(--mono);font-weight:700;font-size:14px;flex:none;
   animation:thump 1.6s ease-in-out infinite}
 @keyframes thump{50%{transform:scale(.86)}}
-.clashbig .t8{flex:1;font-family:var(--disp);font-size:19px;color:var(--rust);letter-spacing:-.012em;
+.clashbig .t8{flex:1;font-family:var(--disp);font-size:17px;color:var(--rust);letter-spacing:-.012em;
   line-height:1.15}
-.clashbig p{margin:10px 0 0;font-size:12px;line-height:1.55;color:var(--silver)}
+.clashbig p{margin:8px 0 0;font-size:12px;line-height:1.55;color:var(--silver)}
 .duepill.clash2{border-color:var(--rust);background:var(--rust);color:var(--onRust)}
 .duepill.clash2 i{background:var(--onRust)}
 .nomore{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;
-  color:var(--ash);border:1px dashed var(--line);border-radius:20px;padding:6px 10px;
-  display:inline-flex;margin-top:11px}
+  color:var(--ash);border:1px dashed var(--line);border-radius:16px;padding:4px 8px;
+  display:inline-flex;margin-top:12px}
 /* ── richer upcoming cards ── */
 .evmeta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.evtag{font-family:var(--mono);font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;
-  padding:4px 8px;border-radius:20px;border:1px solid var(--line);color:var(--steel)}
+.evtag{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
+  padding:4px 8px;border-radius:16px;border:1px solid var(--line);color:var(--steel)}
 .evtag.warn2{border-color:var(--rust-lo);background:var(--rust-dim);color:var(--rust)}
 .evtag.good2{border-color:var(--jade-lo);background:var(--jade-dim);color:var(--jade)}
-.evnudge{font-size:11px;line-height:1.55;color:var(--rust);margin-top:9px}
+.evnudge{font-size:10px;line-height:1.55;color:var(--rust);margin-top:8px}
 
 /* ── right-now shortcut ── */
-.nowcard{border:1px solid var(--jade-lo);background:var(--jade-dim);border-radius:12px;
-  padding:15px;margin-top:14px}
-.nowcard h4{font-family:var(--disp);font-size:19px;margin:0 0 7px;letter-spacing:-.012em}
+.nowcard{border:1px solid var(--jade-lo);background:var(--jade-dim);border-radius:10px;
+  padding:16px;margin-top:12px}
+.nowcard h4{font-family:var(--disp);font-size:17px;margin:0 0 8px;letter-spacing:-.012em}
 .nowcard p{margin:0;font-size:12px;line-height:1.55;color:var(--steel)}
-.nowcard button{width:100%;margin-top:12px;padding:12px;border-radius:9px;background:var(--jade);
+.nowcard button{width:100%;margin-top:12px;padding:12px;border-radius:10px;background:var(--jade);
   color:var(--onJade);font-family:var(--body);font-weight:500;font-size:14px}
-.evrow .dl2{font-family:var(--mono);font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;
-  padding:6px 9px;border-radius:20px;border:1px solid var(--line);color:var(--steel);
+.evrow .dl2{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
+  padding:4px 8px;border-radius:16px;border:1px solid var(--line);color:var(--steel);
   flex:none;text-align:center;line-height:1.4;max-width:78px}
 .evrow .dl2.soon{border-color:var(--rust-lo);background:var(--rust-dim);color:var(--rust)}
+
+/* Drawn size stays small; the hit area is always at least --tap. */
+.chk2,.tog,.chk,.p1box button,.dact button,.dact .ok,.seg button,.durs button,
+.cohort button,.vswitch button,.sugg button,.opts button,.dates button,.tapin,
+.add,.act,.wl2,.calhead button,.mnav button,.cg button{position:relative}
+.chk2::after,.tog::after,.p1box button::after,.dact button::after,.seg button::after,
+.durs button::after,.cohort button::after,.vswitch button::after,.tapin::after,
+.act::after,.wl2::after,.calhead button::after,.mnav button::after{
+  content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:max(100%,var(--tap));height:max(100%,var(--tap))}
+
+/* ── 6: pressed feedback, since the tap highlight is suppressed ── */
+.btn:active,.chk2:active,.tog:active,.evrow:active,.inv:active,.prow:active,
+.dl-row:active,.go2:active,.fab:active,.tapin:active,.dact button:active,
+.seg button:active,.durs button:active,.cohort button:active,.vswitch button:active,
+.sugg button:active,.opts button:active,.nowcard button:active,.rsvp button:active,
+.rate button:active,.pol button:active,.qrow .act button:active{
+  transform:scale(.975);opacity:.88;transition:transform .06s,opacity .06s}
+
+.kbd{display:flex;gap:8px;margin-top:16px}
+.kbd button{flex:1;padding:12px 8px;border-radius:10px;border:1px solid var(--line);
+  font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;color:var(--steel)}
+.kbd button:last-child{color:var(--jade);border-color:var(--jade-lo)}
+.kbd button:first-child{color:var(--rust);border-color:var(--rust-lo)}
+.swipe:focus-visible{outline:2px solid var(--jade);outline-offset:4px;border-radius:16px}
+
+/* Rows that became <button> for keyboard access must still read as rows. */
+button.rank,button.r,.contrib .bd,.slot .bd,.evrow .bd,.qrow .bd{
+  text-align:left;font:inherit;color:inherit;background:none;border:0;width:100%}
+.contrib .bd{padding:0}
+
+/* ── roomier cards ── */
+.face{padding:24px 24px 20px}
+.face.back{padding:20px 20px 16px}
+.face .deets{margin-top:16px;padding-left:16px;-webkit-line-clamp:4;
+  font-size:var(--text-sm);line-height:1.65}
+.face .whenrow{margin-bottom:4px}
+.face h3{margin:12px 0 8px}
+.mini2{margin-top:16px}
+.mini2 .r{padding:6px 0}
+
+/* declined with a reason */
+.gaveword{display:flex;gap:12px;align-items:flex-start;padding:12px 0;
+  border-bottom:1px solid var(--line2)}
+.gaveword .bd5{flex:1;min-width:0}
+.gaveword .bd5 .n7{font-size:var(--text-sm)}
+.gaveword .bd5 .q7{font-size:var(--text-sm);color:var(--steel);line-height:1.55;margin-top:4px;
+  font-style:italic}
+.gaveword .when7{font-family:var(--mono);font-size:var(--text-2xs);color:var(--ash);
+  letter-spacing:.12em;flex:none}
+
+.qa{border-left:1px solid var(--line);padding-left:16px;margin-bottom:24px}
+.qa h4{font-family:var(--disp);font-size:var(--text-xl);margin:0 0 8px;letter-spacing:-.012em;
+  line-height:1.18}
+.qa p{margin:0;font-size:var(--text-base);line-height:1.62;color:var(--steel)}
+.back{font-family:var(--mono);font-size:var(--text-2xs);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ash);padding:8px 0}
+
+/* ── projection hero, louder ── */
+.projbig{display:flex;align-items:flex-end;gap:16px;margin-top:4px}
+.projbig .n8{font-family:var(--mono);font-weight:700;font-size:var(--text-3xl);line-height:.86;
+  letter-spacing:-.045em;color:var(--silver)}
+.projbig .of{font-family:var(--mono);font-weight:700;font-size:var(--text-xl);color:var(--ash);
+  padding-bottom:4px;letter-spacing:-.02em}
+.projbig .k8{font-family:var(--mono);font-size:var(--text-2xs);letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ash);padding-bottom:6px;line-height:1.4}
+.fillbar{height:8px;border-radius:4px;background:var(--s3);overflow:hidden;margin-top:16px;display:flex}
+.fillbar i{display:block;height:100%}
+.fillbar .sure{background:var(--silver)}
+.fillbar .maybe{background:var(--silver);opacity:.35}
+.fillbar .gap{background:var(--rust);opacity:.5}
+
+/* ── invited rows with odds and a reply clock ── */
+.irow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line2)}
+.irow .bd6{flex:1;min-width:0}
+.irow .bd6 .n9{font-size:var(--text-sm)}
+.irow .bd6 .m9{font-family:var(--mono);font-size:var(--text-2xs);color:var(--ash);
+  margin-top:4px;letter-spacing:.1em}
+.irow .bd6 .m9.late{color:var(--tang)}
+.irow .bd6 .m9.fresh{color:var(--jade)}
+.irow .odds{font-family:var(--mono);font-weight:700;font-size:var(--text-sm);flex:none;
+  min-width:40px;text-align:right;font-variant-numeric:tabular-nums}
+.irow .said{font-family:var(--mono);font-size:var(--text-2xs);letter-spacing:.12em;
+  text-transform:uppercase;padding:4px 8px;border-radius:var(--r-pill);flex:none}
+.irow .said.yes{background:var(--jade);color:var(--onJade);font-weight:700}
+.irow .said.no{border:1px solid var(--rust-lo);color:var(--rust)}
+.clock{width:26px;height:26px;flex:none;position:relative}
+.clock svg{transform:rotate(-90deg)}
+.clock .trk{stroke:var(--s4)} .clock .prg{stroke:var(--steel)}
+.clock .prg.fresh{stroke:var(--jade)}
+.clock .prg.late{stroke:var(--tang)}
+
+/* ── consider inviting ── */
+.suggrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line2)}
+.suggrow .bd7{flex:1;min-width:0}
+.suggrow .bd7 .n10{font-size:var(--text-sm)}
+.suggrow .bd7 .m10{font-family:var(--mono);font-size:var(--text-2xs);color:var(--ash);
+  margin-top:4px;letter-spacing:.1em}
+.suggrow .why10{font-family:var(--mono);font-size:var(--text-2xs);color:var(--jade);
+  letter-spacing:.1em;margin-top:3px}
+
+/* ── host message to the room ── */
+.msgbox{border:1px solid var(--line);border-radius:var(--r-md);padding:12px;margin-top:12px}
+.msgbox textarea{min-height:52px;margin-top:0}
+.msgrow{display:flex;gap:8px;align-items:center;margin-top:8px}
+.msgrow button{flex:none;padding:10px 16px;border-radius:var(--r-sm);background:var(--silver);
+  color:var(--onSilver);font-family:var(--body);font-size:var(--text-sm);font-weight:500}
+.msglive{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--jade-lo);
+  background:var(--jade-dim);border-radius:var(--r-md);padding:12px;margin-top:12px}
+.msglive .bd8{flex:1}
+.msglive .bd8 .t10{font-size:var(--text-base);color:var(--silver);line-height:1.45}
+.msglive .bd8 .m10b{font-family:var(--mono);font-size:var(--text-2xs);letter-spacing:.12em;
+  text-transform:uppercase;color:var(--jade);margin-top:6px}
+.msglive .x2{font-family:var(--mono);font-size:var(--text-2xs);color:var(--ash);
+  letter-spacing:.12em;flex:none;padding:4px}
+
+/* the same message, on the guest's card */
+.shout{border:1px solid var(--jade);background:var(--jade-dim);border-radius:var(--r-sm);
+  padding:10px 12px;margin-bottom:12px}
+.shout .who2{font-family:var(--mono);font-size:var(--text-2xs);letter-spacing:.13em;
+  text-transform:uppercase;color:var(--jade)}
+.shout .said2{font-size:var(--text-base);color:var(--silver);line-height:1.4;margin-top:5px}
+
+/* back + edit */
+.crumb{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.crumb .back2{font-family:var(--mono);font-size:var(--text-2xs);letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ash);padding:8px 10px 8px 0}
+.crumb .sp2{flex:1}
+.crumb .edit{font-family:var(--mono);font-size:var(--text-2xs);letter-spacing:.13em;
+  text-transform:uppercase;color:var(--steel);border:1px solid var(--line);
+  border-radius:var(--r-sm);padding:8px 12px}
+.crumb .edit.on{background:var(--silver);border-color:var(--silver);color:var(--onSilver);font-weight:700}
+.editbox{border:1px solid var(--line);border-radius:var(--r-md);padding:12px;margin-bottom:16px}
+.editbox .lab{margin-top:0}
+
+/* ── roomier event list cards ── */
+.evcard{display:block;width:100%;text-align:left;background:var(--s1);border:1px solid var(--line);
+  border-radius:var(--r-lg);padding:16px;margin-bottom:12px}
+.evcard .top2{display:flex;align-items:flex-start;gap:12px}
+.evcard .top2 .bd9{flex:1;min-width:0}
+.evcard .t11{font-family:var(--disp);font-size:var(--text-xl);letter-spacing:-.012em;line-height:1.15}
+.evcard .m11{font-family:var(--mono);font-size:var(--text-2xs);color:var(--ash);
+  margin-top:8px;letter-spacing:.12em}
+.evcard .numbers{display:flex;align-items:flex-end;gap:12px;margin-top:16px}
+.evcard .numbers .big5{font-family:var(--mono);font-weight:700;font-size:var(--text-2xl);
+  line-height:.9;letter-spacing:-.04em}
+.evcard .numbers .of5{font-family:var(--mono);font-weight:700;font-size:var(--text-lg);
+  color:var(--ash);padding-bottom:2px}
+.evcard .numbers .k11{font-family:var(--mono);font-size:var(--text-2xs);letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ash);padding-bottom:3px;line-height:1.4}
+.evcard .short{font-size:var(--text-sm);line-height:1.55;color:var(--rust);margin-top:12px}
+.evcard .quick{margin-top:16px;padding-top:14px;border-top:1px solid var(--line2)}
+.evcard .quick .lab5{font-family:var(--mono);font-size:var(--text-2xs);letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ash);margin-bottom:10px}
+.qrow2{display:flex;align-items:center;gap:10px;padding:7px 0}
+.qrow2 .bd10{flex:1;min-width:0}
+.qrow2 .bd10 .n11{font-size:var(--text-sm)}
+.qrow2 .bd10 .m12{font-family:var(--mono);font-size:var(--text-2xs);color:var(--ash);
+  margin-top:3px;letter-spacing:.1em}
+
+/* ── saved rosters ── */
+.rostcard{border:1px solid var(--line);border-radius:var(--r-md);padding:14px;margin-bottom:10px}
+.rostcard .hd5{display:flex;align-items:baseline;gap:10px}
+.rostcard .nm5{font-family:var(--disp);font-size:var(--text-lg);letter-spacing:-.01em;flex:1}
+.rostcard .avg5{font-family:var(--mono);font-weight:700;font-size:var(--text-base);flex:none}
+.rostcard .m13{font-family:var(--mono);font-size:var(--text-2xs);letter-spacing:.12em;
+  color:var(--ash);margin-top:6px}
+.rostcard .faces2{display:flex;margin-top:12px}
+.rostcard .faces2 .av{width:26px;height:26px;border-radius:var(--r-sm);font-size:8px;
+  margin-left:-6px;border:2px solid var(--s1)}
+.rostcard .faces2 .av:first-child{margin-left:0}
+.rostcard .more2{font-family:var(--mono);font-size:var(--text-2xs);color:var(--ash);
+  align-self:center;margin-left:10px}
+.rostcard .acts{display:flex;gap:8px;margin-top:14px}
+.rostcard .acts button{flex:1;padding:10px;border-radius:var(--r-sm);border:1px solid var(--line);
+  font-family:var(--mono);font-size:var(--text-2xs);letter-spacing:.12em;text-transform:uppercase;
+  color:var(--steel)}
+.rostcard .acts button.pri2{background:var(--silver);border-color:var(--silver);
+  color:var(--onSilver);font-weight:700}
+.pickrow{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line2)}
+.pickrow .bd11{flex:1;min-width:0}
+.pickrow .bd11 .n12{font-size:var(--text-sm)}
+.pickrow .bd11 .m14{font-family:var(--mono);font-size:var(--text-2xs);color:var(--ash);
+  margin-top:3px;letter-spacing:.1em}
+.pickrow .sc2{font-family:var(--mono);font-weight:700;font-size:var(--text-sm);flex:none;min-width:38px;
+  text-align:right}
+.runtot{position:sticky;top:-1px;z-index:12;background:var(--bg);border-bottom:1px solid var(--line);
+  padding:12px 0;display:flex;align-items:baseline;gap:12px;margin-bottom:8px}
+.runtot .n13{font-family:var(--mono);font-weight:700;font-size:var(--text-xl)}
+.runtot .k13{flex:1;font-size:var(--text-sm);color:var(--ash);line-height:1.4}
 
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
 <div id="app">
   <div id="demo"></div>
-  <div class="top"><div class="mark">Roster<span id="dot">.</span></div><div class="ctx" id="ctx"></div></div>
+  <div class="top">
+    <div class="mark">Roster<span id="dot">.</span></div>
+    <div class="ctx" id="ctx"></div>
+    <div id="mode"></div>
+  </div>
   <div class="screen" id="screen"></div>
   <div class="nav" id="nav"></div>
 </div>
@@ -982,11 +1207,15 @@ const byName=n=>P.find(p=>p.name===n);
 
 /* ═══════════ STATE ═══════════ */
 let phase=3, actor='guest', tab='today', seen=false;
-const N_SELF=3, N_PUB=8;
+const N_SELF=3, N_PUB=5;
 const visSelf=p=>p.n>=N_SELF, visPub=p=>p.n>=N_PUB;
 const pct=v=>Math.round(v*100)+'%';
 
-function setActor(a){ actor=a; tab=null; render() }
+function setActor(a){
+  actor=a;
+  tab = a==='host' ? (gated()?'confirm':'events') : 'today';
+  render();
+}
 function setFounder(f){
   isFounder=f;
   if(!f && actor==='host') actor='guest';    // a founding guest hasn't hosted yet
@@ -1004,9 +1233,12 @@ function resetDeck(){
      ends:'11:30 PM',
      details:'Buzzer is broken — text me and I\'ll come down. Bring nothing, I\'ve got it covered. '
             +'Dog is friendly but will try the cheese.',
+     msg:{text:'Need ice — if you\'re passing a shop, grab a bag', at:'6:40 PM'},
      going:['Rafa Ibarra','Dot Chen','June Park','Bo Achebe','Priya Nair','Theo Lindqvist',
             'Sam Ito','Nils Bergström'],
-     dropped:['Devin Roux','Cass Moreau'], p1:{'Rafa Ibarra':1}},
+     dropped:['Devin Roux','Cass Moreau'],
+     words:{'Suki Tanaka':{t:'4:20 PM', why:'Got sick, need to stay in'}},
+     p1:{'Rafa Ibarra':1}},
     {t:'Nightcap at Zeitgeist', who:'Rafa Ibarra', when:'Tonight · 11:00 PM', where:'Valencia & 14th',
      plus:'ask', mine:0, live:false,
      ends:'1:00 AM', clashWith:'Supper Club No. 4',
@@ -1044,6 +1276,7 @@ const ROSTER=['Maya Okonkwo','Rafa Ibarra','Dot Chen','June Park','Bo Achebe','T
 
 /* the unconfirmed event gates everything else */
 let hostTab='future';
+let editing=false, msgDraft='';
 let ARCHIVE=[
   {title:'Supper Club No. 3', when:'11 July', invited:14, cap:14, projected:[10,13], came:12,
    best:'Priya Nair', worst:'Devin Roux', surprise:'Ilya Voronin', late:1, ghosts:1,
@@ -1066,16 +1299,39 @@ let EVENTS=[
   {id:1, title:'Supper Club No. 4', when:'Fri 1 Aug · 8:00 PM', where:'24th & Harrison',
    cap:14, dl:'Wed 30 July', plus:'ask', ends:'11:30 PM', live:true,
    details:"Buzzer is broken — text me and I'll come down. Bring nothing, I've got it covered.",
-   guests:['Maya Okonkwo','Rafa Ibarra','Dot Chen','June Park','Bo Achebe','Theo Lindqvist',
-           'Devin Roux','Ilya Voronin','Nils Bergström','Sam Ito','Cass Moreau'],
-   going:['Maya Okonkwo','Rafa Ibarra','Dot Chen','June Park','Bo Achebe','Theo Lindqvist',
-          'Devin Roux','Ilya Voronin','Nils Bergström','Sam Ito','Cass Moreau'],
-   cancelled:['Suki Tanaka','Wren Adeyemi'], unanswered:3, deadlineIn:2,
+   msg:{text:"Need ice — if you're passing a shop, grab a bag", at:'6:40 PM'},
+   guests:['Maya Okonkwo','Rafa Ibarra','Dot Chen','Bo Achebe','Theo Lindqvist',
+           'Devin Roux','Ilya Voronin','Sam Ito','Suki Tanaka','Wren Adeyemi'],
+   going:['Maya Okonkwo','Rafa Ibarra','Dot Chen','Bo Achebe','Theo Lindqvist',
+          'Devin Roux','Sam Ito'],
+   cancelled:['Suki Tanaka','Wren Adeyemi'],
+   words:{'Suki Tanaka':{t:'4:20 PM', why:'Got sick, need to stay in'}},
+   unanswered:3, deadlineIn:2,
    p1:{'Rafa Ibarra':1,'Bo Achebe':1,'Devin Roux':1},
    door:{'Dot Chen':'in','Sam Ito':'in'}, p1in:{}}
 ];
 let curEv=1;
 const ev=()=>EVENTS.find(e=>e.id===curEv);
+
+/* Co-attendance, seeded so it's stable. Used to rank who to invite next. */
+const CO=(()=>{
+  const m={}, seed=(a,b)=>{const k=[a,b].sort().join('|');
+    let x=0; for(const ch of k) x=(x*31+ch.charCodeAt(0))>>>0; return x};
+  P.forEach(a=>P.forEach(b=>{ if(a.name<b.name){
+    const n=seed(a.name,b.name)%9;
+    m[a.name+'|'+b.name]=n; m[b.name+'|'+a.name]=n; }}));
+  return m;
+})();
+const sharedWith=(n,list)=>list.filter(o=>o!==n && (CO[n+'|'+o]||0)>=4).length;
+
+/* Hours since the invitation went out. Events created in-app know exactly;
+   the seeded ones get a stable pseudo-age so the demo has variety. */
+const invitedAgo=(e,n)=>{
+  if(e.asked!=null) return e.asked;
+  let x=e.id*7;
+  for(const ch of n) x=(x*31+ch.charCodeAt(0))>>>0;
+  return 2 + (x % 60);
+};
 const yesList=e=>e.going||e.guests||[];
 
 const gated=()=>!PAST.confirmed;
@@ -1158,7 +1414,7 @@ const LEG=`<div class="legend">
   <span><b style="background:var(--steel);opacity:.55"></b>Honest no</span>
   <span><b style="border:1px dashed var(--ash)"></b>Ghosted</span></div>`;
 
-function attendeeList(going,p1,live,dropped){
+function attendeeList(going,p1,live,dropped,words){
   const arr=live?arrivalsFor(live):{};
   const here=n=>arr[n]==='in';
   dropped=dropped||[];
@@ -1167,14 +1423,15 @@ function attendeeList(going,p1,live,dropped){
   const fresh=going.filter(n=>!visPub(byName(n)))
     .sort((a,b)=>(here(b)-here(a)) || a.localeCompare(b));
   const row=(n,i)=>{const p=byName(n), k=(p1||{})[n]||0, rated_=visPub(p);
-    return `<div class="rank" onclick="event.stopPropagation();openRecord('${n}')">
+    return `<button class="rank" onclick="event.stopPropagation();openRecord('${n}')"
+      aria-label="Open ${p.name}'s record">
       <div class="ix">${here(n)?'':phase>=3&&rated_?i+1:'·'}</div>
       ${av(p,26)}
       <div class="nm">${p.name}</div>
       ${k?`<span class="p1">+${k}</span>`:''}
       ${here(n)?`<span class="there">There</span>`
         :`<div class="sc ${!rated_?'na':p.rel>=.88?'hi':p.rel<.70?'lo':''}">${
-          phase>=3&&rated_?pct(p.rel):'—'}</div>`}</div>`};
+          phase>=3&&rated_?pct(p.rel):'—'}</div>`}</button>`};
 
   if(phase<3) return `<div style="margin-top:4px">${going.map((n,i)=>row(n,i)).join('')}</div>
     <div class="note">Reliability appears at week 9.${live?' Arrivals show live.':''}</div>`;
@@ -1183,8 +1440,15 @@ function attendeeList(going,p1,live,dropped){
     ${rated.length?`<div class="seclab">${live?'In the room and on the way':'Going'} <span class="ct2">${rated.length}</span></div>
       ${rated.map((n,i)=>row(n,i)).join('')}`:''}
     ${fresh.length?`<div class="seclab new">New here <span class="ct2">${fresh.length}</span></div>
-      <p class="newnote">Fewer than eight events. No number yet — for them or anyone else.</p>
+      <p class="newnote">Fewer than five events.</p>
       ${fresh.map(n=>row(n)).join('')}`:''}
+    ${words&&Object.keys(words).length?`<div class="seclab">Sent word
+        <span class="ct2">${Object.keys(words).length}</span></div>
+      ${Object.entries(words).map(([n,w])=>{const p=byName(n);return `<div class="gaveword">
+        ${av(p,26)}
+        <div class="bd5"><div class="n7">${p.name}</div>
+          <div class="q7">"${w.why}"</div></div>
+        <div class="when7">${w.t}</div></div>`}).join('')}`:''}
     ${dropped.length?`<div class="seclab" style="color:var(--rust)">Cancelled today
         <span class="ct2">${dropped.length}</span></div>
       ${dropped.map(n=>{const p=byName(n);return `<div class="rank" style="opacity:.72">
@@ -1199,7 +1463,7 @@ function attendeeList(going,p1,live,dropped){
 }
 
 /* compact version for the swipe card */
-function miniList(going,p1,live,dropped){
+function miniList(going,p1,live,dropped,words){
   const arr=live?arrivalsFor(live):{};
   const here=n=>arr[n]==='in';
   dropped=dropped||[];
@@ -1210,15 +1474,18 @@ function miniList(going,p1,live,dropped){
   const show=order.slice(0,4), rest=going.length-show.length;
   const nHere=going.filter(here).length;
   return `<div class="mini2">
-    ${show.map(n=>{const p=byName(n),k=(p1||{})[n]||0;return `<div class="r"
-      onclick="event.stopPropagation();openRecord('${n}')">
+    ${show.map(n=>{const p=byName(n),k=(p1||{})[n]||0;return `<button class="r"
+      onclick="event.stopPropagation();openRecord('${n}')" aria-label="Open ${p.name}'s record">
       ${av(p,20)}<div class="n2">${p.name}${k?' +'+k:''}</div>
       ${here(n)?`<span class="there">There</span>`
         :`<div class="s2 ${phase>=3&&visPub(p)?(p.rel>=.88?'hi':p.rel<.70?'lo':'mid'):'na'}">${
-          phase>=3&&visPub(p)?pct(p.rel):'—'}</div>`}</div>`}).join('')}
+          phase>=3&&visPub(p)?pct(p.rel):'—'}</div>`}</button>`}).join('')}
     ${dropped.slice(0,2).map(n=>{const p=byName(n);return `<div class="r" style="opacity:.6">
       ${av(p,20)}<div class="n2">${p.name}</div>
       <span class="gone">Cancelled</span></div>`}).join('')}
+    ${Object.entries(words||{}).slice(0,1).map(([n,w])=>{const p=byName(n);return `<div class="r">
+      ${av(p,20)}<div class="n2">${p.name} — "${w.why}"</div>
+      <span class="gone">Out</span></div>`}).join('')}
     ${rest>0||dropped.length>2?`<div class="rest">+${rest} more${
       nHere?` · ${nHere} there`:''}${dropped.length?` · ${dropped.length} cancelled`:''}</div>`:''}
   </div>`;
@@ -1243,7 +1510,7 @@ function openRecord(name){
   const shows=ys.filter(c=>c==='K').length;
   const cls2 = !visPub(p)?'na':p.rel>=.88?'hi':p.rel<.70?'lo':'mid';
   const reading = !visPub(p)
-    ? `Only ${p.n} answered invitations so far. Nobody sees a number until eight, including ${p.name.split(' ')[0]}.`
+    ? `Only ${p.n} answered invitations so far. Nobody sees a number until ${N_PUB}, including ${p.name.split(' ')[0]}.`
     : nos/p.ev.length>=.4
       ? `Turns down most of what they're invited to and shows up to nearly everything they accept.`
       : p.rel<.70
@@ -1350,7 +1617,7 @@ function disclosure(){return `<div class="disc">
 </div>`}
 
 /* ═══════════ GUEST ═══════════ */
-const CARD_H=488, PEEK=62;
+const CARD_H=536, PEEK=66;
 
 function p1Control(o, fn, policy, full){
   if(!policy || policy==='none') return '';
@@ -1358,9 +1625,9 @@ function p1Control(o, fn, policy, full){
   return `<div class="p1box ${o.mine?'on':''}">
     <div class="lb2">Bringing someone?
       <small>${o.mine?'The host will be asked':'The host approves each one'}</small></div>
-    <button onclick="event.stopPropagation();${fn}${fn.endsWith(',')?'-1)':'(-1)'}">−</button>
-    <div class="ct">${o.mine||0}</div>
-    <button onclick="event.stopPropagation();${fn}${fn.endsWith(',')?'1)':'(1)'}">+</button>
+    <button aria-label="One fewer guest" onclick="event.stopPropagation();${fn}${fn.endsWith(',')?'-1)':'(-1)'}">−</button>
+    <div class="ct" aria-live="polite">${o.mine||0}</div>
+    <button aria-label="One more guest" onclick="event.stopPropagation();${fn}${fn.endsWith(',')?'1)':'(1)'}">+</button>
   </div>`;
 }
 
@@ -1399,11 +1666,16 @@ function vToday(){
     const full=(c.going.length + Object.values(c.p1||{}).reduce((a,b)=>a+b,0)) >= (c.cap||99);
     return `<div class="stack ${top?'':'behind'}" style="
         transform:translateY(${y}px) scale(${sc}); opacity:${top?1:.9}; z-index:${10-d}">
-      <div class="swipe" ${top?'id="card"':''} style="height:${CARD_H}px">
+      <div class="swipe" ${top?'id="card" tabindex="0" role="group" aria-label="'+c.t+'"':''}
+        style="height:${CARD_H}px">
         ${top?`<div class="stamp ${red?'yes2':'go'}" id="sgo">${ask?'YES':'GOING'}</div>
                <div class="stamp ${red?'no2':'no'}" id="sno">${ask?'NO':'OUT'}</div>`:''}
         <div class="flipper" ${top?'id="flip"':''} style="height:${CARD_H}px">
           <div class="face front ${red?'ask':''}" ${top?'':'style="padding:0"'}>
+            ${top&&c.msg?`<div class="shout">
+              <div class="who2">${c.who.split(' ')[0]} just said</div>
+              <div class="said2">${c.msg.text}</div>
+            </div>`:''}
             ${!top?`<div class="peek">
               <div class="pw2">${c.when}</div>
               <div class="pt">${c.t}</div>
@@ -1419,7 +1691,7 @@ function vToday(){
             ${c.details?`<div class="deets">${c.details}</div>`:''}`}
             ${top?`
               <div class="spacer"></div>
-              ${miniList(c.going,c.p1,c.live?c.t:null,c.dropped)}
+              ${miniList(c.going,c.p1,c.live?c.t:null,c.dropped,c.words)}
               ${clashing?clashLine(c):''}
               ${ask?waitedLine(c):p1Control(c,'bumpDeck',c.plus,full)}
               ${!ask&&c.live?liveBar(c):''}
@@ -1432,7 +1704,7 @@ function vToday(){
             <div class="eyebrow" style="margin-bottom:2px">${c.t}</div>
             <div class="scrollr">
               ${c.details?`<div class="deets full" style="margin:8px 0 4px">${c.details}</div>`:''}
-              ${attendeeList(c.going,c.p1,c.live?c.t:null,c.dropped)}</div>
+              ${attendeeList(c.going,c.p1,c.live?c.t:null,c.dropped,c.words)}</div>
             <div class="flipcue" style="margin-top:9px;text-align:center">Tap to flip back</div>
           </div>`:''}
         </div>
@@ -1442,7 +1714,8 @@ function vToday(){
 
   return `
   ${owed?`<div class="eyebrow" style="margin-bottom:10px">${owed} to answer first</div>`:''}
-  <div class="deck" style="height:${CARD_H+(n-1)*PEEK}px;margin-top:${owed?0:4}px">${stack}</div>`;
+  <div class="deck" style="height:${CARD_H+(n-1)*PEEK}px;margin-top:${owed?0:4}px">${stack}</div>
+`;
 }
 
 /* You said yes to two things that overlap. Nobody is stopped; the point is
@@ -1570,6 +1843,11 @@ function bindSwipe(){
     card.style.transform=''; go.style.opacity=0; no.style.opacity=0;
   };
 
+  card.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'){e.preventDefault();answer('go')}
+    if(e.key==='ArrowLeft'){e.preventDefault();answer('no')}
+    if(e.key==='Enter'||e.key===' '){e.preventDefault();flip.classList.toggle('flip')}
+  },sig);
   card.addEventListener('pointerdown',down,sig);
   window.addEventListener('pointermove',move,sig);
   window.addEventListener('pointerup',up,sig);
@@ -1589,8 +1867,8 @@ const BUSY={'2026-7-2':['K'],'2026-7-4':['K'],'2026-7-5':['K','N'],'2026-7-8':['
 
 function vFortnight(){
   return `
-  <div class="eyebrow">Your calendar</div>
-  <h1>What's coming.</h1>
+  <div class="eyebrow">Everything you've been asked to</div>
+  <h1>Your events.</h1>
   <div class="vswitch" style="margin-top:12px">
     <button class="${calView==='fortnight'?'on':''}" onclick="calView='fortnight';render()">Two weeks</button>
     <button class="${calView==='month'?'on':''}" onclick="calView='month';render()">Month</button>
@@ -1750,17 +2028,29 @@ function progressBlock(me){
   const have=Math.min(me.n,N_PUB), left=Math.max(0,N_PUB-me.n), done=left===0;
   const me3=me.n;
   const perMonth=2.4, rhythm=perMonth>=2;
-  return `<div class="prog2 ${done?'done':''}">
+  if(done) return `<div class="prog2">
+    ${!isFounder?`<div class="rhythm" style="border:0;padding:0;margin:0">
+      <div class="dot3" style="background:${me3>=3?'var(--jade)':'var(--tang)'}"></div>
+      <div class="tx3">${me3>=3
+        ? `<b>You can host.</b> Three events attended is the bar, and you're past it.`
+        : `<b>${3-me3} more and you can host.</b>`}</div></div>`:''}
+    <div class="rhythm" ${!isFounder?'':'style="border:0;padding:0;margin:0"'}>
+      <div class="dot3" style="background:${rhythm?'var(--jade)':'var(--tang)'}"></div>
+      <div class="tx3">${rhythm
+        ? `<b>You're at rhythm.</b> ${perMonth} events a month.`
+        : `<b>Below rhythm.</b> ${perMonth} events a month, against a floor of two.`}</div>
+    </div>
+  </div>`;
+  return `<div class="prog2">
     <div class="hd2">
-      <div class="t3">${done?'Your record is live':`${left} more to go`}</div>
+      <div class="t3">${left} more to go</div>
       <div class="c3">${have} / ${N_PUB}</div>
     </div>
     <div class="pips2">${Array.from({length:N_PUB},(_,i)=>
       `<i class="${i<have?'fill':''}"></i>`).join('')}</div>
-    <div class="note" style="margin-top:11px">${done
-      ? 'Eight answered invitations is enough for the number to mean something. It updates from here.'
-      : `Answer ${left} more invitation${left===1?'':'s'} — yes or no, both count — and your record
-         appears. Nobody sees anything before that, including you.`}</div>
+    <div class="note" style="margin-top:11px">Answer ${left} more invitation${left===1?'':'s'} —
+      yes or no, both count — and your record appears. Nobody sees anything before that,
+      including you.</div>
     ${!isFounder?`<div class="rhythm">
       <div class="dot3" style="background:${me3>=3?'var(--jade)':'var(--tang)'}"></div>
       <div class="tx3">${me3>=3
@@ -1782,6 +2072,10 @@ function vMe(){
   if(meTab==='invites')  return meSwitch()+vInvites();
   if(meTab==='plusones') return meSwitch()+vPlusOnes();
   if(meTab==='global')   return meSwitch()+vGlobal();
+  if(meTab==='how')      return vHow();
+  if(meTab==='hostset')  return vHostSettings();
+  if(meTab==='rosters')  return vRosters();
+  if(meTab==='rostedit') return vRosterEdit();
   const me= isFounder
     ? {name:'You',hue:38,ev:[...'KKKKNKKKNKLF'],ini:'YOU',rt:5,lapses:0}
     : {name:'You',hue:38,ev:[...'KKNKKKN'],      ini:'YOU',rt:7,lapses:0};
@@ -1818,7 +2112,7 @@ function vMe(){
   </div>
   ${progressBlock(me)}
   ${phase===2?`<div class="lockbox">Only you can see this. At week 9 it becomes visible to other
-    members — but only once you've passed <b>eight events</b>.</div>`:''}
+    members — but only once you've passed <b>five events</b>.</div>`:''}
 
   <div class="card ${pauseOn?'':'q'}" style="margin-top:20px${
     pauseOn?';border-color:var(--line);background:var(--s2)':''}">
@@ -1828,7 +2122,8 @@ function vMe(){
     <div class="sw">
       <div class="cp"><b>Decline all</b>
         <small>${goingCount()} on your calendar now, plus anything new that arrives.</small></div>
-      <button class="tog ${pauseOn?'on':''}" onclick="pauseOn=!pauseOn;render()"><i></i></button>
+      <button class="tog ${pauseOn?'on':''}" role="switch" aria-checked="${pauseOn}"
+        aria-label="Decline all" onclick="pauseOn=!pauseOn;render()"><i></i></button>
     </div>
 
     ${pauseOn?`
@@ -1852,6 +2147,21 @@ function vMe(){
         <button class="${theme==='dark'?'on':''}" onclick="setTheme('dark')">Dark</button>
         <button class="${theme==='light'?'on':''}" onclick="setTheme('light')">Light</button>
       </div>
+    </div>
+    <div class="setrow" style="border-bottom:1px solid var(--line2)">
+      <div class="cp2">Your rosters
+        <small>${ROSTERS.length} saved. Invite a whole group in one tap.</small></div>
+      <div class="seg"><button onclick="meTab='rosters';render()">Open</button></div>
+    </div>
+    <div class="setrow" style="border-bottom:1px solid var(--line2)">
+      <div class="cp2">Host settings
+        <small>What appears in your post-event summaries.</small></div>
+      <div class="seg"><button onclick="meTab='hostset';render()">Open</button></div>
+    </div>
+    <div class="setrow" style="border-bottom:1px solid var(--line2)">
+      <div class="cp2">How this works
+        <small>Why declining is free, how records recover, what hosts can see.</small></div>
+      <div class="seg"><button onclick="meTab='how';render()">Read</button></div>
     </div>
     <div class="setrow">
       <div class="cp2">Delete account
@@ -1897,7 +2207,8 @@ function vConfirm(){
         ${k?`<div class="b">${pin}/${k} GUEST${k===1?'':'S'} CONFIRMED</div>`:''}</div>
       <div class="dact">
         <div class="ok">✓</div>
-        ${k?`<button class="p1b ${pin>=k?'on':'off'}" onclick="confirmP1('${n}')">+${k}</button>`:''}
+        ${k?`<button class="p1b ${pin>=k?'on':'off'}" onclick="confirmP1('${n}')"
+          aria-pressed="${pin>=k}" aria-label="${p.name}'s guest arrived">+${k}</button>`:''}
       </div></div>`}).join('') || '<div class="note" style="margin:0">Nobody.</div>'}
   </div>
   <div class="card">
@@ -1910,7 +2221,8 @@ function vConfirm(){
         ${k?`<div class="b">BRINGING ${k}</div>`:''}</div>
       <div class="dact">
         <button onclick="PAST.door['${n}']='in';render()">Was here</button>
-        ${k?`<button class="p1b off" onclick="confirmP1('${n}')">+${k}</button>`:''}
+        ${k?`<button class="p1b off" onclick="confirmP1('${n}')"
+          aria-pressed="false" aria-label="${p.name}'s guest arrived">+${k}</button>`:''}
       </div></div>`}).join('') || '<div class="note" style="margin:0">Everyone accounted for.</div>'}
   </div>
 
@@ -1924,8 +2236,8 @@ function vConfirm(){
 /* ═══════════ HOST · EVENTS LIST ═══════════ */
 function vEvents(){
   return `
-  <div class="eyebrow">You're hosting</div>
-  <h1>Your events.</h1>
+  <div class="eyebrow">Events you're throwing</div>
+  <h1>Hosting.</h1>
   <div class="vswitch" style="margin-top:14px">
     <button class="${hostTab==='future'?'on':''}" onclick="hostTab='future';render()">Coming up</button>
     <button class="${hostTab==='past'?'on':''}" onclick="hostTab='past';render()">Past${
@@ -1937,32 +2249,66 @@ function vEvents(){
 
 function futureEvents(){
   return `
-  <div class="card q" style="padding:2px 12px 8px;margin-top:12px">
+  <div style="margin-top:14px">
     ${EVENTS.map(e=>{
       const yes=yesList(e);
       const pr=roomStats(yes,e.p1||{});
       const dropped=(e.cancelled||[]).length;
       const waiting=e.unanswered||0;
       const short=Math.max(0,e.cap-pr.hi);
-      return `<button class="evrow" style="align-items:flex-start"
-        onclick="curEv=${e.id};tab='event';render()">
-        <div class="bd"><div class="t">${e.title}</div>
-          <div class="m">${e.when.toUpperCase()} · ${yes.length
-            ? `${pr.lo}–${pr.hi} OF ${e.cap} PROJECTED`
-            : `AWAITING ANSWERS`}</div>
-          <div class="evmeta">
-            ${yes.length?`<span class="evtag good2">${yes.length} going</span>`:''}
-            ${dropped?`<span class="evtag warn2">${dropped} cancelled</span>`:''}
-            ${waiting?`<span class="evtag${yes.length?'':' warn2'}">${waiting} unanswered</span>`:''}
+      /* two quick picks, same ranking as the event screen */
+      const picks=ROSTER
+        .filter(n=>!(e.guests||[]).includes(n))
+        .map(n=>{const p=byName(n);
+          const known=sharedWith(n,e.guests||[]);
+          const speed=Math.max(0,1-Math.log10(1+p.rt)/2.2);
+          return {n,p,known,score:speed*0.55+(known/10)*0.30+(visPub(p)?p.rel:0.7)*0.15};})
+        .sort((x,y)=>y.score-x.score).slice(0,2);
+
+      return `<div class="evcard">
+        <button class="top2" onclick="curEv=${e.id};tab='event';render()"
+          style="background:none;border:0;padding:0;width:100%;text-align:left;color:inherit">
+          <div class="bd9">
+            <div class="t11">${e.title}</div>
+            <div class="m11">${e.when.toUpperCase()} · ${e.where.toUpperCase()}</div>
           </div>
-          ${dropped&&short?`<div class="evnudge">${(e.cancelled||[]).slice(0,2).join(' and ')}
-            dropped out — you're ${short} short. Invite more.</div>`:''}
+          ${e.sameDay?`<span class="dl2 soon">Deadline<br>asap</span>`
+            :e.deadlineIn!=null?`<span class="dl2 ${e.deadlineIn<=2?'soon':''}">Deadline<br>in ${e.deadlineIn}d</span>`
+            :''}
+        </button>
+
+        <div class="numbers">
+          <div class="big5 ${short?'':'hi'}">${yes.length?`${pr.lo}–${pr.hi}`:'—'}</div>
+          <div class="of5">/ ${e.cap}</div>
+          <div class="k11">${yes.length?'expected<br>of max':'awaiting<br>answers'}</div>
         </div>
-        ${e.sameDay
-          ? `<span class="dl2 soon">Deadline<br>asap</span>`
-          : e.deadlineIn!=null
-            ? `<span class="dl2 ${e.deadlineIn<=2?'soon':''}">Deadline<br>in ${e.deadlineIn}d</span>`
-            : `<span class="pill">Open</span>`}</button>`}).join('')}
+        <div class="fillbar">
+          <i class="sure" style="width:${pr.lo/e.cap*100}%"></i>
+          <i class="maybe" style="width:${Math.max(0,pr.hi-pr.lo)/e.cap*100}%"></i>
+          <i class="gap" style="width:${short/e.cap*100}%"></i>
+        </div>
+
+        <div class="evmeta" style="margin-top:12px">
+          ${yes.length?`<span class="evtag good2">${yes.length} going</span>`:''}
+          ${waiting?`<span class="evtag">${waiting} unanswered</span>`:''}
+          ${dropped?`<span class="evtag warn2">${dropped} cancelled</span>`:''}
+        </div>
+
+        ${short?`<div class="short">${dropped?`${dropped} cancelled and you're`:`You're`}
+          ${short} short.</div>`:''}
+
+        ${short&&picks.length?`<div class="quick">
+          <div class="lab5">Consider inviting</div>
+          ${picks.map(c=>`<div class="qrow2">
+            ${av(c.p,28)}
+            <div class="bd10"><div class="n11">${c.p.name}</div>
+              <div class="m12">REPLIES IN ${fmtRT(c.p.rt).toUpperCase()}${
+                c.known?` · KNOWS ${c.known} OF THIS ROOM`:''}</div></div>
+            <button class="chk2" onclick="curEv=${e.id};toggleEv('${c.n}')"
+              aria-label="Invite ${c.p.name}"></button>
+          </div>`).join('')}
+        </div>`:''}
+      </div>`}).join('')}
   </div>
   <div class="note">The door opens on the night, once the last event is settled.</div>`;
 }
@@ -1995,20 +2341,14 @@ function pastEvents(){
           <div class="k3">projected</div>
         </div>
       </div>
-      <div class="sumrow"><div class="k2">Most reliable</div>
-        <div class="v2">${a.best}<small>SAID YES, TURNED UP, EVERY TIME</small></div></div>
-      <div class="sumrow"><div class="k2">Against the odds</div>
-        <div class="v2">${a.surprise}<small>CAME DESPITE A THIN RECORD</small></div></div>
-      <div class="sumrow"><div class="k2">Cost you a seat</div>
-        <div class="v2">${a.worst}<small>SAID YES, DIDN'T ARRIVE</small></div></div>
-      <div class="sumrow"><div class="k2">First time here</div>
-        <div class="v2">${a.firstTimers.join(', ')}<small>NEVER BEEN TO ONE OF YOURS</small></div></div>
-      <div class="sumrow"><div class="k2">Your core</div>
-        <div class="v2">${a.core} people<small>NOW AT THREE OR MORE OF YOURS</small></div></div>
-      <div class="sumrow"><div class="k2">Plus-ones</div>
-        <div class="v2">${a.p1Came} of ${a.p1Brought} arrived</div></div>
-      <div class="sumrow"><div class="k2">Late cancels</div><div class="v2">${a.late}</div></div>
-      <div class="sumrow"><div class="k2">Never answered</div><div class="v2">${a.ghosts}</div></div>
+      ${summaryOn.best?`<div class="sumrow"><div class="k2">Most reliable</div>
+        <div class="v2">${a.best}<small>SAID YES, TURNED UP, EVERY TIME</small></div></div>`:''}
+      ${summaryOn.worst?`<div class="sumrow"><div class="k2">Cost you a seat</div>
+        <div class="v2">${a.worst}<small>SAID YES, DIDN'T ARRIVE</small></div></div>`:''}
+      ${summaryOn.roster?`<div class="sumrow"><div class="k2">Your Roster</div>
+        <div class="v2">${a.core} people<small>NOW AT THREE OR MORE OF YOURS</small></div></div>`:''}
+      ${!summaryOn.best&&!summaryOn.worst&&!summaryOn.roster
+        ?`<div class="note" style="margin:0">Nothing selected. Turn something on in Settings.</div>`:''}
       <div class="note">Projection was ${Math.abs(off)<=1?'within a seat':`off by ${Math.abs(off).toFixed(0)}`}.
         ${Math.abs(off)<=1?'Plan on that number next time.':'Worth inviting a few more than the band suggests.'}</div>
     </div>`}).join('')}`;
@@ -2107,6 +2447,11 @@ function orderedRoster(d){
 }
 
 function toggleDraft(n){ draft.guests.has(n)?draft.guests.delete(n):draft.guests.add(n); render() }
+function addRoster(id){
+  const r=ROSTERS.find(x=>x.id===id); if(!r) return;
+  r.who.forEach(n=>draft.guests.add(n));
+  render();
+}
 function addRegulars(k){
   HISTORY.regulars.slice(0,k||HISTORY.regulars.length).forEach(n=>draft.guests.add(n));
   render();
@@ -2216,8 +2561,15 @@ function vCreate(){
       Sorted by who answers fastest, not by who's most reliable. A 95% who takes five days
       is no use to you tonight.</div>`:''})()}
   <label class="lab">Invitations</label>
+  ${d.guests.size<3&&ROSTERS.length?`<div class="usual" style="margin-bottom:10px">
+    <b>Invite a saved roster.</b>
+    <div class="row2">
+      ${ROSTERS.map(r=>{const a2=rosterAvg(r.who);
+        return `<button onclick="addRoster(${r.id})">${r.name} · ${r.who.length}${
+          a2?` · ${pct(a2)}`:''}</button>`}).join('')}
+    </div></div>`:''}
   ${d.guests.size<3?`<div class="usual">
-    <b>Your Roster.</b> Ten people you've invited to most of your last events.
+    <b>Your regulars.</b> Ten people you've invited to most of your last events.
     ${(()=>{const m=roomStats(HISTORY.regulars,{});return `They project ${m.lo}–${m.hi} of
       ${HISTORY.regulars.length}.`})()}
     <div class="row2">
@@ -2269,9 +2621,8 @@ function vCreate(){
     ${rec.p80} days to answer and the event is ${rec.lead} days out. Expect lapses rather than
     answers — or invite people who reply faster.</div>`:''}
 
-  <button class="btn" style="margin-top:14px" onclick="sendDraft()">${
-    dayDiff(d.date,key(TODAY))===0?`Invite ${m.list.length} now`
-    :`Send ${m.list.length} invitation${m.list.length===1?'':'s'}`}</button>
+  <button class="btn" style="margin-top:16px" onclick="sendDraft()">Invite ${m.list.length}${
+    dayDiff(d.date,key(TODAY))===0?' now':''}</button>
   <button class="btn g sm" onclick="tab='events';render()">Cancel</button>`;
 }
 
@@ -2283,7 +2634,7 @@ function sendDraft(){
     when:`${fmtDay(d.date)} · ${t12(d.start)}`, where:d.where||'TBC',
     ends:t12(d.end), cap:d.cap, plus:d.plus,
     dl:fmtDay(key(addDays(parseKey(d.date),-d.dlDays))),
-    deadlineIn:d.dlDays, sameDay:dayDiff(d.date,key(TODAY))===0,
+    deadlineIn:d.dlDays, sameDay:dayDiff(d.date,key(TODAY))===0, asked:0,
     guests:[...d.guests], going:[], cancelled:[], unanswered:d.guests.size,
     p1:{}, door:{} });
   curEv=id; draft=null; tab='event'; render();
@@ -2294,7 +2645,7 @@ function guestRow(n,on,fn,urgent){
   return `<div class="prow">
     ${av(p,30)}
     <div class="nm"><div class="a">${p.name}</div>
-      <div class="b">${!pub?`${p.n} OF 8 EVENTS`
+      <div class="b">${!pub?`${p.n} OF ${N_PUB} EVENTS`
         :urgent?`ANSWERS IN ${fmtRT(p.rt).toUpperCase()}`
         :`WORTH ${p.pYes.toFixed(2)} OF A SEAT`}</div></div>
     ${phase>=3&&pub?`<div class="snap">
@@ -2309,48 +2660,143 @@ function guestRow(n,on,fn,urgent){
 function vEvent(){
   const e=ev(); if(!e){tab='events';return vEvents()}
   const yes=yesList(e);
-  const pr=roomStats(yes, e.p1||{});
-  const L=pr.lo/e.cap*100, W=Math.max(2,(pr.hi-pr.lo)/e.cap*100);
+  const cancelled=e.cancelled||[];
+  const waiting=(e.guests||[]).filter(n=>!yes.includes(n)&&!cancelled.includes(n));
+  const pr=roomStats(yes,e.p1||{});
+  const sure=pr.lo, maybe=Math.max(0,pr.hi-pr.lo), gap=Math.max(0,e.cap-pr.hi);
+
+  /* people not invited, ranked by how fast they answer and how many of
+     this room they already know */
+  const candidates=ROSTER
+    .filter(n=>!(e.guests||[]).includes(n)&&!cancelled.includes(n))
+    .map(n=>{const p=byName(n);
+      const known=sharedWith(n,e.guests||[]);
+      const speed=Math.max(0,1-Math.log10(1+p.rt)/2.2);
+      return {n,p,known,speed, score: speed*0.55 + (known/10)*0.30 + (visPub(p)?p.rel:0.7)*0.15};})
+    .sort((a2,b2)=>b2.score-a2.score).slice(0,5);
+
   return `
+  <div class="crumb">
+    <button class="back2" onclick="editing=false;tab='events';render()">← Your events</button>
+    <div class="sp2"></div>
+    <button class="edit ${editing?'on':''}" onclick="editing=!editing;render()">${
+      editing?'Done':'Edit'}</button>
+  </div>
+
   <div class="eyebrow">${e.when}</div>
   <h1>${e.title}</h1>
-  <div class="note" style="margin:5px 0 10px">${e.where} · max ${e.cap} · answers due ${e.dl}</div>
-  <div style="margin-bottom:${e.details?'10px':'14px'}">${plusBadge(e.plus)}</div>
-  ${e.details?`<div class="deets full" style="margin-bottom:14px">${e.details}</div>`:''}
+  <div class="note" style="margin:4px 0 8px">${e.where} · answers due ${e.dl}</div>
+
+  ${editing?`<div class="editbox">
+    <label class="lab">Name</label>
+    <input class="in" value="${e.title}" oninput="ev().title=this.value">
+    <label class="lab">Location</label>
+    <input class="in" value="${e.where}" oninput="ev().where=this.value">
+    <label class="lab">Anything they should know</label>
+    <textarea oninput="ev().details=this.value">${e.details||''}</textarea>
+    <label class="lab">Maximum attendance</label>
+    <input type="number" min="2" max="200" value="${e.cap}"
+      oninput="ev().cap=+this.value" onchange="render()">
+    <div class="note">Changing the date or venue would reset everyone's answer, so those live in
+      the full editor.</div>
+  </div>`
+  :e.details?`<div class="deets full" style="margin-bottom:16px">${e.details}</div>`:''}
+
+  ${e.msg?`<div class="msglive">
+    <div class="bd8"><div class="t10">${e.msg.text}</div>
+      <div class="m10b">Sent ${e.msg.at} · on everyone's card</div></div>
+    <button class="x2" onclick="ev().msg=null;render()" aria-label="Take the message down">Clear</button>
+  </div>`
+  :`<div class="msgbox">
+    <div class="note" style="margin:0 0 8px">Say something to the room</div>
+    <textarea placeholder="Need ice, running late, buzzer's broken…"
+      oninput="msgDraft=this.value">${msgDraft}</textarea>
+    <div class="msgrow">
+      <div class="note" style="margin:0;flex:1">Goes to the top of everyone's card for tonight.</div>
+      <button onclick="sendMsg()">Send</button>
+    </div>
+  </div>`}
+
   <div class="proj sticky">
     <div class="eyebrow">Projected turnout</div>
-    <div style="display:flex;align-items:flex-end;gap:12px">
-      <div class="big">${yes.length?`${pr.lo}–${pr.hi}`:'—'}</div>
-      <div style="padding-bottom:5px">
-        <div class="num" style="font-size:15px;color:var(--ash)${yes.length?';text-decoration:line-through':''}">${
-          yes.length||e.unanswered||0}${pr.nPlus?` + ${pr.nPlus}`:''}</div>
-        <div class="eyebrow" style="margin:3px 0 0">${yes.length
-          ?`Said going${pr.nPlus?' + plus-ones':''}`:'Waiting to hear'}</div></div></div>
-    <div class="band"><div class="tr"></div>
-      <div class="fl" style="left:${L}%;width:${W}%"></div>
-      <div class="tk" style="left:${L}%"></div><div class="tk" style="left:${L+W}%"></div>
-      <div class="lb" style="left:0">0</div><div class="lb" style="right:0">${e.cap} seats</div></div>
-    ${pr.nPlus?`<div class="ceil">
-      <div><div class="k">Declared plus-ones</div></div>
-      <div class="n">${pr.nPlus}</div></div>`:''}
-    ${!yes.length
-      ? `<div class="note"><b>Nobody has answered yet.</b> Invitations went out ${
-          e.sameDay?'just now — for tonight, so expect fast answers or none':'today'}.
-          The projection appears as replies come in.</div>`
-      : pr.hi<e.cap?`<div class="note"><b>You're short.</b> Invite ${e.cap-pr.hi} more to fill the table.</div>`
-      :`<div class="note">Enough to fill the table.</div>`}
-
+    <div class="projbig">
+      <div class="n8">${yes.length?`${pr.lo}–${pr.hi}`:'—'}</div>
+      <div class="of">/ ${e.cap}</div>
+      <div class="k8">${yes.length?'expected<br>of max':'nobody has<br>answered'}</div>
+    </div>
+    <div class="fillbar">
+      <i class="sure" style="width:${sure/e.cap*100}%"></i>
+      <i class="maybe" style="width:${maybe/e.cap*100}%"></i>
+      <i class="gap" style="width:${gap/e.cap*100}%"></i>
+    </div>
+    ${gap?`<div class="note"><b>${gap} seats you can't count on.</b> Invite more than you have room
+      for — that's what the number is for.</div>`
+    :`<div class="note">Enough to fill the room.</div>`}
   </div>
 
-  <div class="card q" style="padding:2px 12px 8px">
-    <div class="wk" style="margin:12px 0 2px">Guest list · ${e.guests.length}${
-      yes.length?` · ${yes.length} in`:' · none answered yet'}</div>
-    ${ROSTER.map(n=>guestRow(n,e.guests.includes(n),`toggleEv('${n}')`)).join('')}
+  ${candidates.length?`<div class="wk" style="margin-top:20px">Consider inviting</div>
+  <div class="card q" style="padding:2px 14px 8px">
+    ${candidates.map(c=>`<div class="suggrow">
+      ${av(c.p,32)}
+      <div class="bd7"><div class="n10">${c.p.name}</div>
+        <div class="m10">REPLIES IN ${fmtRT(c.p.rt).toUpperCase()}${
+          visPub(c.p)?` · ${pct(c.p.rel)} RELIABLE`:' · NO RECORD YET'}</div>
+        ${c.known?`<div class="why10">Knows ${c.known} of this room</div>`:''}
+      </div>
+      <button class="chk2" onclick="toggleEv('${c.n}')" aria-label="Invite ${c.p.name}"></button>
+    </div>`).join('')}
   </div>
-  <div class="note">${phase>=3
-    ? 'Reliability and usual reply time are visible to every member from week 9. Seat-worth is derived from them.'
-    : 'Scores are hidden until week 9, but projection still runs — computed from history nobody can see yet.'}</div>`;
+  <div class="note">Ranked by who answers fastest and who already knows the room — a fast yes is
+    worth more than a slow one when you're ${gap} short.</div>`:''}
+
+  ${cancelled.length?`<div class="wk" style="margin-top:20px">Dropped out · ${cancelled.length}</div>
+  <div class="card q" style="padding:2px 14px 8px">
+    ${cancelled.map(n=>{const p=byName(n), w=(e.words||{})[n];
+      return `<div class="irow" style="opacity:.7">
+        ${av(p,32)}
+        <div class="bd6"><div class="n9">${p.name}</div>
+          <div class="m9">${w?`"${w.why}"`:'CANCELLED, NO WORD'}</div></div>
+        <span class="said no">Out</span></div>`}).join('')}
+  </div>`:''}
+
+  <div class="wk" style="margin-top:20px">Invited · ${(e.guests||[]).length-cancelled.length}</div>
+  <div class="card q" style="padding:2px 14px 8px">
+    ${(e.guests||[]).filter(n=>!cancelled.includes(n)).map(n=>{
+      const p=byName(n), said=yes.includes(n);
+      const ago=invitedAgo(e,n), usual=p.rt;
+      const ratio=ago/Math.max(usual,1);
+      const late=ratio>1.5, fresh=ratio<0.5;
+      const frac=Math.min(1,ratio);
+      return `<div class="irow">
+        ${av(p,32)}
+        <div class="bd6"><div class="n9">${p.name}</div>
+          <div class="m9 ${!said?(late?'late':fresh?'fresh':''):''}">${said
+            ? `SAID YES · ${Math.round(p.pYes*100)}% LIKELY TO ARRIVE`
+            : ago<1
+              ? `JUST ASKED · USUALLY REPLIES IN ${fmtRT(usual).toUpperCase()}`
+              : `USUALLY REPLIES IN ${fmtRT(usual).toUpperCase()} · ASKED ${fmtRT(ago).toUpperCase()} AGO${
+                  late?' · OVERDUE':''}`}</div></div>
+        ${said?`<div class="odds ${p.pYes>=.85?'hi':p.pYes<.6?'lo':''}">${Math.round(p.pYes*100)}%</div>`
+         :`<div class="clock"><svg width="26" height="26" viewBox="0 0 26 26">
+             <circle class="trk" cx="13" cy="13" r="10" fill="none" stroke-width="2.5"/>
+             <circle class="prg ${late?'late':fresh?'fresh':''}" cx="13" cy="13" r="10" fill="none"
+               stroke-width="2.5" stroke-dasharray="${Math.max(frac*62.8,3).toFixed(1)} 62.8"
+               stroke-linecap="round"/>
+           </svg></div>`}
+      </div>`}).join('')}
+  </div>
+  ${waiting.length?`<div class="note">${waiting.length} still deciding. The ring shows how far past
+    their usual reply time they are.</div>`:''}`;
 }
+
+function sendMsg(){
+  const t=(msgDraft||'').trim(); if(!t) return;
+  const e=ev(); if(!e) return;
+  e.msg={text:t, at:'now'};
+  const card=deck.find(c=>c.t===e.title); if(card) card.msg=e.msg;
+  msgDraft=''; render();
+}
+
 function fab(){
   return gated()
     ? `<button class="fab settle" onclick="tab='confirm';render()">Settle last event</button>`
@@ -2400,8 +2846,7 @@ function vDoor(){
         ${k?(pin>=k?'<div class="ok okp">+'+k+'</div>'
                   :`<button class="p1b" onclick="checkInP1('${n}')">+1</button>`):''}
       </div></div>`}).join('')}
-  <div class="note">Guests type the words themselves; this list is your backstop. Cache the roster
-    when this screen opens — party wifi is where check-in fails.</div>`;
+  <div class="note">Guests type the words themselves. This list is your backstop.</div>`;
 }
 let bigOn=false;
 function bigCode(){
@@ -2588,9 +3033,8 @@ function slotsView(){
   ${rem?`<div class="namelink">
      <div class="note" style="margin:0">Who is this for?</div>
      <input class="fld" placeholder="Their full name" value="${newName}" oninput="newName=this.value">
-     <div class="note">The link only works for this name. Whoever claims it has to enter the same
-       thing — an invitation isn't transferable, and if it gets forwarded it simply won't open.</div>
-     <button class="btn sm" style="margin-top:12px" onclick="mintLink()">Create the link</button>
+     <div class="note">The link only works for this name.</div>
+     <button class="btn sm" style="margin-top:12px" onclick="mintLink()">Invite them</button>
    </div>`
    :`<div class="emptyq" style="margin-top:14px">${wo
      ? `All spent.<br>${al.batch} more the next time you host.`
@@ -2606,9 +3050,7 @@ function slotsView(){
       <code>${LINKS.slice(-1)[0].token}</code>
       <button onclick="alert('Copied. The preview shows only the Roster mark — not your name, and not that it is an invitation.')">Copy</button>
     </div>
-    <div class="note"><b>Unclaimed means spent.</b> If they don't answer inside ${HOLD_DAYS} days it
-      doesn't come back to you — someone ignoring an invitation for a fortnight told you something
-      about how they'd treat an event. Revoking now returns it; letting it lapse doesn't.</div>`:''}
+    <div class="note"><b>Unclaimed means spent.</b> Revoking returns it; letting it lapse doesn't.</div>`:''}
 
   <div class="wk" style="margin-top:22px">What sets the number</div>
   <div class="card q" style="padding:4px 13px 13px">
@@ -2622,8 +3064,9 @@ function slotsView(){
         <div class="m">${al.batch} INVITATIONS EACH</div></div>
       <div class="d plus">+${al.hosted*al.batch}</div></div>`:''}
     <div class="contrib">
-      <div class="bd" onclick="meTab='plusones';render()"><div class="t">People you've vouched for</div>
-        <div class="m">${SPONSORED.length} · SEE YOUR +1S</div></div>
+      <button class="bd" onclick="meTab='plusones';render()"
+        aria-label="See who you've vouched for"><div class="t">People you've vouched for</div>
+        <div class="m">${SPONSORED.length} · SEE YOUR +1S</div></button>
       <div class="d ${al.inv>0?'plus':al.inv<0?'minus':'zero'}">${
         al.inv>0?'+'+al.inv:al.inv<0?'−'+Math.abs(al.inv):'0'}</div>
     </div>
@@ -2656,9 +3099,10 @@ function vPlusOnes(){
   const row=sp=>{const c=contribution(sp), p=byName(sp.name);
     return `<div class="contrib" ${c.st==='settled'?'style="opacity:.6"':''}>
       ${p?av(p,30):''}
-      <div class="bd" onclick="openRecord('${sp.name}')"><div class="t">${sp.name}</div>
+      <button class="bd" onclick="openRecord('${sp.name}')"
+        aria-label="Open ${sp.name}'s record"><div class="t">${sp.name}</div>
         <div class="m">${p&&visPub(p)?pct(p.rel).toUpperCase()+' · '+c.why.toUpperCase()
-          :'NO RECORD YET · '+sp.days+' DAYS IN'}</div></div>
+          :'NO RECORD YET · '+sp.days+' DAYS IN'}</div></button>
       <div class="d ${c.d>0?'plus':c.d<0?'minus':'zero'}">${c.d>0?'+1':c.d<0?'−1':'0'}</div>
     </div>`};
 
@@ -2673,8 +3117,7 @@ function vPlusOnes(){
 
   ${settled.length?`<div class="wk" style="margin-top:20px">On their own record · ${settled.length}</div>
     <div class="card q" style="padding:4px 13px 13px">${settled.map(row).join('')}</div>
-    <div class="note">These no longer affect what you're granted. They held a good record long enough
-      to be judged on it alone.</div>`:''}`;
+    <div class="note">These no longer affect what you're granted.</div>`:''}`;
 }
 
 /* ── how are we doing ── */
@@ -2729,8 +3172,6 @@ function vGlobal(){
     <div class="v8">${relNow}%</div>
     ${relUp>0?`<div class="d8">↑ ${relUp} points since records went live</div>`
       :`<div class="d8" style="color:var(--ash)">First numbers just landed</div>`}
-    <div class="spark" style="height:26px;margin-top:12px">${r.map((v,i)=>
-      `<i class="${i===r.length-1?'last':''}" style="height:${Math.max(8,(v-70)/20*100)}%"></i>`).join('')}</div>
     <div class="sub8"><b>When one of us answers honestly, everyone's number goes up.</b>
       This is the one score we all own.</div>
   </div>
@@ -2746,9 +3187,7 @@ function vGlobal(){
 
   <div class="wk" style="margin-top:22px">Cancelling instead of ghosting</div>
   <div class="card q" style="padding:14px 13px">
-    <div class="spark" style="height:38px">${c.map((v,i)=>
-      `<i class="${i===c.length-1?'last':''}" style="height:${v*100}%"></i>`).join('')}</div>
-    <div class="note" style="margin-top:11px"><b>${cNow}% of missed events now come with notice</b>${
+    <div class="note" style="margin-top:0"><b>${cNow}% of missed events now come with notice</b>${
       cNow>cWas?`, up from ${cWas}%`:''}. This is the one that moves first and moves most — telling a
       host early costs you almost nothing and it's the thing they feel soonest.</div>
   </div>
@@ -2847,10 +3286,167 @@ function waveGate(g,t,ph){
       <div class="note" style="margin:-8px 0 4px">The average reliability of everyone on Roster is
         ${g.rel===null?'not measurable yet':g.rel+'%'}. Yours is ${phase>=2?pct(myRel):'not visible yet'}.</div>
     </div>
-    <div class="note">Turn up to three events and you can host your own. Two events thrown is what
-      counts here — once proves you tried, twice proves it stuck. This is the line that decides
-      whether Roster grows or just persists.</div>
+    <div class="note">Turn up to three events and you can host your own. Two thrown counts here.</div>
   </div>`;
+}
+
+function vRosters(){
+  return `
+  <button class="back" onclick="meTab='record';render()">← Settings</button>
+  <h1 style="margin-top:14px">Your rosters</h1>
+  <div class="note" style="margin-top:6px">A named group you can invite in one tap. Minimum
+    ${MIN_ROSTER} people, and only people with a record — a roster is meant to be a list you can
+    count on.</div>
+
+  <div style="margin-top:18px">
+    ${ROSTERS.map(r=>{
+      const avg=rosterAvg(r.who);
+      return `<div class="rostcard">
+        <div class="hd5">
+          <div class="nm5">${r.name}</div>
+          <div class="avg5 ${avg>=.88?'hi':avg<.70?'lo':''}">${avg?pct(avg):'—'}</div>
+        </div>
+        <div class="m13">${r.who.length} PEOPLE · AVERAGE RELIABILITY</div>
+        <div class="faces2">${r.who.slice(0,7).map(n=>av(byName(n),26)).join('')}
+          ${r.who.length>7?`<span class="more2">+${r.who.length-7}</span>`:''}</div>
+        <div class="acts">
+          <button onclick="editRoster(${r.id})">Edit</button>
+          <button class="pri2" onclick="inviteRoster(${r.id})">Invite them</button>
+        </div>
+      </div>`}).join('')}
+  </div>
+  <button class="btn g" style="margin-top:8px" onclick="newRoster()">New roster</button>
+  <button class="btn g sm" onclick="meTab='record';render()">Back</button>`;
+}
+
+function newRoster(){ rDraft={id:Date.now(), name:'', who:new Set()}; meTab='rostedit'; render() }
+function editRoster(id){ const r=ROSTERS.find(x=>x.id===id);
+  rDraft={id:r.id, name:r.name, who:new Set(r.who)}; meTab='rostedit'; render() }
+function toggleRoster(n){ rDraft.who.has(n)?rDraft.who.delete(n):rDraft.who.add(n); render() }
+function saveRoster(){
+  if(rDraft.who.size<MIN_ROSTER) return;
+  if(!rDraft.name.trim()){ alert('Give it a name.'); return }
+  const out={id:rDraft.id, name:rDraft.name.trim(), who:[...rDraft.who]};
+  const i=ROSTERS.findIndex(r=>r.id===out.id);
+  if(i>=0) ROSTERS[i]=out; else ROSTERS.push(out);
+  rDraft=null; meTab='rosters'; render();
+}
+function inviteRoster(id){
+  const r=ROSTERS.find(x=>x.id===id);
+  const d=newDraft();
+  d.title=r.name; d.where=HISTORY.venues[0].v;
+  r.who.forEach(n=>d.guests.add(n));
+  draft=d; setActor('host'); tab='create'; render();
+}
+
+function vRosterEdit(){
+  const d=rDraft||{name:'',who:new Set()};
+  const picked=[...d.who];
+  const avg=rosterAvg(picked);
+  const eligible=ROSTER.filter(n=>visPub(byName(n)))
+    .sort((a,b)=>byName(b).rel-byName(a).rel);
+  const short=Math.max(0,MIN_ROSTER-picked.length);
+  return `
+  <button class="back" onclick="rDraft=null;meTab='rosters';render()">← Your rosters</button>
+  <h1 style="margin-top:14px">${d.name||'New roster'}</h1>
+
+  <label class="lab">Name it</label>
+  <input class="in" placeholder="Supper club, Sunday swimmers…" value="${d.name}"
+    oninput="rDraft.name=this.value">
+
+  <div class="runtot" style="margin-top:18px">
+    <div class="n13 ${avg&&avg>=.88?'hi':avg&&avg<.70?'lo':''}">${avg?pct(avg):'—'}</div>
+    <div class="k13">${picked.length} of at least ${MIN_ROSTER}${
+      short?` · ${short} more to go`:' · average reliability'}</div>
+  </div>
+
+  <div class="card q" style="padding:2px 14px 8px">
+    ${eligible.map(n=>{const p=byName(n), on=d.who.has(n);
+      return `<div class="pickrow">
+        ${av(p,30)}
+        <div class="bd11"><div class="n12">${p.name}</div>
+          <div class="m14">${p.n} EVENTS · REPLIES IN ${fmtRT(p.rt).toUpperCase()}</div></div>
+        <div class="sc2 ${p.rel>=.88?'hi':p.rel<.70?'lo':''}">${pct(p.rel)}</div>
+        <button class="chk2 ${on?'on':''}" onclick="toggleRoster('${n}')"
+          aria-label="${on?'Remove':'Add'} ${p.name}">${on?'✓':''}</button>
+      </div>`}).join('')}
+  </div>
+  <div class="note">Only people with a record appear here. ${ROSTER.length-eligible.length} members
+    are still under ${N_PUB} events.</div>
+
+  <button class="btn" style="margin-top:16px;${short?'opacity:.4':''}"
+    onclick="${short?`alert('Pick ${short} more — a roster needs at least ${MIN_ROSTER}.')`:'saveRoster()'}">
+    ${short?`${short} more needed`:'Save roster'}</button>`;
+}
+
+function vHostSettings(){
+  const rows=[['best','Most reliable','Who said yes and turned up, every time'],
+              ['worst','Cost you a seat','Who said yes and didn\'t arrive'],
+              ['roster','Your Roster','How many people are now at three or more of yours']];
+  const on=Object.values(summaryOn).filter(Boolean).length;
+  return `
+  <button class="back" onclick="meTab='record';render()">← Settings</button>
+  <h1 style="margin-top:14px">Host settings</h1>
+  <div class="note" style="margin-top:6px">What you see after each event you host. Nothing here is
+    visible to guests.</div>
+
+  <div class="wk" style="margin-top:20px">Post-event summary · ${on} of 3</div>
+  <div class="card q" style="padding:4px 15px 10px">
+    ${rows.map(([k,l,d])=>`<div class="setrow" ${k!=='roster'?'style="border-bottom:1px solid var(--line2)"':''}>
+      <div class="cp2">${l}<small>${d}</small></div>
+      <button class="tog ${summaryOn[k]?'on':''}" role="switch" aria-checked="${summaryOn[k]}"
+        aria-label="${l}" onclick="summaryOn['${k}']=!summaryOn['${k}'];render()"><i></i></button>
+    </div>`).join('')}
+  </div>
+  ${!on?`<div class="note">Nothing selected — your summaries will show turnout only.</div>`:''}
+  <button class="btn g" style="margin-top:20px" onclick="meTab='record';render()">Back</button>`;
+}
+
+function vHow(){
+  const Q=(q,a)=>`<div class="qa"><h4>${q}</h4><p>${a}</p></div>`;
+  return `
+  <button class="back" onclick="meTab='record';render()">← Your record</button>
+  <h1 style="margin-top:14px">How this works</h1>
+
+  ${Q('Declines cost nothing',
+    `An honest decline is better than flaking. Cadence measures how much you show up, but reliability
+     measures whether your yes means yes.`)}
+
+  ${Q('What actually hurts my record?',
+    `Saying yes and not arriving. The closer to the event, the more it costs — a cancellation two
+     days out barely registers, a no-show costs the full amount. Never answering is separate: it
+     counts against reply time, not reliability.`)}
+
+  ${Q('What if a host marks me wrong?',
+    `You see your own check-in state for 24 hours after an event and can contest it in one tap.
+     Nothing scores until that window closes.`)}
+
+  ${Q('Why five events before anyone sees a number?',
+    `Below that, one miss reads as a huge percentage and it's noise rather than signal. Nobody sees
+     anything before five — not other members, and not you.`)}
+
+  ${Q('How long am I scored?',
+    `Your track record is your last ten events, which for most people is somewhere between two and
+     four months. Anything older drops out entirely. A bad stretch doesn't follow you around — it
+     rolls off, and the next handful of accurate answers moves your record substantially. It's built
+     to be easier to repair than to ruin.`)}
+
+  ${Q('Who can see what?',
+    `Every member sees the same three numbers about you that you see, at the same moment. If your
+     record is slipping, that shows only to you — a private nudge. If it's recovering, that shows
+     publicly, because the point is to lift someone on the way back up.`)}
+
+  ${Q('What happens to someone I bring?',
+    `A plus-one is recorded as a plus-one — they arrive under your name and their turnout sits with
+     you, because they don't have a record yet. An invitee is different: they're a potential member,
+     and how reliable the people you invite turn out to be is what decides how many invitations you
+     get to give. Once someone you brought has held a good record long enough, they settle and are
+     judged on their own.`)}
+
+  ${Q('Can I delete all of this?',
+    `Yes, from Settings — your profile and your whole record, immediately.`)}
+
+  <button class="btn g" style="margin-top:24px" onclick="meTab='record';render()">Back</button>`;
 }
 
 /* ── claim page ── */
@@ -2948,15 +3544,30 @@ function vOrient(){
 }
 
 /* ═══════════ SHELL ═══════════ */
-const GUEST_TABS=[['today','Today'],['fortnight','Fortnight'],['checkin','Check in'],['me','You']];
+const GUEST_TABS=[['today','Today'],['fortnight','Your events'],['checkin','Check in'],['me','You']];
 let meTab='record';
 let theme='dark';
+let summaryOn={best:true, worst:true, roster:true};
+
+/* Saved rosters — a named group a host can invite in one tap. */
+const MIN_ROSTER=5;
+let ROSTERS=[
+  {id:1, name:'Supper club', who:['Maya Okonkwo','Rafa Ibarra','Dot Chen','June Park','Priya Nair',
+                                  'Theo Lindqvist','Bo Achebe','Sam Ito']},
+  {id:2, name:'Sunday swimmers', who:['Priya Nair','Dot Chen','Suki Tanaka','Maya Okonkwo','Wren Adeyemi']},
+];
+let rDraft=null;
+
+const rosterAvg=w=>{
+  const r=w.map(byName).filter(p=>p&&visPub(p));
+  return r.length ? r.reduce((a,p)=>a+p.rel,0)/r.length : null;
+};
 function setTheme(t){ theme=t; render() }
-const HOST_TABS_ALL =[['events','Events'],['door','Door'],['confirm','Confirm']];
+const HOST_TABS_ALL =[['events','Hosting'],['door','Door'],['confirm','Confirm'],['me','You']];
 const hostTabs = () => gated()
   ? HOST_TABS_ALL.filter(t=>t[0]!=='door')
   : HOST_TABS_ALL.filter(t=>t[0]!=='confirm');
-const CTX={today:'Thu 31 July',fortnight:'Your calendar',checkin:'At the door',me:'Your record',
+const CTX={today:'Thu 31 July',fortnight:'Your events',checkin:'At the door',me:'Your record',
   events:'Hosting',event:'Hosting',create:'New event',
   door:'Live now',confirm:'Settling',claim:'Invitation'};
 
@@ -2999,6 +3610,12 @@ function render(){
   scr.innerHTML=views[tab]();
   document.getElementById('ctx').textContent=CTX[tab]||'';
   const dot=document.getElementById('dot'); if(dot) dot.className = phase>=2 ? 'on' : '';
+  const mode=document.getElementById('mode');
+  if(mode) mode.innerHTML = isFounder
+    ? `<button class="hostbtn ${actor==='host'?'on':''}" aria-pressed="${actor==='host'}"
+        aria-label="${actor==='host'?'Leave hosting':'Switch to hosting'}"
+        onclick="setActor('${actor==='host'?'guest':'host'}')">Host</button>`
+    : '';
   const root=document.documentElement;
   if(root){ if(theme==='light') root.setAttribute('data-theme','light');
             else root.removeAttribute('data-theme'); }
@@ -3021,12 +3638,10 @@ function lockedTap(){ tab='confirm'; render();
 
 function demoBar(){
   document.getElementById('demo').innerHTML=`
-    <span class="lbl">As</span>
-    ${isFounder?`<button class="${actor==='host'?'on':''}" onclick="setActor('host')">Host</button>
-      <button class="${actor!=='host'?'on':''}" onclick="setActor('guest')">Guest</button>`
-      :`<button class="on">Guest</button>`}
+    <span class="lbl">Demo</span>
     <button class="${isFounder?'on':''}" onclick="setFounder(!isFounder)">${
       isFounder?'Founder':'Newer'}</button>
+    <button class="${tab==='claim'?'on':''}" onclick="tab='claim';claimStep=0;render()">Claim</button>
     <span class="lbl" style="margin-left:6px">Wk</span>
     ${[[1,'1'],[2,'5'],[3,'9'],[4,'12']].map(([p,l])=>
       `<button class="${phase===p?'on':''}" onclick="setPhase(${p})">${l}</button>`).join('')}`;
@@ -3067,3 +3682,4 @@ function stopCode(){
 render();
 
 </script>
+
